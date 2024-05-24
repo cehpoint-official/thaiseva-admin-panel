@@ -59,10 +59,10 @@ const App = () => {
 
           <Route path='/foodAdmin/ordersDetails' element={<OrdersDetails />} />
           <Route path='/foodAdmin/ordersDetails/ordersDetView' element={<OrdersDetView />} />
-          <Route path='/foodAdmin/logOutMaster' element={<LogOut />} />
 
           <Route path='*' element={<h1>Page Not Found</h1>} />
         </Route>
+        <Route path='/logOutFoodAdmin' element={<LogOut />} />
       </Routes>
     </BrowserRouter>
 

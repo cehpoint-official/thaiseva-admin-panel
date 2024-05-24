@@ -27,15 +27,15 @@ const FoodItem = () => {
     // }, [])
 
     const FoodActiveOrder = [
-        { foodImg: ItemOne, foodName: " pizza", discount: "20%", price: "177.60", id: "#4566", type: "VEG", TotalSales: "200" },
-        { foodImg: ItemTwo, foodName: " Cake", discount: "30%", price: "177.60", id: "#9866", type: "VEG", TotalSales: "110" },
-        { foodImg: ItemThree, foodName: " Chicken", discount: "30%", price: "177.60", id: "#3366", type: "Non VEG", TotalSales: "80" },
-        { foodImg: ItemFour, foodName: " Juice", discount: "13%", price: "77.90", id: "#2266", type: "VEG", TotalSales: "210" },
+        { foodImg: ItemOne, foodName: " pizza", discount: "20%", price: "177.60", id: "#4566", type: "VEG", TotalSales: "200", Button: "View" },
+        { foodImg: ItemTwo, foodName: " Cake", discount: "30%", price: "177.60", id: "#9866", type: "VEG", TotalSales: "110", Button: "View" },
+        { foodImg: ItemThree, foodName: " Chicken", discount: "30%", price: "177.60", id: "#3366", type: "Non VEG", TotalSales: "80", Button: "Edit" },
+        { foodImg: ItemFour, foodName: " Juice", discount: "13%", price: "77.90", id: "#2266", type: "VEG", TotalSales: "210", Button: "Edit" },
     ]
     const FoodInactiveOrder = [
-        { foodImg: ItemThree, foodName: "Neapolitan Chicken", discount: "30%", price: "177.60", id: "#3366", type: "Non VEG", TotalSales: "80" },
-        { foodImg: ItemTwo, foodName: "Neapolitan Cake", discount: "30%", price: "177.60", id: "#9866", type: "VEG", TotalSales: "110" },
-        { foodImg: ItemOne, foodName: "Neapolitan pizza", discount: "20%", price: "177.60", id: "#4566", type: "VEG", TotalSales: "200" },
+        { foodImg: ItemThree, foodName: "Neapolitan Chicken", discount: "30%", price: "177.60", id: "#3366", type: "Non VEG", TotalSales: "80", Button: "View" },
+        { foodImg: ItemTwo, foodName: "Neapolitan Cake", discount: "30%", price: "177.60", id: "#9866", type: "VEG", TotalSales: "110", Button: "View" },
+        { foodImg: ItemOne, foodName: "Neapolitan pizza", discount: "20%", price: "177.60", id: "#4566", type: "VEG", TotalSales: "200", Button: "Edit" },
     ]
 
     return <>
@@ -103,7 +103,7 @@ const FoodItem = () => {
                                                     // e.stopPropagation()
                                                     setPopup(!popup)
                                                 }} class="font-medium  text-blue-600 dark:text-blue-500 hover:underline border-blue-400 border p-1 px-2 rounded-lg"   >
-                                                    <i class="bi bi-eye-fill"></i> Edit
+                                                    <i class="bi bi-eye-fill"></i>  {item.Button}
                                                 </Link>
                                             </div>
                                         </div>
@@ -153,7 +153,7 @@ const FoodItem = () => {
                                                     // e.stopPropagation()
                                                     setPopup(!popup)
                                                 }} class="font-medium  text-blue-600 dark:text-blue-500 hover:underline border-blue-400 border p-1 px-2 rounded-lg"   >
-                                                    <i class="bi bi-eye-fill"></i> Edit
+                                                    <i class="bi bi-eye-fill"></i> {item.Button}
                                                 </Link>
                                             </div>
                                         </div>

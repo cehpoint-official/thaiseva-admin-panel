@@ -100,7 +100,7 @@ const TopNav = ({ toggle }) => {
                             <div className="flex gap-4 mt-6">
                                 <img src={NewLogo} className="h-[4rem]" alt="" />
                                 <div>
-                                    <p className="text-xl text-slate-800">New Order!</p>
+                                    <p className="text-xl text-slate-800">New Request</p>
                                     <p className="mt-1 text-slate-500">
                                         Lorem ipsum dolor, sit amet consectetur adipisicing elit. Facere, in.
                                     </p>

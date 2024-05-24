@@ -61,7 +61,7 @@ const OrdersDetails = () => {
                 Order Details
             </p>
             <div className='relative'>
-                <div onClick={e => setToggles(!toggles)} className='flex  gap-1 px-2 border border-blue-400 p-1 rounded-lg font-semibold'>
+                <div onClick={e => setToggles(!toggles)} className='flex cursor-pointer  gap-1 px-2 border border-blue-400 p-1 rounded-lg font-semibold'>
                     <i class="bi bi-filter-left text-blue-600 text-xl"></i>
                     <p className='text-blue-600'>Sort by</p>
                 </div>
@@ -76,7 +76,7 @@ const OrdersDetails = () => {
                     <p className='py-2 text-slate-800 font-semibold'>
                         sort by  New First
                     </p>
-                    <p className='py-2 cursor-pointer text-slate-800 font-semibold'>
+                    <p className='py-2 text-slate-800 font-semibold'>
                         sort by  Old First
                     </p>
                 </div>
@@ -169,7 +169,6 @@ const OrdersDetails = () => {
                 </div>
             </div>
         </div>
-
 
     </div >
 }

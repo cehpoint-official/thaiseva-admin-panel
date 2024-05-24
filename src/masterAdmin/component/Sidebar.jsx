@@ -9,7 +9,7 @@ const MasterSidebar = ({ show, toggle }) => {
         { icon: "bi-clipboard2-check", label: "Add Restaurant ", to: "/foodAdmin/addResta" },
         { icon: "bi-shop", label: "Restaurant Details", to: "/foodAdmin/restaDetails" },
         { icon: "bi-clipboard2-check", label: "Orders Details", to: "/foodAdmin/ordersDetails" },
-        { icon: "bi-box-arrow-right", label: "Log Out", to: "logOutMaster" },
+        { icon: "bi-box-arrow-right", label: "Log Out", to: "/logOutFoodAdmin" },
         // { icon: "bi-pencil", label: "orders", to: "/" },
         // { icon: "bi-laptop", label: "login", to: "login" },
         // { icon: "bi-laptop", label: "register", to: "register" },
