@@ -153,7 +153,7 @@ const ManageOrder = () => {
                                     </td>
                                     <td class=" px-1 py-4  ">
                                         <Link
-                                            // to="/foodAdmin/ordersDetails/ordersDetView"
+                                            to="/manageOrder/orderView"
                                             class=" text-white bg-blue-600 border  p-1 px-2 rounded-lg"   >
                                             {/* <i class="bi bi-eye-fill pe-1  text-white"></i> */}
                                             View Order

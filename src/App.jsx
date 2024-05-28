@@ -22,6 +22,7 @@ import RestaurantReqDet from './masterAdmin/pages/reastaurant/RestaurantReqDet'
 import RestaDetailsView from './masterAdmin/pages/reastaurant/RestaDetailsView'
 import AddRestaurantInfo from './masterAdmin/pages/reastaurant/AddRestaurantInfo'
 import OrdersDetView from './masterAdmin/pages/orders/OrdersDetView'
+import OrderView from './restaurantAdmin/pages/order/OrderView'
 
 const App = () => {
   return <>
@@ -30,7 +31,8 @@ const App = () => {
         <Route path='/' element={<Home />} >
           <Route index element={<Stat />} />
           <Route path='/manageOrder' element={<ManageOrder />} />
-          <Route path='/logOutPage' element={<LogOutPage />} />
+          <Route path='/manageOrder/orderView' element={<OrderView />} />
+
 
           <Route path='foodItem' element={<FoodItem />} />
           <Route path='/foodItem/chart' element={<ChartTwo />} />
@@ -44,6 +46,7 @@ const App = () => {
           {/* <Route path='register' element={<Register />} /> */}
           <Route path='*' element={<h1>Page Not Found</h1>} />
         </Route>
+        <Route path='/logOutPage' element={<LogOutPage />} />
 
         <Route path='/foodAdmin' element={<MasterHome />} >
           <Route index element={<MasterStat />} />
