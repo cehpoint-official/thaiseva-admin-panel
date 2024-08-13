@@ -20,41 +20,46 @@ import OrdersDetails from './masterAdmin/pages/OrdersDetails'
 import LogOut from './masterAdmin/pages/LogOut'
 import RestaurantReqDet from './masterAdmin/pages/reastaurant/RestaurantReqDet'
 import RestaDetailsView from './masterAdmin/pages/reastaurant/RestaDetailsView'
-import AddRestaurantInfo from './masterAdmin/pages/reastaurant/AddRestaurantInfo'
+import AddRestaInfo  from './masterAdmin/pages/reastaurant/AddRestaurantInfo'
 import OrdersDetView from './masterAdmin/pages/orders/OrdersDetView'
 import OrderView from './restaurantAdmin/pages/order/OrderView'
+import EditRestaurant from './restaurantAdmin/pages/restaurantPages/EditRestaurant'
+import AuthPage from './restaurantAdmin/component/AuthPage';
+import { AuthProvider } from './AuthContext';
+import PrivateRoute from './restaurantAdmin/component/PrivateRoute'; 
 
 const App = () => {
   return <>
-    <BrowserRouter>
-      <Routes>
-        <Route path='/' element={<Home />} >
-          <Route index element={<Stat />} />
-          <Route path='/manageOrder' element={<ManageOrder />} />
-          <Route path='/manageOrder/orderView' element={<OrderView />} />
-
-
-          <Route path='foodItem' element={<FoodItem />} />
-          <Route path='/foodItem/chart' element={<ChartTwo />} />
-          <Route path='/foodItem/addItem' element={<AddItem />} />
-          <Route path='/foodItem/addItem/itemInformation' element={<ItemInformation />} />
-
-          <Route path='restaurant' element={<Restaurant />} />
-          <Route path='/restaurant/addrestaurant' element={<Addrestaurant />} />
-          <Route path='/restaurant/addrestaurant/restaInformation' element={<RestaInformation />} />
-          {/* <Route path='login' element={<Login />} /> */}
-          {/* <Route path='register' element={<Register />} /> */}
-          <Route path='*' element={<h1>Page Not Found</h1>} />
-        </Route>
-        <Route path='/logOutPage' element={<LogOutPage />} />
-
-        <Route path='/foodAdmin' element={<MasterHome />} >
-          <Route index element={<MasterStat />} />
+      <AuthProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/auth" element={<AuthPage />} />
+          
+          <Route element={<PrivateRoute />}> {/* Protect these routes */}
+            <Route path="/" element={<Home />}>
+              <Route index element={<Stat />} />
+              <Route path="manageOrder" element={<ManageOrder />} />
+              <Route path="manageOrder/orderView" element={<OrderView />} />
+              <Route path="foodItem" element={<FoodItem />} />
+              <Route path="foodItem/chart" element={<ChartTwo />} />
+              <Route path="foodItem/addItem" element={<AddItem />} />
+              <Route path="restaurant/edit/:id" element={<ItemInformation />} />
+              <Route path="restaurant" element={<Restaurant />} />
+              <Route path="restaurant/addrestaurant" element={<Addrestaurant />} />
+              <Route path="restaurant/addrestaurant/restaInformation" element={<RestaInformation />} />
+              <Route path="restaurant/EditRestaurant" element={<EditRestaurant />} />
+            </Route>
+            <Route path="logOutPage" element={<LogOutPage />} />
+            </Route>
+            <Route path="/foodAdmin" element={<MasterHome />}>
+            <Route index element={<MasterStat />} />
+            
           <Route path='/foodAdmin/restaReuest' element={<RestRequests />} />
-          <Route path='/foodAdmin/restaReuest/restaurantReqDet' element={<RestaurantReqDet />} />
+          <Route path='/foodAdmin/restaReuest/restaurantReqDet/:id' element={<RestaurantReqDet />} />
+
 
           <Route path='/foodAdmin/addResta' element={<AddResta />} />
-          <Route path='/foodAdmin/addResta/addRestaurantInfo' element={<AddRestaurantInfo />} />
+          <Route path='/foodAdmin/addResta/addRestaurantInfo' element={<AddRestaInfo  />} />
 
           <Route path='/foodAdmin/restaDetails' element={<RestaDetails />} />
           <Route path='/foodAdmin/restaDetails/restaDetailsView' element={<RestaDetailsView />} />
@@ -62,13 +67,13 @@ const App = () => {
 
           <Route path='/foodAdmin/ordersDetails' element={<OrdersDetails />} />
           <Route path='/foodAdmin/ordersDetails/ordersDetView' element={<OrdersDetView />} />
-
-          <Route path='*' element={<h1>Page Not Found</h1>} />
-        </Route>
-        <Route path='/logOutFoodAdmin' element={<LogOut />} />
-      </Routes>
-    </BrowserRouter>
-
+            </Route>
+            <Route path="logOutFoodAdmin" element={<LogOut />} />
+   
+          <Route path="*" element={<h1>Page Not Found</h1>} />
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
   </>
 }
 

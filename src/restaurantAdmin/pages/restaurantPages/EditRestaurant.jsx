@@ -1,14 +1,14 @@
-import  { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { db, storage } from '../../../../firebaseConfig'; 
-import { collection, addDoc } from 'firebase/firestore';
+import React, { useState, useEffect } from 'react';
+import { Link, useParams } from 'react-router-dom';
+import { db, storage } from '../../../../firebaseConfig'; // Adjust the import based on your firebase configuration
+import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { MdLocationOn } from "react-icons/md"; 
-import axios from 'axios'; 
+import axios from 'axios'; // Import Axios
 
-const AddRestaInfo = () => {
+const EditRestaurant = () => {
+    const { id } = useParams(); // Get restaurant ID from URL params
     const [restaurantName, setRestaurantName] = useState('');
-    const [restaurantId, setRestaurantId] = useState('');
     const [phoneNumber, setPhoneNumber] = useState('');
     const [emailId, setEmailId] = useState('');
     const [foodType, setFoodType] = useState('');
@@ -17,7 +17,32 @@ const AddRestaInfo = () => {
     const [image, setImage] = useState(null);
     const [uploading, setUploading] = useState(false);
 
-    const GOOGLE_API_KEY = 'AIzaSyDwTBiBiGtJLrlbaiKzVN5BBCj8He1l5Zc'; 
+    const GOOGLE_API_KEY = 'AIzaSyDwTBiBiGtJLrlbaiKzVN5BBCj8He1l5Zc'; // Replace with your API key
+
+    useEffect(() => {
+        const fetchRestaurantData = async () => {
+            try {
+                const docRef = doc(db, 'restaurants', id);
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    setRestaurantName(data.name || '');
+                    setPhoneNumber(data.phoneNumber || '');
+                    setEmailId(data.emailId || '');
+                    setFoodType(data.foodType || '');
+                    setLocation(data.location || '');
+                    setDescription(data.description || '');
+                    setImage(data.imageUrl || '');
+                } else {
+                    alert('No such restaurant!');
+                }
+            } catch (error) {
+                console.error('Error fetching document: ', error);
+            }
+        };
+
+        fetchRestaurantData();
+    }, [id]);
 
     const handleImageUpload = async (e) => {
         if (e.target.files[0]) {
@@ -33,9 +58,9 @@ const AddRestaInfo = () => {
 
     const handleSubmit = async () => {
         try {
-            await addDoc(collection(db, 'restaurants'), {
+            const docRef = doc(db, 'restaurants', id);
+            await updateDoc(docRef, {
                 name: restaurantName,
-                id: restaurantId,
                 phoneNumber,
                 emailId,
                 foodType,
@@ -43,9 +68,9 @@ const AddRestaInfo = () => {
                 description,
                 imageUrl: image,
             });
-            alert('Restaurant information saved successfully!');
+            alert('Restaurant information updated successfully!');
         } catch (error) {
-            console.error('Error adding document: ', error);
+            console.error('Error updating document: ', error);
         }
     };
 
@@ -83,12 +108,12 @@ const AddRestaInfo = () => {
 
     return (
         <div className='bg-slate-100 px-8 pt-10'>
-            <Link to="/foodAdmin/addResta" className="lg:text-3xl md:text-2xl font-bold text-blue-600">
+            <Link to="/restaurant" className="lg:text-3xl md:text-2xl font-bold text-blue-600">
                 <i className="bi bi-arrow-left me-2"></i>
                 Back
             </Link>
             <div className='bg-white p-10 mt-10 rounded-lg'>
-                <p className='text-center text-2xl'>RESTAURANT INFORMATION</p>
+                <p className='text-center text-2xl'>EDIT RESTAURANT INFORMATION</p>
                 <div className='grid grid-cols-12 mt-10'>
                     <div className='lg:col-span-4 md:col-span-8 col-span-12'>
                         <div className="flex items-center justify-center max-w-3xl mx-auto px-8 pb-8 mb-4">
@@ -124,20 +149,6 @@ const AddRestaInfo = () => {
                                             placeholder="Restaurant Name"
                                             value={restaurantName}
                                             onChange={(e) => setRestaurantName(e.target.value)}
-                                        />
-                                    </div>
-
-                                    <div className="mb-4">
-                                        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="restaurant-id">
-                                            Restaurant ID
-                                        </label>
-                                        <input
-                                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                            id="restaurant-id"
-                                            type="text"
-                                            placeholder="Restaurant ID"
-                                            value={restaurantId}
-                                            onChange={(e) => setRestaurantId(e.target.value)}
                                         />
                                     </div>
 
@@ -201,7 +212,7 @@ const AddRestaInfo = () => {
                                                 onClick={getCurrentLocation}
                                                 className="absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-500"
                                             >
-                                                <MdLocationOn  size={20} />
+                                                 <MdLocationOn  size={20} />
                                             </button>
                                         </div>
                                     </div>
@@ -225,7 +236,7 @@ const AddRestaInfo = () => {
                                             className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                                             type="button"
                                         >
-                                            Save your Restaurant info
+                                            Update Restaurant Info
                                         </button>
                                     </div>
                                 </form>
@@ -238,4 +249,4 @@ const AddRestaInfo = () => {
     );
 };
 
-export default AddRestaInfo ;
+export default EditRestaurant;
