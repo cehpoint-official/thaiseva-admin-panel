@@ -6,11 +6,12 @@ import Item from "../../assets/item1.png"
 import ItemTwo from "../../assets/item2.png"
 import ItemThree from "../../assets/item3.png"
 import ChartPage from "./ChartPage";
-import ApexChart from "./ChartTwo";
+import ChartTwo from "./ChartTwo";
 import { useEffect, useRef, useState } from "react";
 import BikeLogo from "../../assets/notification/bike.png"
 import NewLogo from "../../assets/notification/newOrder.png"
-
+import { useAuth } from '../../AuthContext';
+import FoodStats from "./FoodStats";
 
 
 const Dashboard = ({ toggle }) => {
@@ -43,6 +44,11 @@ const TopNav = ({ toggle }) => {
         };
     }, []);
 
+    const { currentUser } = useAuth();
+
+    if (!currentUser) {
+      return <p>No user is logged in.</p>;
+    }
     return <>
         <div className='w-full   py-2  z-50'>
             <div className='justify-between   items-center flex  p-2 '>
@@ -116,18 +122,19 @@ const TopNav = ({ toggle }) => {
                             setProfileToggle(!profileToggle)
                             setNotification(false)
                         }} className="gap-2 cursor-pointer flex relative items-center bg-blue-200 rounded-lg rounded-e-2xl">
-                            <p className=" text-blue-700 me-8 p-1  md:px-8 px-4 md:text-lg font-semibold">Hello Harish </p>
+                            {currentUser.displayName && (
+       <p className=" text-blue-700 me-8 p-1  md:px-8 px-4 md:text-lg font-semibold">  {currentUser.displayName}</p>
+      )}
                             <p className="bg-blue-700 absolute right-0  md:h-12 md:w-12 h-8 w-8 flex justify-center items-center md:text-3xl text-lg text-white rounded-full font-semibold">H</p>
                         </div>
 
                         <div className={`p-4 z-10 py-10 top-24 right-10 bg-slate-50 rounded-xl shadow-2xl w-[18rem]  flex justify-center absolute ${!profileToggle ? "hidden" : "block"}  `}>
-                            <div className="text-center">
-                                <p className="bg-blue-700 ms-[35%]  ring-8  md:h-16 md:w-16 h-8 w-8 flex justify-center relative items-center md:text-5xl text-lg text-white rounded-full font-semibold">H <i className="bi -bottom-1 bi-camera-fill absolute  bg-white p-1 px-2 text-xl text-blue-600 -right-5 rounded-full"></i> </p>
-                                <p className="text-2xl my-4 font-bold">Harish Sir</p>
-                                <p className="text-xl my-2 text-slate-700">Email - info@gmail.com</p>
-                                <p className="text-xl text-slate-700">Ph. No - +66 54657878</p>
-                            </div>
-
+                        <div className="max-w-md mx-auto bg-white p-8 rounded-lg shadow-lg mt-10">
+      <h2 className="text-2xl font-semibold text-gray-800 mb-4">User Profile</h2>
+      <p className="text-gray-600 mb-2"><strong>Email:</strong> {currentUser.email}</p>
+      <p className="text-gray-600 mb-2"><strong>UID:</strong> {currentUser.uid}</p>
+      {/* Display other user information here */}
+    </div>
                         </div>
 
                     </div>
@@ -289,54 +296,19 @@ export const Stat = () => {
                 <div className="col-span-12 lg:col-span-6 bg-white p-4 rounded-lg pb-8">
                     <p className="text-xl font-bold">Earning & Platform Charge</p>
 
-                    <div class="inline-flex my-6 rounded-md shadow-sm  bg-gray-200" role="group">
-                        <button type="button" class="px-4 py-2 text-sm  font-semibold   border border-gray-200 rounded-s-lg text-blue-700 hover:bg-gray-100 hover:text-gray-900 focus:z-10 focus:bg-white  focus:text-gray-900 ">
-                            Monthly
-                        </button>
-                        <button type="button" class="px-4 py-2 text-sm font-semibold   border border-gray-200  text-blue-700 hover:bg-gray-100 hover:text-gray-900 focus:z-10 focus:bg-white  focus:text-gray-900 ">
-                            Weekly
-                        </button>
-                        <button type="button" class="px-4 py-2 text-sm font-semibold   border border-gray-200 rounded-e-lg text-blue-700 hover:bg-gray-100 hover:text-gray-900 focus:z-10 focus:bg-white  focus:text-gray-900 ">
-                            Today
-                        </button>
-
-
-                    </div>
+           
                     <div>
-                        <ApexChart />
+                        <ChartTwo />
                     </div>
                 </div>
 
             </div>
 
             <div className="grid grid-cols-12 mt-10 pb-20 gap-6">
-                <div className="col-span-12 lg:col-span-6 bg-white p-4 rounded-lg pb-8">
-                    <p className="text-xl font-bold">Active Foods</p>
-                    <div className="flex items-center justify-between mt-12 ">
-                        <div className="flex items-center gap-3">
-                            <img src={Taco} className="h-8" alt="" />
-                            <div class="text-slate-700 dark:text-slate-700"> Available Food</div>
-                        </div>
-                        <div className="flex items-center gap-2">
-                            <div class="w-44 bg-gray-200 rounded-full md:h-2 h-1  dark:bg-gray-700">
-                                <div class="bg-yellow-600 w-[70%] md:h-2 h-1 rounded-full dark:bg-yellow-500" ></div>
-                            </div>
-                            <p className="text-slate-700 ">30 (90%)</p>
-                        </div>
-                    </div>
-                    <div className="flex items-center justify-between mt-3 ">
-                        <div className="flex items-center gap-1">
-                            <img src={TacoTwo} className="h-8" alt="" />
-                            <div class=" text-slate-700 dark:text-slate-700">Not Available Food</div>
-                        </div>
-                        <div className="flex items-center gap-2">
-                            <div class="w-44 bg-gray-200 rounded-full md:h-2 h-1  dark:bg-gray-700">
-                                <div class="bg-red-600 w-[15%] md:h-2 h-1 rounded-full dark:bg-red-500" ></div>
-                            </div>
-                            <p className="text-slate-700 ">10 (10%)</p>
-                        </div>
-                    </div>
-                </div>
+              
+
+<FoodStats />
+
                 <div className="col-span-12 lg:col-span-6 bg-white p-4 rounded-lg pb-8">
                     <p className="text-xl font-bold">Top Selling items</p>
                     <div className="flex items-center justify-between mt-3 ">

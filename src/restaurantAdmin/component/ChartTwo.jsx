@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactApexChart from 'react-apexcharts';
+import { db } from '../../../firebaseConfig'; // Adjust this import based on your Firebase config
+import { doc, getDoc } from 'firebase/firestore';
 
 const ChartTwo = () => {
-    const [options] = useState({
+    const [options, setOptions] = useState({
         chart: {
             height: 350,
             type: 'area',
@@ -15,14 +17,7 @@ const ChartTwo = () => {
         },
         xaxis: {
             type: 'datetime',
-            categories: [
-                "2024-01-01T00:00:00.000Z", "2024-02-01T00:00:00.000Z",
-                "2024-03-01T00:00:00.000Z", "2024-04-01T00:00:00.000Z",
-                "2024-05-01T00:00:00.000Z", "2024-06-01T00:00:00.000Z",
-                "2024-07-01T00:00:00.000Z", "2024-08-01T00:00:00.000Z",
-                "2024-09-01T00:00:00.000Z", "2024-10-01T00:00:00.000Z",
-                "2024-11-01T00:00:00.000Z", "2024-12-01T00:00:00.000Z"
-            ],
+            categories: [],  // Initially empty, will be set after fetching data
         },
         tooltip: {
             x: {
@@ -31,17 +26,100 @@ const ChartTwo = () => {
         },
     });
 
-    const [series] = useState([{
-        name: 'Earning from platform',
-        data: [100, 200, 128, 351, 242, 109, 100, 150, 200, 300, 250, 400],  // 12 data points for each month
-    }, {
-        name: 'Charge',
-        data: [40, 60, 50, 81, 32, 29, 40, 45, 60, 80, 70, 90],  // 12 data points for each month
-    }]);
+    const [series, setSeries] = useState([
+        {
+            name: 'Earning from platform',
+            data: [],
+        }
+    ]);
+
+    const [timeRange, setTimeRange] = useState('days'); // Default to 'days'
+
+    useEffect(() => {
+        const fetchData = async () => {
+            let docRef;
+
+            switch (timeRange) {
+                case 'days':
+                    docRef = doc(db, 'statistics', 'all_2023_days');
+                    break;
+                case 'months':
+                    docRef = doc(db, 'statistics', 'all_2023_months');
+                    break;
+                case 'years':
+                    docRef = doc(db, 'statistics', 'all_years');
+                    break;
+                default:
+                    docRef = doc(db, 'statistics', 'all_2023_days');
+            }
+
+            try {
+                const docSnap = await getDoc(docRef);
+
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+
+                    let categories = [];
+                    let amounts = [];
+
+                    if (timeRange === 'days') {
+                        categories = data.days.map(day => new Date(day.date.seconds * 1000).toISOString());
+                        amounts = data.days.map(day => day.amount);
+                    } else if (timeRange === 'months') {
+                        categories = data.months.map((month, index) => {
+                            const monthIndex = index + 1;
+                            return new Date(`2023-${monthIndex.toString().padStart(2, '0')}-01`).toISOString();
+                        });
+                        amounts = data.months.map(month => month.amount);
+                    } else if (timeRange === 'years') {
+                        categories = data.years.map(year => `${year.year}-01-01`);
+                        amounts = data.years.map(year => year.amount);
+                    }
+
+                    setOptions(prevOptions => ({
+                        ...prevOptions,
+                        xaxis: {
+                            ...prevOptions.xaxis,
+                            categories,
+                        }
+                    }));
+
+                    setSeries([
+                        {
+                            name: 'Earning from platform',
+                            data: amounts,
+                        }
+                    ]);
+                } else {
+                    console.log("No such document!");
+                }
+            } catch (error) {
+                console.error("Error fetching document: ", error);
+            }
+        };
+
+        fetchData();
+    }, [timeRange]);
 
     return (
-        <div id="chart">
-            <ReactApexChart options={options} series={series} type="area" height={350} />
+        <div>
+        
+        <div className="inline-flex my-6 rounded-md shadow-sm  bg-gray-200" role="group">
+                        <button type="button" onClick={() => setTimeRange('years')} className="px-4 py-2 text-sm  font-semibold   border border-gray-200 rounded-s-lg text-blue-700 hover:bg-gray-100 hover:text-gray-900 focus:z-10 focus:bg-white  focus:text-gray-900 ">
+                            Yearly
+                        </button>
+                        <button type="button" onClick={() => setTimeRange('months')}className="px-4 py-2 text-sm font-semibold   border border-gray-200  text-blue-700 hover:bg-gray-100 hover:text-gray-900 focus:z-10 focus:bg-white  focus:text-gray-900 ">
+                            Monthly
+                        </button>
+                        <button type="button"  onClick={() => setTimeRange('days')} className="px-4 py-2 text-sm font-semibold   border border-gray-200 rounded-e-lg text-blue-700 hover:bg-gray-100 hover:text-gray-900 focus:z-10 focus:bg-white  focus:text-gray-900 ">
+                            Today
+                        </button>
+
+
+                    </div>
+            <div id="chart">
+                <ReactApexChart options={options} series={series} type="area" height={350} />
+            </div>
         </div>
     );
 };
