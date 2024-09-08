@@ -28,7 +28,8 @@
     "react-router-dom": "^6.23.0",
     "react-toastify": "^10.0.5",
     "rsuite": "^5.60.1",
-    "styled-components": "^6.1.9"
+    "styled-components": "^6.1.9",
+    "thaiseva-admin-panel": "file:"
   },
   "devDependencies": {
     "@types/react": "^18.0.37",
