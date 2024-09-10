@@ -1,5 +1,3 @@
-//Linked with the firebase
-
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { db } from "../../../firebaseConfig.js"; // Firestore instance
@@ -12,29 +10,34 @@ const ManageOrder = () => {
   // Fetch data from Firestore
   useEffect(() => {
     const fetchOrders = async () => {
-      const ordersCollection = collection(db, "orders"); // 'orders' is your collection in Firestore
+      const ordersCollection = collection(db, "orders");
       const orderSnapshot = await getDocs(ordersCollection);
       const ordersList = await Promise.all(
         orderSnapshot.docs.map(async (docSnap) => {
           const orderData = docSnap.data();
+
           // Fetch restaurant details from the 'restaurants' collection using Restro_Id
           const restroDoc = await getDoc(
-            doc(db, "restaurants", orderData.Restro_Id)
+            doc(db, "restaurants", orderData.Restaurant.id)
           );
           const restroName = restroDoc.exists()
             ? restroDoc.data().name
             : "Unknown Restaurant"; // Default if restaurant not found
 
           return {
-            OrderId: orderData.OrderId,
-            OrderItems: orderData.OrderItems,
+            OrderId: orderData.OrderId, // From order document
+            OrderItems: orderData.OrderItems, // Array of items in the order
             RestroName: restroName, // Restaurant name from Firestore
-            Status: orderData.Status,
-            delivered_by: orderData.delivered_by,
-            discount: orderData.discount,
-            paymentMode: orderData.paymentMode,
-            total_price: orderData.total_price,
-            user: orderData.user, // Customer details
+            Status: orderData.Status[0], // First status, assuming it's an array
+            delivered_by: orderData.delivered_by, // Delivery person
+            discount: orderData.discount || 0, // Order-level discount
+            paymentMode: orderData.paymentMode, // Payment mode
+            total_price: orderData.OrderItems.reduce(
+              (total, item) => total + item.price * item.Quantity,
+              0
+            ), // Calculate total price based on items
+            user: orderData.user || {}, // Customer details
+            restroPhoto: restroDoc.exists() ? restroDoc.data().photo : "", // Restaurant photo
           };
         })
       );
@@ -118,37 +121,42 @@ const ManageOrder = () => {
                       scope='row'
                       className='px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white'>
                       {order.RestroName}
+                      <img
+                        src={order.restroPhoto}
+                        alt={order.RestroName}
+                        className='w-12 h-12 object-cover mt-2'
+                      />
                     </th>
                     <td className='px-3 py-4'>{order.OrderId}</td>
                     <td className='px-6 py-4'>
                       <span>&#3647;</span>
                       {order.total_price}
                     </td>
-                    <td className='px-6 py-4'>{order.discount}</td>
+                    <td className='px-6 py-4'>{order.discount}%</td>
                     <td className='px-6 py-4'>{order.user.name}</td>
                     <td className='px-3 py-4'>
                       <div>
                         <p
                           className={`border p-1 text-center rounded-md ${
-                            order.Status === "New"
+                            order.Status === "Processing"
                               ? "border-blue-600 text-blue-600"
                               : ""
                           } 
-                                                ${
-                                                  order.Status === "On delivery"
-                                                    ? "border-yellow-500 text-yellow-500"
-                                                    : ""
-                                                } 
-                                                ${
-                                                  order.Status === "Cancelled"
-                                                    ? "border-red-600 text-red-600"
-                                                    : ""
-                                                } 
-                                                ${
-                                                  order.Status === "Delivered"
-                                                    ? "border-green-600 text-green-600"
-                                                    : ""
-                                                }`}>
+                            ${
+                              order.Status === "On delivery"
+                                ? "border-yellow-500 text-yellow-500"
+                                : ""
+                            } 
+                            ${
+                              order.Status === "Cancelled"
+                                ? "border-red-600 text-red-600"
+                                : ""
+                            } 
+                            ${
+                              order.Status === "Delivered"
+                                ? "border-green-600 text-green-600"
+                                : ""
+                            }`}>
                           {order.Status}
                         </p>
                       </div>
