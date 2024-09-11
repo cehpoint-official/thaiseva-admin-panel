@@ -10,6 +10,7 @@ import BikeLogo from "../../assets/notification/bike.png";
 import NewLogo from "../../assets/notification/newOrder.png";
 import MasterApexChart from "./ChartTwo";
 import MasterChartPage from "./ChartPage";
+import { messaging } from "../../../firebaseConfig";
 
 const MasterDashboard = ({ toggle }) => {
   return (
@@ -23,18 +24,28 @@ const MasterDashboard = ({ toggle }) => {
 const TopNav = ({ toggle }) => {
   const [profileToggle, setProfileToggle] = useState(false);
   const [notification, setNotification] = useState(false);
-  const parentRef = useRef(); // Ref to the parent element
-
-  const handleClickOutside = (event) => {
-    if (parentRef.current && !parentRef.current.contains(event.target)) {
-      setProfileToggle(false);
-    }
-    if (parentRef.current && !parentRef.current.contains(event.target)) {
-      setNotification(false);
-    }
-  };
+  const [newNotifications, setNewNotifications] = useState([]);
+  const parentRef = useRef();
 
   useEffect(() => {
+    const handleForegroundMessages = () => {
+      // Listen for foreground messages
+      messaging.onMessage((payload) => {
+        console.log("Foreground notification received: ", payload);
+        setNewNotifications((prev) => [...prev, payload.notification]);
+        setNotification(true);
+      });
+    };
+
+    handleForegroundMessages();
+
+    const handleClickOutside = (event) => {
+      if (parentRef.current && !parentRef.current.contains(event.target)) {
+        setProfileToggle(false);
+        setNotification(false);
+      }
+    };
+
     document.addEventListener("click", handleClickOutside);
     return () => {
       document.removeEventListener("click", handleClickOutside);

@@ -3,6 +3,8 @@ import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { getStorage } from "firebase/storage";
+import { getMessaging } from "firebase/messaging";
+
 const firebaseConfig = {
   apiKey: "AIzaSyDvHdzKSxIRgfcFbr-B2mvqo5eh6mosd7g",
   authDomain: "thaiseva-85cda.firebaseapp.com",
@@ -11,14 +13,16 @@ const firebaseConfig = {
   projectId: "thaiseva-85cda",
   storageBucket: "thaiseva-85cda.appspot.com",
   messagingSenderId: "113396010755",
-  appId: "1:113396010755:web:e7ead3f40909c270572336",
-  measurementId: "G-FZYNHPWP6H",
+  appId: "1:113396010755:web:b8aef1274c34c090572336",
+  measurementId: "G-CEETGB10Q9",
 };
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const storage = getStorage(app);
 const auth = getAuth(app);
+
+export const messaging = getMessaging(app);
 export { auth };
 export { db, storage };
 // export { db };
