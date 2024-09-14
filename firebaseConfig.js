@@ -5,6 +5,19 @@ import { getAuth } from "firebase/auth";
 import { getStorage } from "firebase/storage";
 import { getMessaging } from "firebase/messaging";
 
+// const firebaseConfig =
+// {
+//   apiKey: "AIzaSyDvHdzKSxIRgfcFbr-B2mvqo5eh6mosd7g",
+//   authDomain: "thaiseva-85cda.firebaseapp.com",
+//   databaseURL:
+//     "https://thaiseva-85cda-default-rtdb.asia-southeast1.firebasedatabase.app",
+//   projectId: "thaiseva-85cda",
+//   storageBucket: "thaiseva-85cda.appspot.com",
+//   messagingSenderId: "113396010755",
+//   appId: "1:113396010755:web:b8aef1274c34c090572336",
+//   measurementId: "G-CEETGB10Q9",
+// };
+
 const firebaseConfig = {
   apiKey: "AIzaSyDvHdzKSxIRgfcFbr-B2mvqo5eh6mosd7g",
   authDomain: "thaiseva-85cda.firebaseapp.com",
