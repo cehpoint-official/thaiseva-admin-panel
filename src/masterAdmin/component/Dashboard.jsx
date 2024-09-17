@@ -22,201 +22,201 @@ const MasterDashboard = ({ toggle }) => {
   );
 };
 
-// const TopNav = ({ toggle }) => {
-//   const [profileToggle, setProfileToggle] = useState(false);
-//   const [notification, setNotification] = useState(false);
-//   const [newNotifications, setNewNotifications] = useState([]);
-//   const parentRef = useRef();
+const TopNav = ({ toggle }) => {
+  const [profileToggle, setProfileToggle] = useState(false);
+  const [notification, setNotification] = useState(false);
+  const [newNotifications, setNewNotifications] = useState([]);
+  const parentRef = useRef();
 
-//   useEffect(() => {
-//     const handleForegroundMessages = () => {
-//       // Listen for foreground messages
-//       messaging.onMessage((payload) => {
-//         console.log("Foreground notification received: ", payload);
-//         setNewNotifications((prev) => [...prev, payload.notification]);
-//         setNotification(true);
-//       });
-//     };
+  useEffect(() => {
+    const handleForegroundMessages = () => {
+      // Listen for foreground messages
+      messaging.onMessage((payload) => {
+        console.log("Foreground notification received: ", payload);
+        setNewNotifications((prev) => [...prev, payload.notification]);
+        setNotification(true);
+      });
+    };
 
-//     handleForegroundMessages();
+    handleForegroundMessages();
 
-//     const handleClickOutside = (event) => {
-//       if (parentRef.current && !parentRef.current.contains(event.target)) {
-//         setProfileToggle(false);
-//         setNotification(false);
-//       }
-//     };
+    const handleClickOutside = (event) => {
+      if (parentRef.current && !parentRef.current.contains(event.target)) {
+        setProfileToggle(false);
+        setNotification(false);
+      }
+    };
 
-//     document.addEventListener("click", handleClickOutside);
-//     return () => {
-//       document.removeEventListener("click", handleClickOutside);
-//     };
-//   }, []);
+    document.addEventListener("click", handleClickOutside);
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, []);
 
-//   return (
-//     <>
-//       <div className='w-full   py-2  z-50'>
-//         <div className='justify-between   items-center flex  p-2 '>
-//           <div className='flex  md:mx-5  w-[50%] '>
-//             <button onClick={toggle} className=''>
-//               <i class='bi text-2xl bi-menu-button-wide-fill'></i>
-//             </button>
+  return (
+    <>
+      <div className='w-full   py-2  z-50'>
+        <div className='justify-between   items-center flex  p-2 '>
+          <div className='flex  md:mx-5  w-[50%] '>
+            <button onClick={toggle} className=''>
+              <i class='bi text-2xl bi-menu-button-wide-fill'></i>
+            </button>
 
-//             <form class='w-full lg:ms-14 ms-4 '>
-//               <label
-//                 for='default-search'
-//                 class=' text-sm font-medium text-gray-900 sr-only dark:text-white'>
-//                 Search
-//               </label>
-//               <div class='relative'>
-//                 <div class='absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none'>
-//                   <svg
-//                     class='w-4 h-4 text-gray-500 dark:text-gray-400'
-//                     aria-hidden='true'
-//                     xmlns='http://www.w3.org/2000/svg'
-//                     fill='none'
-//                     viewBox='0 0 20 20'>
-//                     <path
-//                       stroke='currentColor'
-//                       stroke-linecap='round'
-//                       stroke-linejoin='round'
-//                       stroke-width='2'
-//                       d='m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z'
-//                     />
-//                   </svg>
-//                 </div>
-//                 <input
-//                   type='search'
-//                   id='default-search'
-//                   class='block w-full p-2 ps-10 text-sm text-gray-900 border  border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
-//                   placeholder='Search here...'
-//                   required
-//                 />
-//               </div>
-//             </form>
-//           </div>
-//           <div className='flex gap-6 items-center my-2'>
-//             <div ref={parentRef}>
-//               <i
-//                 onClick={(e) => {
-//                   e.stopPropagation();
-//                   setNotification(!notification);
-//                   setProfileToggle(false);
-//                 }}
-//                 class='bi text-2xl bi-bell-fill text-blue-700 relative lg:me-10'>
-//                 <div className='bg-red-500 absolute text-[15px] flex justify-center items-center w-4 h-4 text-white rounded-full top-0 -right-2'>
-//                   2
-//                 </div>
-//               </i>
-//               <div
-//                 className={`p-3 z-10 py-4 top-24 right-20 bg-slate-50 rounded-xl shadow-2xl w-[23rem] absolute  ${
-//                   !notification ? "hidden" : "block"
-//                 }`}>
-//                 <div className='flex justify-between items-center  w-full'>
-//                   <p className='text-slate-600 font-semibold'>Notification</p>
-//                   <form class=''>
-//                     <label
-//                       for='default-search'
-//                       class='mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white'>
-//                       Search
-//                     </label>
-//                     <div class='relative'>
-//                       <div class='absolute inset-y-0 flex items-center ps-3 pointer-events-none'>
-//                         <svg
-//                           class='w-4 h-4 text-gray-500 dark:text-gray-400'
-//                           aria-hidden='true'
-//                           xmlns='http://www.w3.org/2000/svg'
-//                           fill='none'
-//                           viewBox='0 0 20 20'>
-//                           <path
-//                             stroke='currentColor'
-//                             stroke-linecap='round'
-//                             stroke-linejoin='round'
-//                             stroke-width='2'
-//                             d='m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z'
-//                           />
-//                         </svg>
-//                       </div>
-//                       <input
-//                         type='search'
-//                         id='default-search'
-//                         class='block w-full p-1 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500  dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
-//                         placeholder='Search here'
-//                         required
-//                       />
-//                     </div>
-//                   </form>
-//                 </div>
-//                 <div className='flex gap-4 mt-6'>
-//                   <img src={BikeLogo} className='h-[4rem]' alt='' />
-//                   <div>
-//                     <p className='text-xl text-slate-800'>
-//                       Successfully Delivered!
-//                     </p>
-//                     <p className='mt-1 text-slate-500'>
-//                       Your order has been successfully delivered!”; we all know
-//                       this subject line a little too well
-//                     </p>
-//                     <p className='text-end text-sm text-slate-500 mt-1'>Now</p>
-//                   </div>
-//                 </div>
-//                 <div className='flex gap-4 mt-6'>
-//                   <img src={NewLogo} className='h-[4rem]' alt='' />
-//                   <div>
-//                     <p className='text-xl text-slate-800'>New Request</p>
-//                     <p className='mt-1 text-slate-500'>
-//                       Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-//                       Facere, in.
-//                     </p>
-//                     <p className='text-end text-sm text-slate-500 mt-1'>
-//                       10/04/2024
-//                     </p>
-//                   </div>
-//                 </div>
-//               </div>
-//             </div>
+            <form class='w-full lg:ms-14 ms-4 '>
+              <label
+                for='default-search'
+                class=' text-sm font-medium text-gray-900 sr-only dark:text-white'>
+                Search
+              </label>
+              <div class='relative'>
+                <div class='absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none'>
+                  <svg
+                    class='w-4 h-4 text-gray-500 dark:text-gray-400'
+                    aria-hidden='true'
+                    xmlns='http://www.w3.org/2000/svg'
+                    fill='none'
+                    viewBox='0 0 20 20'>
+                    <path
+                      stroke='currentColor'
+                      stroke-linecap='round'
+                      stroke-linejoin='round'
+                      stroke-width='2'
+                      d='m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z'
+                    />
+                  </svg>
+                </div>
+                <input
+                  type='search'
+                  id='default-search'
+                  class='block w-full p-2 ps-10 text-sm text-gray-900 border  border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
+                  placeholder='Search here...'
+                  required
+                />
+              </div>
+            </form>
+          </div>
+          <div className='flex gap-6 items-center my-2'>
+            <div ref={parentRef}>
+              <i
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setNotification(!notification);
+                  setProfileToggle(false);
+                }}
+                class='bi text-2xl bi-bell-fill text-blue-700 relative lg:me-10'>
+                <div className='bg-red-500 absolute text-[15px] flex justify-center items-center w-4 h-4 text-white rounded-full top-0 -right-2'>
+                  2
+                </div>
+              </i>
+              <div
+                className={`p-3 z-10 py-4 top-24 right-20 bg-slate-50 rounded-xl shadow-2xl w-[23rem] absolute  ${
+                  !notification ? "hidden" : "block"
+                }`}>
+                <div className='flex justify-between items-center  w-full'>
+                  <p className='text-slate-600 font-semibold'>Notification</p>
+                  <form class=''>
+                    <label
+                      for='default-search'
+                      class='mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white'>
+                      Search
+                    </label>
+                    <div class='relative'>
+                      <div class='absolute inset-y-0 flex items-center ps-3 pointer-events-none'>
+                        <svg
+                          class='w-4 h-4 text-gray-500 dark:text-gray-400'
+                          aria-hidden='true'
+                          xmlns='http://www.w3.org/2000/svg'
+                          fill='none'
+                          viewBox='0 0 20 20'>
+                          <path
+                            stroke='currentColor'
+                            stroke-linecap='round'
+                            stroke-linejoin='round'
+                            stroke-width='2'
+                            d='m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z'
+                          />
+                        </svg>
+                      </div>
+                      <input
+                        type='search'
+                        id='default-search'
+                        class='block w-full p-1 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500  dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
+                        placeholder='Search here'
+                        required
+                      />
+                    </div>
+                  </form>
+                </div>
+                <div className='flex gap-4 mt-6'>
+                  <img src={BikeLogo} className='h-[4rem]' alt='' />
+                  <div>
+                    <p className='text-xl text-slate-800'>
+                      Successfully Delivered!
+                    </p>
+                    <p className='mt-1 text-slate-500'>
+                      Your order has been successfully delivered!”; we all know
+                      this subject line a little too well
+                    </p>
+                    <p className='text-end text-sm text-slate-500 mt-1'>Now</p>
+                  </div>
+                </div>
+                <div className='flex gap-4 mt-6'>
+                  <img src={NewLogo} className='h-[4rem]' alt='' />
+                  <div>
+                    <p className='text-xl text-slate-800'>New Request</p>
+                    <p className='mt-1 text-slate-500'>
+                      Lorem ipsum dolor, sit amet consectetur adipisicing elit.
+                      Facere, in.
+                    </p>
+                    <p className='text-end text-sm text-slate-500 mt-1'>
+                      10/04/2024
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
 
-//             <div ref={parentRef}>
-//               <div
-//                 onClick={(e) => {
-//                   e.stopPropagation();
-//                   setProfileToggle(!profileToggle);
-//                   setNotification(false);
-//                 }}
-//                 className='gap-2 cursor-pointer flex relative items-center bg-blue-200 rounded-lg rounded-e-2xl'>
-//                 <p className=' text-blue-700 me-8 p-1  md:px-8 px-4 md:text-lg font-semibold'>
-//                   Hello Harish{" "}
-//                 </p>
-//                 <p className='bg-blue-700 absolute right-0  md:h-12 md:w-12 h-8 w-8 flex justify-center items-center md:text-3xl text-lg text-white rounded-full font-semibold'>
-//                   H
-//                 </p>
-//               </div>
+            <div ref={parentRef}>
+              <div
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setProfileToggle(!profileToggle);
+                  setNotification(false);
+                }}
+                className='gap-2 cursor-pointer flex relative items-center bg-blue-200 rounded-lg rounded-e-2xl'>
+                <p className=' text-blue-700 me-8 p-1  md:px-8 px-4 md:text-lg font-semibold'>
+                  Hello Harish{" "}
+                </p>
+                <p className='bg-blue-700 absolute right-0  md:h-12 md:w-12 h-8 w-8 flex justify-center items-center md:text-3xl text-lg text-white rounded-full font-semibold'>
+                  H
+                </p>
+              </div>
 
-//               <div
-//                 className={`p-4 z-10 py-10 top-24 right-10 bg-slate-50 rounded-xl shadow-2xl w-[18rem]  flex justify-center absolute ${
-//                   !profileToggle ? "hidden" : "block"
-//                 }  `}>
-//                 <div className='text-center'>
-//                   <p className='bg-blue-700 ms-[35%]  ring-8  md:h-16 md:w-16 h-8 w-8 flex justify-center relative items-center md:text-5xl text-lg text-white rounded-full font-semibold'>
-//                     H{" "}
-//                     <i className='bi -bottom-1 bi-camera-fill absolute  bg-white p-1 px-2 text-xl text-blue-600 -right-5 rounded-full'></i>{" "}
-//                   </p>
-//                   <p className='text-2xl my-4 font-bold'>Harish Sir</p>
-//                   <p className='text-xl my-2 text-slate-700'>
-//                     Email - info@gmail.com
-//                   </p>
-//                   <p className='text-xl text-slate-700'>
-//                     Ph. No - +66 54657878
-//                   </p>
-//                 </div>
-//               </div>
-//             </div>
-//           </div>
-//         </div>
-//       </div>
-//     </>
-//   );
-// };
+              <div
+                className={`p-4 z-10 py-10 top-24 right-10 bg-slate-50 rounded-xl shadow-2xl w-[18rem]  flex justify-center absolute ${
+                  !profileToggle ? "hidden" : "block"
+                }  `}>
+                <div className='text-center'>
+                  <p className='bg-blue-700 ms-[35%]  ring-8  md:h-16 md:w-16 h-8 w-8 flex justify-center relative items-center md:text-5xl text-lg text-white rounded-full font-semibold'>
+                    H{" "}
+                    <i className='bi -bottom-1 bi-camera-fill absolute  bg-white p-1 px-2 text-xl text-blue-600 -right-5 rounded-full'></i>{" "}
+                  </p>
+                  <p className='text-2xl my-4 font-bold'>Harish Sir</p>
+                  <p className='text-xl my-2 text-slate-700'>
+                    Email - info@gmail.com
+                  </p>
+                  <p className='text-xl text-slate-700'>
+                    Ph. No - +66 54657878
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+};
 
 const TopNav = ({ toggle }) => {
   const [profileToggle, setProfileToggle] = useState(false);
