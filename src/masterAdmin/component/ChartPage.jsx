@@ -47,24 +47,24 @@ const MasterChartPage = () => {
         </div>
         <div className='  '>
           <div className='flex items-center justify-between mt-3 '>
-            <div class=' text-sm text-slate-700 dark:text-slate-700 '>
+            <div className=' text-sm text-slate-700 dark:text-slate-700 '>
               Delivered (95)
             </div>
             <div className='flex  items-center gap-2'>
-              <div class='w-28 bg-gray-200 rounded-full h-2  dark:bg-gray-700'>
-                <div class='bg-green-600 w-[90%] h-2 rounded-full dark:bg-green-500'></div>
+              <div className='w-28 bg-gray-200 rounded-full h-2  dark:bg-gray-700'>
+                <div className='bg-green-600 w-[90%] h-2 rounded-full dark:bg-green-500'></div>
               </div>
               <p className='text-slate-700 '>95%</p>
             </div>
           </div>
 
           <div className='flex items-center justify-between mt-3'>
-            <div class=' text-sm text-slate-700 dark:text-slate-700'>
+            <div className=' text-sm text-slate-700 dark:text-slate-700'>
               Cancelled (05)
             </div>
             <div className='flex  items-center gap-2'>
-              <div class='w-28 bg-gray-200 rounded-full h-2  dark:bg-gray-700'>
-                <div class='bg-red-600 w-[10%] h-2 rounded-full dark:bg-red-500'></div>
+              <div className='w-28 bg-gray-200 rounded-full h-2  dark:bg-gray-700'>
+                <div className='bg-red-600 w-[10%] h-2 rounded-full dark:bg-red-500'></div>
               </div>
               <p className='text-slate-700 text-sm'>05%</p>
             </div>

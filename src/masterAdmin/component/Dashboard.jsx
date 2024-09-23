@@ -47,19 +47,19 @@ const TopNav = ({ toggle }) => {
         <div className='justify-between   items-center flex  p-2 '>
           <div className='flex  md:mx-5  w-[50%] '>
             <button onClick={toggle} className=''>
-              <i class='bi text-2xl bi-menu-button-wide-fill'></i>
+              <i className='bi text-2xl bi-menu-button-wide-fill'></i>
             </button>
 
-            <form class='w-full lg:ms-14 ms-4 '>
+            <form className='w-full lg:ms-14 ms-4 '>
               <label
                 for='default-search'
-                class=' text-sm font-medium text-gray-900 sr-only dark:text-white'>
+                className=' text-sm font-medium text-gray-900 sr-only dark:text-white'>
                 Search
               </label>
-              <div class='relative'>
-                <div class='absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none'>
+              <div className='relative'>
+                <div className='absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none'>
                   <svg
-                    class='w-4 h-4 text-gray-500 dark:text-gray-400'
+                    className='w-4 h-4 text-gray-500 dark:text-gray-400'
                     aria-hidden='true'
                     xmlns='http://www.w3.org/2000/svg'
                     fill='none'
@@ -76,7 +76,7 @@ const TopNav = ({ toggle }) => {
                 <input
                   type='search'
                   id='default-search'
-                  class='block w-full p-2 ps-10 text-sm text-gray-900 border  border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
+                  className='block w-full p-2 ps-10 text-sm text-gray-900 border  border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
                   placeholder='Search here...'
                   required
                 />
@@ -91,7 +91,7 @@ const TopNav = ({ toggle }) => {
                   setNotification(!notification);
                   setProfileToggle(false);
                 }}
-                class='bi text-2xl bi-bell-fill text-blue-700 relative lg:me-10'>
+                className='bi text-2xl bi-bell-fill text-blue-700 relative lg:me-10'>
                 <div className='bg-red-500 absolute text-[15px] flex justify-center items-center w-4 h-4 text-white rounded-full top-0 -right-2'>
                   2
                 </div>
@@ -102,16 +102,16 @@ const TopNav = ({ toggle }) => {
                 }`}>
                 <div className='flex justify-between items-center  w-full'>
                   <p className='text-slate-600 font-semibold'>Notification</p>
-                  <form class=''>
+                  <form className=''>
                     <label
                       for='default-search'
-                      class='mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white'>
+                      className='mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white'>
                       Search
                     </label>
-                    <div class='relative'>
-                      <div class='absolute inset-y-0 flex items-center ps-3 pointer-events-none'>
+                    <div className='relative'>
+                      <div className='absolute inset-y-0 flex items-center ps-3 pointer-events-none'>
                         <svg
-                          class='w-4 h-4 text-gray-500 dark:text-gray-400'
+                          className='w-4 h-4 text-gray-500 dark:text-gray-400'
                           aria-hidden='true'
                           xmlns='http://www.w3.org/2000/svg'
                           fill='none'
@@ -128,7 +128,7 @@ const TopNav = ({ toggle }) => {
                       <input
                         type='search'
                         id='default-search'
-                        class='block w-full p-1 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500  dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
+                        className='block w-full p-1 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500  dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
                         placeholder='Search here'
                         required
                       />
@@ -215,11 +215,11 @@ export const MasterStat = () => {
             Dashboard
           </p>
           <div className='flex justify-between text-blue-600 border border-blue-600 rounded-lg items-center lg:p-4 p-2 gap-4 bg-blue-100'>
-            <i class='bi bi-calendar4 text-3xl'></i>
+            <i className='bi bi-calendar4 text-3xl'></i>
             <div>
               <p className='lg:text-2xl text-xl'>Time period</p>
 
-              <div class='md:flex gap-1 mt-2 text-sm'>
+              <div className='md:flex gap-1 mt-2 text-sm'>
                 <input
                   type='date'
                   className='bg-blue-100 date-input w-[7.65rem]' // Apply your Tailwind and custom classes here
@@ -241,7 +241,7 @@ export const MasterStat = () => {
             <div className=' md:w-[33%] bg-white rounded-lg'>
               <div className='flex  gap-3 p-3 rounded-lg justify-between items-center'>
                 <div>
-                  <i class='bi text-3xl p-2 px-3 text-yellow-600 rounded-full bg-yellow-100 bi-file-person'></i>
+                  <i className='bi text-3xl p-2 px-3 text-yellow-600 rounded-full bg-yellow-100 bi-file-person'></i>
                 </div>
                 <div>
                   <p className='text-3xl font-bold'>100</p>
@@ -252,7 +252,7 @@ export const MasterStat = () => {
             <div className='md:w-[33%] bg-white rounded-lg'>
               <div className='flex  gap-3 p-3 rounded-lg justify-between items-center'>
                 <div>
-                  <i class='bi text-3xl p-2 px-3 text-red-600 rounded-full bg-red-100 bi-hourglass-top'></i>
+                  <i className='bi text-3xl p-2 px-3 text-red-600 rounded-full bg-red-100 bi-hourglass-top'></i>
                 </div>
                 <div>
                   <p className='text-3xl font-bold'>20</p>
@@ -263,7 +263,7 @@ export const MasterStat = () => {
             <div className=' md:w-[33%] bg-white rounded-lg '>
               <div className='flex  gap-3 p-3 rounded-lg justify-between items-center'>
                 <div className='lg:mt-4'>
-                  <i class='bi text-3xl p-2 px-3  text-green-600 rounded-full bg-green-100 bi-clipboard2-check'></i>
+                  <i className='bi text-3xl p-2 px-3  text-green-600 rounded-full bg-green-100 bi-clipboard2-check'></i>
                 </div>
                 <div>
                   <p className='text-3xl font-bold'>98</p>
@@ -277,7 +277,7 @@ export const MasterStat = () => {
             <div className=' md:w-[33%] lg:w-auto w-[50%]  bg-white rounded-lg'>
               <div className='flex  gap-3 p-3 rounded-lg justify-between items-center lg:pe-8'>
                 <div>
-                  <i class='bi text-3xl p-2 px-3 text-blue-600 rounded-full bg-blue-100 bi-cup'></i>
+                  <i className='bi text-3xl p-2 px-3 text-blue-600 rounded-full bg-blue-100 bi-cup'></i>
                 </div>
                 <div>
                   <p className='text-3xl font-bold'>100</p>
@@ -288,7 +288,7 @@ export const MasterStat = () => {
             <div className=' md:w-[33%] lg:w-auto w-[50%]  bg-white rounded-lg'>
               <div className='flex  gap-3 p-3 rounded-lg justify-between items-center'>
                 <div>
-                  <i class='bi text-3xl p-2 px-3 text-purple-600 rounded-full bg-purple-100 bi-person'></i>
+                  <i className='bi text-3xl p-2 px-3 text-purple-600 rounded-full bg-purple-100 bi-person'></i>
                 </div>
                 <div>
                   <p className='text-3xl font-bold'>60</p>
@@ -304,21 +304,21 @@ export const MasterStat = () => {
             <p className='text-xl font-bold'>Orders Summary</p>
 
             <div
-              class='inline-flex my-6 rounded-md shadow-sm  bg-gray-200'
+              className='inline-flex my-6 rounded-md shadow-sm  bg-gray-200'
               role='group'>
               <button
                 type='button'
-                class='px-4 py-2 text-sm  font-semibold   border border-gray-200 rounded-s-lg text-blue-700 hover:bg-gray-100 hover:text-gray-900 focus:z-10 focus:bg-white  focus:text-gray-900 '>
+                className='px-4 py-2 text-sm  font-semibold   border border-gray-200 rounded-s-lg text-blue-700 hover:bg-gray-100 hover:text-gray-900 focus:z-10 focus:bg-white  focus:text-gray-900 '>
                 Monthly
               </button>
               <button
                 type='button'
-                class='px-4 py-2 text-sm font-semibold   border border-gray-200  text-blue-700 hover:bg-gray-100 hover:text-gray-900 focus:z-10 focus:bg-white  focus:text-gray-900 '>
+                className='px-4 py-2 text-sm font-semibold   border border-gray-200  text-blue-700 hover:bg-gray-100 hover:text-gray-900 focus:z-10 focus:bg-white  focus:text-gray-900 '>
                 Weekly
               </button>
               <button
                 type='button'
-                class='px-4 py-2 text-sm font-semibold   border border-gray-200 rounded-e-lg text-blue-700 hover:bg-gray-100 hover:text-gray-900 focus:z-10 focus:bg-white  focus:text-gray-900 '>
+                className='px-4 py-2 text-sm font-semibold   border border-gray-200 rounded-e-lg text-blue-700 hover:bg-gray-100 hover:text-gray-900 focus:z-10 focus:bg-white  focus:text-gray-900 '>
                 Today
               </button>
             </div>
@@ -326,7 +326,7 @@ export const MasterStat = () => {
             <div className='bg-green-100 text-xl p-2 rounded-lg flex justify-between items-center text-green-600'>
               <Link to='/foodAdmin/ordersDetails'>See Orders Details </Link>
               <Link to='/foodAdmin/ordersDetails'>
-                <i class='bi bi-arrow-right-short text-4xl'></i>
+                <i className='bi bi-arrow-right-short text-4xl'></i>
               </Link>
             </div>
 
@@ -353,21 +353,21 @@ export const MasterStat = () => {
             <p className='text-xl font-bold'>Earning & Platform Charge</p>
 
             <div
-              class='inline-flex my-6 rounded-md shadow-sm  bg-gray-200'
+              className='inline-flex my-6 rounded-md shadow-sm  bg-gray-200'
               role='group'>
               <button
                 type='button'
-                class='px-4 py-2 text-sm  font-semibold   border border-gray-200 rounded-s-lg text-blue-700 hover:bg-gray-100 hover:text-gray-900 focus:z-10 focus:bg-white  focus:text-gray-900 '>
+                className='px-4 py-2 text-sm  font-semibold   border border-gray-200 rounded-s-lg text-blue-700 hover:bg-gray-100 hover:text-gray-900 focus:z-10 focus:bg-white  focus:text-gray-900 '>
                 Monthly
               </button>
               <button
                 type='button'
-                class='px-4 py-2 text-sm font-semibold   border border-gray-200  text-blue-700 hover:bg-gray-100 hover:text-gray-900 focus:z-10 focus:bg-white  focus:text-gray-900 '>
+                className='px-4 py-2 text-sm font-semibold   border border-gray-200  text-blue-700 hover:bg-gray-100 hover:text-gray-900 focus:z-10 focus:bg-white  focus:text-gray-900 '>
                 Weekly
               </button>
               <button
                 type='button'
-                class='px-4 py-2 text-sm font-semibold   border border-gray-200 rounded-e-lg text-blue-700 hover:bg-gray-100 hover:text-gray-900 focus:z-10 focus:bg-white  focus:text-gray-900 '>
+                className='px-4 py-2 text-sm font-semibold   border border-gray-200 rounded-e-lg text-blue-700 hover:bg-gray-100 hover:text-gray-900 focus:z-10 focus:bg-white  focus:text-gray-900 '>
                 Today
               </button>
             </div>
@@ -383,13 +383,13 @@ export const MasterStat = () => {
             <div className='flex items-center justify-between mt-12 '>
               <div className='flex items-center gap-3'>
                 <img src={Taco} className='h-8' alt='' />
-                <div class='text-slate-700 dark:text-slate-700'>
+                <div className='text-slate-700 dark:text-slate-700'>
                   Active Resturans (25)
                 </div>
               </div>
               <div className='flex items-center gap-2'>
-                <div class='w-44 bg-gray-200 rounded-full md:h-2 h-1  dark:bg-gray-700'>
-                  <div class='bg-yellow-600 w-[70%] md:h-2 h-1 rounded-full dark:bg-yellow-500'></div>
+                <div className='w-44 bg-gray-200 rounded-full md:h-2 h-1  dark:bg-gray-700'>
+                  <div className='bg-yellow-600 w-[70%] md:h-2 h-1 rounded-full dark:bg-yellow-500'></div>
                 </div>
                 <p className='text-slate-700 '>30 (90%)</p>
               </div>
@@ -397,13 +397,13 @@ export const MasterStat = () => {
             <div className='flex items-center justify-between mt-3 '>
               <div className='flex items-center gap-3'>
                 <img src={TacoTwo} className='h-8' alt='' />
-                <div class=' text-slate-700 dark:text-slate-700'>
+                <div className=' text-slate-700 dark:text-slate-700'>
                   Inactive Resturans (25)
                 </div>
               </div>
               <div className='flex items-center gap-2'>
-                <div class='w-44 bg-gray-200 rounded-full md:h-2 h-1  dark:bg-gray-700'>
-                  <div class='bg-red-600 w-[15%] md:h-2 h-1 rounded-full dark:bg-red-500'></div>
+                <div className='w-44 bg-gray-200 rounded-full md:h-2 h-1  dark:bg-gray-700'>
+                  <div className='bg-red-600 w-[15%] md:h-2 h-1 rounded-full dark:bg-red-500'></div>
                 </div>
                 <p className='text-slate-700 '>10 (10%)</p>
               </div>
@@ -414,7 +414,7 @@ export const MasterStat = () => {
             <div className='flex items-center justify-between mt-3 '>
               <div className='flex items-center gap-3'>
                 <img src={Item} className='h-10' alt='' />
-                <div class=''>
+                <div className=''>
                   <p className=' font-semibold'>Ghore Baire Restaurant</p>
                   <p className='text-blue-700 text-sm'>200 Items</p>
                 </div>
@@ -424,7 +424,7 @@ export const MasterStat = () => {
             <div className='flex items-center justify-between mt-3 '>
               <div className='flex items-center gap-3'>
                 <img src={ItemTwo} className='h-10' alt='' />
-                <div class=''>
+                <div className=''>
                   <p className=' font-semibold'>9X9 Restaurant </p>
                   <p className='text-blue-700 text-sm'>100 Items</p>
                 </div>
@@ -434,7 +434,7 @@ export const MasterStat = () => {
             <div className='flex items-center justify-between mt-3 '>
               <div className='flex items-center gap-3'>
                 <img src={ItemThree} className='h-10' alt='' />
-                <div class=''>
+                <div className=''>
                   <p className=' font-semibold'>S.K. Restaurant</p>
                   <p className='text-blue-700 text-sm'>70 Items</p>
                 </div>

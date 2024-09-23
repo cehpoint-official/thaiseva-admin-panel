@@ -27,6 +27,7 @@ import EditRestaurant from './restaurantAdmin/pages/restaurantPages/EditRestaura
 import AuthPage from './restaurantAdmin/component/AuthPage';
 import { AuthProvider } from './AuthContext';
 import PrivateRoute from './restaurantAdmin/component/PrivateRoute'; 
+import EditFoodItem from './restaurantAdmin/pages/EditFoodItem'
 
 const App = () => {
   return <>
@@ -42,6 +43,7 @@ const App = () => {
               <Route path="manageOrder/orderView" element={<OrderView />} />
               <Route path="foodItem" element={<FoodItem />} />
               <Route path="foodItem/chart" element={<ChartTwo />} />
+              <Route path="/edit/:id" element={<EditFoodItem />} />
               <Route path="foodItem/addItem" element={<AddItem />} />
               <Route path="restaurant/edit/:id" element={<ItemInformation />} />
               <Route path="restaurant" element={<Restaurant />} />
