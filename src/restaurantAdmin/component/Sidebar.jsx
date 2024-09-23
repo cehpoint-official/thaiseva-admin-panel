@@ -4,7 +4,7 @@ import Logo from '../../assets/sidebarLogo.png'
 
 const Sidebar = ({ show, toggle }) => {
     const links = [
-        { icon: "bi-clipboard-data", label: "dashboard", to: "/" },
+        { icon: "bi-clipboard-data", label: "Dashboard", to: "/" },
         { icon: "bi-shop", label: "My Restaurant", to: "restaurant" },
         { icon: "bi-shop", label: "Food Item", to: "foodItem" },
         { icon: "bi-shop", label: "Manage Order", to: "manageOrder" },

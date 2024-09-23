@@ -4,6 +4,8 @@ import { db, storage } from "../../../../firebaseConfig";
 import { setDoc, doc } from "firebase/firestore";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { MdFileUpload } from "react-icons/md";
+import { FaImages } from "react-icons/fa";
+import { FaRegImage } from "react-icons/fa6";
 
 const AddItem = () => {
   const [itemName, setItemName] = useState("");
@@ -15,11 +17,27 @@ const AddItem = () => {
   const [description, setDescription] = useState("");
   const [image, setImage] = useState(null);
   const [uploading, setUploading] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const handleFileChange = (e) => {
     if (e.target.files[0]) {
       setImage(e.target.files[0]);
+      setDropdownOpen(false); // Close dropdown after selecting
     }
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.dataTransfer.files[0]) {
+      setImage(e.dataTransfer.files[0]);
+      setDropdownOpen(false); // Close dropdown after dropping
+    }
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
   };
 
   const handleAddItem = async () => {
@@ -43,24 +61,27 @@ const AddItem = () => {
         const uploadTask = uploadBytesResumable(imageRef, image);
 
         setUploading(true);
-        uploadTask.on(
-          "state_changed",
-          (snapshot) => {
-            const progress =
-              (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-            console.log(`Upload is ${progress}% done`);
-          },
-          (error) => {
-            console.error("Upload failed:", error);
-          },
-          async () => {
-            imageUrl = await getDownloadURL(uploadTask.snapshot.ref);
-            await saveItemData(imageUrl);
-          }
-        );
-      } else {
-        await saveItemData(imageUrl);
+        await new Promise((resolve, reject) => {
+          uploadTask.on(
+            "state_changed",
+            (snapshot) => {
+              const progress =
+                (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+              console.log(`Upload is ${progress}% done`);
+            },
+            (error) => {
+              console.error("Upload failed:", error);
+              reject(error);
+            },
+            async () => {
+              imageUrl = await getDownloadURL(uploadTask.snapshot.ref);
+              resolve();
+            }
+          );
+        });
       }
+
+      await saveItemData(imageUrl);
     } catch (error) {
       console.error("Error adding item:", error);
       alert("Failed to add item. Please try again.");
@@ -77,9 +98,16 @@ const AddItem = () => {
       itemType,
       description,
       imageUrl,
-      active: false, // Adding active with default value of false
+      active: false,
     });
     alert("Item added successfully!");
+    setItemName('')
+    setItemId('')
+    setPrice('')
+    setCategory('')
+    setItemType('')
+    setDescription('')
+    setImage(null)
     setUploading(false);
   };
 
@@ -97,52 +125,70 @@ const AddItem = () => {
         <p className="text-center text-2xl mb-10">Add Item Info</p>
 
         <div className="flex gap-20">
-          {/* Image Upload Section */}
-          <div className="w-1/3 flex items-center justify-start flex-col">
-            <label
-              htmlFor="dropzone-file"
-              className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50"
-            >
-              <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                <svg
-                  className="w-8 h-8 mb-4 text-gray-500"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 20 16"
-                >
-                  <path
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
-                  ></path>
-                </svg>
-                <p className="mb-2 text-sm text-gray-500">
-                  <span className="font-semibold">Click to upload</span> or drag
-                  and drop
-                </p>
-                <p className="text-xs text-gray-500">
-                  SVG, PNG, JPG, or GIF (MAX. 800x400px)
-                </p>
-              </div>
-              <input
-                id="dropzone-file"
-                type="file"
-                className="hidden"
-                onChange={handleFileChange}
-              />
-            </label>
+          <div className="flex flex-col w-1/3">
+            {/* Display selected image */}
+            <div className="mt-4 border w-full h-60 flex items-center justify-center">
+              {image ? (
+                <img
+                  src={URL.createObjectURL(image)}
+                  alt="Selected"
+                  className="w-full h-full object-cover border border-gray-300 rounded"
+                />
+              ) : (
+                <span className="w-full h-full flex items-center justify-center bg-gray-100">
+                    <FaRegImage size={40} color="gray" />
+                </span>
+              )}
+            </div>
 
-            {/* Upload Button */}
-            <button
-              onClick={handleAddItem}
-              className="mt-4 bg-blue-700 text-white py-2 px-4 rounded-lg flex items-center justify-center gap-1"
-              disabled={uploading}
-            >
-              <MdFileUpload />
-              {uploading ? "Uploading..." : "Upload"}
-            </button>
+            {/* Image Upload Section */}
+            <div className="w-full flex items-center justify-start flex-col">
+              {/* Upload Button */}
+              <p className="text-gray-400 text-xs">(Upload your restaurant image, <br /> Format - jpg,png,jpeg) </p>
+              <button
+                onClick={() => setDropdownOpen(!dropdownOpen)}
+                className="mt-4 bg-blue-700 text-white py-2 px-4 rounded-lg flex items-center justify-center gap-1"
+                disabled={uploading}
+              >
+                <MdFileUpload />
+               Upload
+              </button>
+
+              {/* Dropdown for Image Upload */}
+              {dropdownOpen && (
+                <div
+                  className="fixed inset-0 flex items-center justify-center z-10 bg-black/40"
+                  onDrop={handleDrop}
+                  onDragOver={handleDragOver}
+                >
+                  <div className="bg-white border border-gray-300 rounded-lg p-10 shadow-lg w-[30rem] h-[23rem]">
+                    <div
+                      className="w-full h-full border-dashed border-2 border-gray-300 p-5 text-center cursor-pointer flex flex-col items-center justify-center relative"
+                      onDrop={handleDrop}
+                      onDragOver={handleDragOver}
+                    >
+                      <FaImages size={34} color="blue" />
+                      <p className="my-3">Drag and drop</p>
+                      <p>Or</p>
+                      <input
+                        type="file"
+                        id="file-input"
+                        onChange={handleFileChange}
+                        accept="image/*"
+                        className="hidden"
+                      />
+                      <label
+                        htmlFor="file-input"
+                        className="block my-3 px-4 py-2 hover:bg-blue-600 cursor-pointer bg-blue-500 text-white rounded-md"
+                      >
+                        Select File
+                      </label>
+                      <p className="text-sm absolute bottom-5 text-gray-400">Support JPEG,JPG,PNG</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Form Section */}

@@ -31,8 +31,14 @@ const ItemList = ({ items, toggle, fetchData }) => {
     );
     if (confirmDelete) {
       try {
+        // Delete from active-food-items
         await deleteDoc(doc(db, "active-food-items", id));
-        alert("Item deleted successfully");
+
+        // Delete from inactive-food-items
+        await deleteDoc(doc(db, "inactive-food-items", id));
+
+        alert("Item deleted successfully from both collections");
+
         await fetchData(); // Refresh data after deletion
       } catch (error) {
         console.error("Error deleting document: ", error);
@@ -176,64 +182,83 @@ const ItemList = ({ items, toggle, fetchData }) => {
           onClick={() => setSelectedItem(null)} // Clicking outside closes the popup
         >
           <div
-            className="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg"
+            className="bg-white p-8 rounded-xl shadow-lg lg:w-[34rem] max-lg:max-w-lg"
             onClick={(e) => e.stopPropagation()} // Prevent popup close when clicking inside
           >
-            <h2 className="text-2xl mb-4">{selectedItem.itemName}</h2>
-            <img
-              src={selectedItem.imageUrl}
-              alt={selectedItem.itemName}
-              className="w-full h-auto rounded-md"
-            />
-            <p className="mt-4">Price: {selectedItem.price}</p>
-            <p>Item ID: {selectedItem.itemId}</p>
-
-            <div className="relative">
-              <i
-                onClick={() => setShowOptions(!showOptions)}
-                className="bi p-1 bg-slate-100 px-2 rounded-full font-bold text-xl bi-three-dots-vertical cursor-pointer"
-              ></i>
-              {showOptions && (
-                <div className="absolute right-0 mt-2 w-40 bg-white border border-slate-200 rounded-lg shadow-lg">
-                  <ul>
-                    <li
-                      onClick={handleEdit}
-                      className="p-2 hover:bg-slate-100 cursor-pointer"
-                    >
-                      Edit
-                    </li>
-                    {toggle ? (
+            <div className="flex items-center justify-between mb-6">
+              <p className="text-blue-500 font-bold">
+                Item ID: {selectedItem.itemId}
+              </p>
+              <div className="relative">
+                <i
+                  onClick={() => setShowOptions(!showOptions)}
+                  className="bi p-1 bg-slate-100 px-2 rounded-full font-bold text-xl bi-three-dots-vertical cursor-pointer"
+                ></i>
+                {showOptions && (
+                  <div className="absolute right-0 mt-2 w-40 bg-white border border-slate-200 rounded-lg shadow-lg">
+                    <ul>
                       <li
-                        onClick={() => handleActivate(selectedItem)}
+                        onClick={handleEdit}
                         className="p-2 hover:bg-slate-100 cursor-pointer"
                       >
-                        Activate
+                        Edit
                       </li>
-                    ) : (
+                      {toggle ? (
+                        <li
+                          onClick={() => handleActivate(selectedItem)}
+                          className="p-2 hover:bg-slate-100 cursor-pointer"
+                        >
+                          Activate
+                        </li>
+                      ) : (
+                        <li
+                          onClick={() => handleInactive(selectedItem)}
+                          className="p-2 hover:bg-slate-100 cursor-pointer"
+                        >
+                          Deactivate
+                        </li>
+                      )}
                       <li
-                        onClick={() => handleInactive(selectedItem)}
+                        onClick={() => handleDelete(selectedItem.id)}
                         className="p-2 hover:bg-slate-100 cursor-pointer"
                       >
-                        Deactivate
+                        Delete
                       </li>
-                    )}
-                    <li
-                      onClick={() => handleDelete(selectedItem.id)}
-                      className="p-2 hover:bg-slate-100 cursor-pointer"
-                    >
-                      Delete
-                    </li>
-                  </ul>
-                </div>
-              )}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            </div>
+            <div className="flex items-center justify-start gap-x-6">
+              <span className="flex-1">
+                <img
+                  src={selectedItem.imageUrl}
+                  alt={selectedItem.itemName}
+                  className="w-full h-auto aspect-square object-cover rounded-xl"
+                />
+              </span>
+              <span className="flex-1 flex items-start justify-start flex-col">
+                <h2 className="text-lg">{selectedItem.itemName}</h2>
+                <p className="">
+                  Price: {selectedItem.price} |{" "}
+                  <strong className="text-green-600 font-normal">
+                    {selectedItem.discount} % discount
+                  </strong>
+                </p>
+                <p className="my-3">{selectedItem.description}</p>
+                <p className="my-3">Category - {selectedItem.category}</p>
+                <p className="bg-yellow-500/30 rounded-md px-2 text-orange-600 my-4">
+                  {selectedItem.itemType}
+                </p>
+              </span>
             </div>
 
-            <button
+            {/* <button
               onClick={() => setSelectedItem(null)}
               className="mt-4 bg-red-500 text-white py-2 px-4 rounded hover:bg-red-700"
             >
               Close
-            </button>
+            </button> */}
           </div>
         </div>
       )}
