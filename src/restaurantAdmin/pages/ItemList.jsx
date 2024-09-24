@@ -22,7 +22,7 @@ const ItemList = ({ items, toggle, fetchData }) => {
   };
 
   const handleEdit = () => {
-    navigate(`/edit/${selectedItem.id}`);
+    navigate(`edit/${encodeURIComponent(selectedItem.id)}`);
   };
 
   const handleDelete = async (id) => {
@@ -126,7 +126,7 @@ const ItemList = ({ items, toggle, fetchData }) => {
               {item.imageUrl ? (
                 <img
                   src={item.imageUrl}
-                  className="h-20 rounded-md"
+                  className="w-full object-cover aspect-square rounded-md"
                   alt={item.itemName}
                   onError={(e) =>
                     (e.target.src = "/path/to/fallback/image.jpg")
@@ -234,7 +234,7 @@ const ItemList = ({ items, toggle, fetchData }) => {
                 <img
                   src={selectedItem.imageUrl}
                   alt={selectedItem.itemName}
-                  className="w-full h-auto aspect-square object-cover rounded-xl"
+                  className="w-full h-full aspect-square object-cover rounded-xl"
                 />
               </span>
               <span className="flex-1 flex items-start justify-start flex-col">

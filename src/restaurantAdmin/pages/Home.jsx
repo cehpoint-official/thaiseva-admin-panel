@@ -6,9 +6,8 @@ const Home = () => {
   const [show, setShow] = useState(window.innerWidth >= 600 ? true : false);
   const toggle = (e) => setShow(!show);
   return (
-    <div className='flex items-start'>
-      <Sidebar toggle={toggle} show={show} />
-      <Dashboard toggle={toggle} show={show} />
+    <div className='flex items-start bg-black w-screen h-screen'>
+      Home
     </div>
   );
 };

@@ -4,11 +4,11 @@ import Logo from '../../assets/sidebarLogo.png'
 
 const MasterSidebar = ({ show, toggle }) => {
     const links = [
-        { icon: "bi-clipboard-data", label: "dashboard", to: "/foodAdmin" },
-        { icon: "bi-shop", label: "Restaurant Requests", to: "/foodAdmin/restaReuest" },
-        { icon: "bi-clipboard2-check", label: "Add Restaurant ", to: "/foodAdmin/addResta" },
-        { icon: "bi-shop", label: "Restaurant Details", to: "/foodAdmin/restaDetails" },
-        { icon: "bi-clipboard2-check", label: "Orders Details", to: "/foodAdmin/ordersDetails" },
+        { icon: "bi-clipboard-data", label: "Dashboard", to: "/foodAdmin/" },
+        { icon: "bi-shop", label: "Restaurant Requests", to: "restaReuest" },
+        { icon: "bi-clipboard2-check", label: "Add Restaurant ", to: "addResta" },
+        { icon: "bi-shop", label: "Restaurant Details", to: "restaDetails" },
+        { icon: "bi-clipboard2-check", label: "Orders Details", to: "ordersDetails" },
         { icon: "bi-box-arrow-right", label: "Log Out", to: "/logOutFoodAdmin" },
         // { icon: "bi-pencil", label: "orders", to: "/" },
         // { icon: "bi-laptop", label: "login", to: "login" },

@@ -2,9 +2,9 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import Logo from '../../assets/sidebarLogo.png'
 
-const Sidebar = ({ show, toggle }) => {
+const Sidebar = ({ show, toggle, userId }) => {
     const links = [
-        { icon: "bi-clipboard-data", label: "Dashboard", to: "/" },
+        { icon: "bi-clipboard-data", label: "Dashboard", to: `/restaurantAdmin/${userId}` },
         { icon: "bi-shop", label: "My Restaurant", to: "restaurant" },
         { icon: "bi-shop", label: "Food Item", to: "foodItem" },
         { icon: "bi-shop", label: "Manage Order", to: "manageOrder" },

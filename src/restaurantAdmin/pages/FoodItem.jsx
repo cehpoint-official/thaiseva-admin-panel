@@ -37,7 +37,7 @@ const FoodItem = () => {
         <p className="lg:text-3xl md:text-2xl font-bold text-blue-600">
           Food Item
         </p>
-        <Link to="/foodItem/addItem">
+        <Link to="addItem">
           <button
             className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
             type="button"

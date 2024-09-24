@@ -1,26 +1,48 @@
-import  { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {  signInWithEmailAndPassword, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
-import { auth } from '../../../firebaseConfig';
+import { auth, db } from '../../../firebaseConfig';  // Import Firestore config
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
+import { doc, setDoc } from 'firebase/firestore';  // Import Firestore methods
 import { FaGoogle, FaEnvelope, FaLock, FaExclamationCircle } from 'react-icons/fa';
 
 const AuthPageAdmin = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [name, setName] = useState('');  // Added name field
     const [isSignUp, setIsSignUp] = useState(false);
     const [error, setError] = useState('');
     const navigate = useNavigate();
 
     const handleEmailChange = (e) => setEmail(e.target.value);
     const handlePasswordChange = (e) => setPassword(e.target.value);
+    const handleNameChange = (e) => setName(e.target.value);  // Handle name change
     const toggleAuthMode = () => setIsSignUp((prev) => !prev);
+
+    // Function to store user details in Firestore with default values
+    const storeUserInFirestore = async (user) => {
+        await setDoc(doc(db, 'users', user.uid), {
+            name: name,  // Name of the user
+            email: user.email,
+            isUser: true,  // Default isUser to true
+            isRestaurantAdmin: false,  // Default isRestaurantAdmin to false
+            isMasterAdmin: false,  // Default isMasterAdmin to false
+            createdAt: new Date(),
+            userId: user.uid,
+        });
+    };
 
     const handleEmailPasswordAuth = async () => {
         try {
             setError('');
             if (isSignUp) {
-                await createUserWithEmailAndPassword(auth, email, password);
+                // Sign up user
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+
+                // Store default user data in Firestore after sign-up
+                await storeUserInFirestore(user);
             } else {
+                // Sign in user
                 await signInWithEmailAndPassword(auth, email, password);
             }
             navigate('/');
@@ -33,8 +55,12 @@ const AuthPageAdmin = () => {
         const provider = new GoogleAuthProvider();
         try {
             setError('');
-            await signInWithPopup(auth, provider);
-            navigate('/');
+            const result = await signInWithPopup(auth, provider);
+            const user = result.user;
+
+            // Store default user data after Google sign-in
+            await storeUserInFirestore(user);
+            navigate(`/restaurantAdmin/${userId}`);
         } catch (error) {
             setError(error.message);
         }
@@ -48,6 +74,24 @@ const AuthPageAdmin = () => {
                     <h2 className="text-2xl font-semibold text-gray-600 mt-2">{isSignUp ? 'Sign Up' : 'Sign In'}</h2>
                 </div>
                 <form onSubmit={(e) => e.preventDefault()} className="space-y-6">
+                    {isSignUp && (  // Show name field only during sign-up
+                        <div>
+                            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="name">
+                                Name
+                            </label>
+                            <div className="flex items-center border-2 rounded-lg px-3 py-2 focus-within:border-blue-500 transition duration-300">
+                                <input
+                                    type="text"
+                                    id="name"
+                                    value={name}
+                                    onChange={handleNameChange}
+                                    className="w-full focus:outline-none"
+                                    placeholder="Enter your name"
+                                    required
+                                />
+                            </div>
+                        </div>
+                    )}
                     <div>
                         <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
                             Email
@@ -88,19 +132,6 @@ const AuthPageAdmin = () => {
                             <span className="block sm:inline">{error}</span>
                         </div>
                     )}
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center">
-                            <input id="remember-me" name="remember-me" type="checkbox" className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" />
-                            <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
-                                Remember me
-                            </label>
-                        </div>
-                        <div className="text-sm">
-                            <a href="#" className="font-medium text-blue-600 hover:text-blue-500">
-                                Forgot your password?
-                            </a>
-                        </div>
-                    </div>
                     <button
                         onClick={handleEmailPasswordAuth}
                         className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:shadow-outline transition duration-300"

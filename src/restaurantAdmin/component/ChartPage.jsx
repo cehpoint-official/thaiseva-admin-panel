@@ -11,34 +11,33 @@ import DATA from "./data.json";
 
 ChartJS.register(CategoryScale, ArcElement, Tooltip, Legend);
 
-const ChartPage = () => {
-    const extractData = (key) => DATA.map((item) => item[key]);
+const ChartPage = ({delivered, onDelivery, canceled}) => {
+    // const extractData = (key) => DATA.map((item) => item[key]);
 
-    const deliveryData = extractData('delivery');
-    const deliveredData = extractData('Delivered');
-    const cancelledData = extractData('cancelled');
+    const totalOrders = delivered + onDelivery + canceled; // Total orders count
 
     const dataForDoughnut = {
-        labels: ['', '', ''],
+        // labels: ['On Delivery', 'Delivered', 'Cancelled'],
         datasets: [
             {
                 data: [
-                    deliveryData.reduce((a, b) => a + b, 0),
-                    deliveredData.reduce((a, b) => a + b, 0),
-                    cancelledData.reduce((a, b) => a + b, 0),
+                    onDelivery,
+                    delivered,
+                    canceled,
                 ],
                 backgroundColor: [
-                    'rgba(43, 193, 86, 1)',
-                    'rgba(63, 73, 82, 1)',
-                    'rgba(255, 97, 97, 0.5)',
+                    'rgba(43, 193, 86, 1)', // On Delivery color
+                    'rgba(63, 73, 82, 1)',  // Delivered color
+                    'rgba(255, 97, 97, 1)', // Cancelled color
                 ],
             },
         ],
     };
 
-    // const options = {
-    //     maintainAspectRatio: false, // Disable maintainAspectRatio to make chart height responsive
-    // };
+    // Calculate percentages
+    const onDeliveryPercentage = totalOrders ? ((onDelivery / totalOrders) * 100).toFixed(0) : 0;
+    const deliveredPercentage = totalOrders ? ((delivered / totalOrders) * 100).toFixed(0) : 0;
+    const canceledPercentage = totalOrders ? ((canceled / totalOrders) * 100).toFixed(0) : 0;
 
     return (
         <>
@@ -46,33 +45,36 @@ const ChartPage = () => {
                 <div className=" h-[13rem] ">
                     <Doughnut data={dataForDoughnut} />
                 </div>
-                <div className="  ">
-
-                    <div className="flex items-center justify-between mt-3 ">
-                        <div class=" text-sm text-slate-700 dark:text-slate-700 ">On Delivery(25)</div>
-                        <div className="flex  items-center gap-2">
-                            <div class="w-28 bg-gray-200 rounded-full h-1  dark:bg-gray-700">
-                                <div class="bg-green-600 w-[70%] h-1 rounded-full dark:bg-green-500" ></div>
+                <div className=" flex flex-col items-start justify-start gap-3">
+                    <div className="flex items-center justify-star ">
+                        <div className=" text-sm text-slate-700 dark:text-slate-700 w-[6rem]">On Delivery({onDelivery})</div>
+                        <div className="flex items-center justify-end gap-2">
+                            <div className="w-28 bg-gray-200 rounded-full h-2 ">
+                                <div className={`bg-green-600 h-2 rounded-full dark:bg-green-500`} 
+                                style={{ width: `${onDeliveryPercentage}%` }}></div>
                             </div>
-                            <p className="text-slate-700 ">70%</p>
+                            <p className="text-slate-700 text-sm ">{onDeliveryPercentage}%</p>
                         </div>
                     </div>
-                    <div className="flex items-center justify-between mt-3">
-                        <div class=" text-sm text-slate-700 dark:text-slate-700">Delivered(45)</div>
+                    <div className="flex items-center justify-between">
+                        <div className=" text-sm text-slate-700 dark:text-slate-700 w-[6rem]">Delivered({delivered})</div>
                         <div className="flex  items-center gap-2">
-                            <div class="w-28 bg-gray-200 rounded-full h-1  dark:bg-gray-700">
-                                <div class="bg-gray-600 w-[20%] h-1 rounded-full dark:bg-gray-500" ></div>
+                            <div className="w-28 bg-gray-200 rounded-full h-2  ">
+                                <div className={`bg-gray-600 h-2 rounded-full`} 
+                                style={{ width: `${deliveredPercentage}%` }} >                                    
+                                </div>
                             </div>
-                            <p className="text-slate-700 text-sm">20%</p>
+                            <p className="text-slate-700 text-sm">{deliveredPercentage}%</p>
                         </div>
                     </div>
-                    <div className="flex items-center justify-between mt-3">
-                        <div class=" text-sm text-slate-700 dark:text-slate-700">Cancelled(05)</div>
+                    <div className="flex items-center justify-between">
+                        <div className=" text-sm text-slate-700 dark:text-slate-700 w-[6rem]">Cancelled({canceled})</div>
                         <div className="flex  items-center gap-2">
-                            <div class="w-28 bg-gray-200 rounded-full h-1  dark:bg-gray-700">
-                                <div class="bg-red-600 w-[10%] h-1 rounded-full dark:bg-red-500" ></div>
+                            <div className="w-28 bg-gray-200 rounded-full h-2  ">
+                                <div className={`bg-[#ff6161] h-2 rounded-full`}
+                                style={{ width: `${canceledPercentage}%` }}></div>
                             </div>
-                            <p className="text-slate-700 text-sm">10%</p>
+                            <p className="text-slate-700 text-sm">{canceledPercentage}%</p>
                         </div>
                     </div>
                 </div>
