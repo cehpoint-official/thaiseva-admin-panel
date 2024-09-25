@@ -1,0 +1,218 @@
+[
+    {
+        "OrderID": "#001",
+        "Date": "2024-09-28",
+        "CustomerId": "001",
+        "CustomerName": "Alice Johnson",
+        "Location": "123 Maple St, Springfield",
+        "Amount": "45.99",
+        "Status": [
+            { "status": "New Order", "timestamp": "2024-09-28T09:00:00Z" },
+            { "status": "Preparing", "timestamp": "2024-09-28T09:10:00Z" },
+            { "status": "On Delivery", "timestamp": "2024-09-28T09:30:00Z" },
+            { "status": "Delivered", "timestamp": "2024-09-28T09:45:00Z" },
+            { "status": "Complete", "timestamp": "2024-09-28T09:50:00Z" },
+            { "status": "Payment Done", "timestamp": "2024-09-28T09:55:00Z" }
+        ],
+        "RestaurantName": "Sushi World",
+        "RestaurantId": "R001",
+        "Items": [
+            {
+                "ItemId": "I001",
+                "ItemName": "California Roll",
+                "Type": "Non-Veg",
+                "Quantity": 1,
+                "Price": 15.99,
+                "Discount": 0
+            },
+            {
+                "ItemId": "I002",
+                "ItemName": "Miso Soup",
+                "Type": "Veg",
+                "Quantity": 2,
+                "Price": 4.99,
+                "Discount": 10
+            }
+        ]
+    },
+    {
+        "OrderID": "#002",
+        "Date": "2024-09-28",
+        "CustomerId": "002",
+        "CustomerName": "Bob Smith",
+        "Location": "456 Oak St, Springfield",
+        "Amount": "67.50",
+        "Status": [
+            { "status": "New Order", "timestamp": "2024-09-28T10:00:00Z" },
+            { "status": "Preparing", "timestamp": "2024-09-28T10:15:00Z" },
+            { "status": "On Delivery", "timestamp": "2024-09-28T10:30:00Z" },
+            { "status": "Delivered", "timestamp": "2024-09-28T10:50:00Z" },
+            { "status": "Complete", "timestamp": "2024-09-28T10:55:00Z" },
+            { "status": "Payment Done", "timestamp": "2024-09-28T11:00:00Z" }
+        ],
+        "RestaurantName": "Burger Haven",
+        "RestaurantId": "R002",
+        "Items": [
+            {
+                "ItemId": "I003",
+                "ItemName": "Cheeseburger",
+                "Type": "Non-Veg",
+                "Quantity": 1,
+                "Price": 10.99,
+                "Discount": 5
+            },
+            {
+                "ItemId": "I004",
+                "ItemName": "Fries",
+                "Type": "Veg",
+                "Quantity": 1,
+                "Price": 3.50,
+                "Discount": 0
+            }
+        ]
+    },
+    {
+        "OrderID": "#003",
+        "Date": "2024-09-29",
+        "CustomerId": "003",
+        "CustomerName": "Charlie Brown",
+        "Location": "789 Pine St, Springfield",
+        "Amount": "120.00",
+        "Status": [
+            { "status": "New Order", "timestamp": "2024-09-29T11:00:00Z" },
+            { "status": "Preparing", "timestamp": "2024-09-29T11:20:00Z" },
+            { "status": "On Delivery", "timestamp": "2024-09-29T11:40:00Z" },
+            { "status": "Delivered", "timestamp": "2024-09-29T12:00:00Z" },
+            { "status": "Complete", "timestamp": "2024-09-29T12:05:00Z" },
+            { "status": "Payment Done", "timestamp": "2024-09-29T12:10:00Z" }
+        ],
+        "RestaurantName": "Pizza Palace",
+        "RestaurantId": "R003",
+        "Items": [
+            {
+                "ItemId": "I005",
+                "ItemName": "Margherita Pizza",
+                "Type": "Veg",
+                "Quantity": 2,
+                "Price": 15.00,
+                "Discount": 0
+            },
+            {
+                "ItemId": "I006",
+                "ItemName": "Pepperoni Pizza",
+                "Type": "Non-Veg",
+                "Quantity": 1,
+                "Price": 18.00,
+                "Discount": 5
+            }
+        ]
+    },
+    {
+        "OrderID": "#004",
+        "Date": "2024-09-29",
+        "CustomerId": "004",
+        "CustomerName": "Diana Prince",
+        "Location": "321 Elm St, Springfield",
+        "Amount": "85.50",
+        "Status": [
+            { "status": "New Order", "timestamp": "2024-09-29T13:00:00Z" },
+            { "status": "Preparing", "timestamp": "2024-09-29T13:15:00Z" },
+            { "status": "On Delivery", "timestamp": "2024-09-29T13:30:00Z" },
+            { "status": "Delivered", "timestamp": "2024-09-29T13:45:00Z" },
+            { "status": "Complete", "timestamp": "2024-09-29T13:50:00Z" },
+            { "status": "Payment Done", "timestamp": "2024-09-29T13:55:00Z" }
+        ],
+        "RestaurantName": "Taco Town",
+        "RestaurantId": "R004",
+        "Items": [
+            {
+                "ItemId": "I007",
+                "ItemName": "Taco Combo",
+                "Type": "Non-Veg",
+                "Quantity": 3,
+                "Price": 8.00,
+                "Discount": 2
+            },
+            {
+                "ItemId": "I008",
+                "ItemName": "Salsa",
+                "Type": "Veg",
+                "Quantity": 1,
+                "Price": 2.50,
+                "Discount": 0
+            }
+        ]
+    },
+    {
+        "OrderID": "#005",
+        "Date": "2024-09-29",
+        "CustomerId": "005",
+        "CustomerName": "Eve Adams",
+        "Location": "202 Birch St, Springfield",
+        "Amount": "59.99",
+        "Status": [
+            { "status": "New Order", "timestamp": "2024-09-29T14:00:00Z" },
+            { "status": "Preparing", "timestamp": "2024-09-29T14:15:00Z" },
+            { "status": "On Delivery", "timestamp": "2024-09-29T14:30:00Z" },
+            { "status": "Delivered", "timestamp": "2024-09-29T14:45:00Z" },
+            { "status": "Complete", "timestamp": "2024-09-29T14:50:00Z" },
+            { "status": "Payment Done", "timestamp": "2024-09-29T14:55:00Z" }
+        ],
+        "RestaurantName": "Pasta Paradise",
+        "RestaurantId": "R005",
+        "Items": [
+            {
+                "ItemId": "I009",
+                "ItemName": "Spaghetti Bolognese",
+                "Type": "Non-Veg",
+                "Quantity": 1,
+                "Price": 19.99,
+                "Discount": 0
+            },
+            {
+                "ItemId": "I010",
+                "ItemName": "Garlic Bread",
+                "Type": "Veg",
+                "Quantity": 2,
+                "Price": 5.99,
+                "Discount": 10
+            }
+        ]
+    }, 
+    {
+        "OrderID": "#005",
+        "Date": "2024-09-29",
+        "CustomerId": "004",
+        "CustomerName": "Eve Adams",
+        "Location": "202 Birch St, Springfield",
+        "Amount": "59.99",
+        "Status": [
+            { "status": "New Order", "timestamp": "2024-09-29T14:00:00Z" },
+            { "status": "Preparing", "timestamp": "2024-09-29T14:15:00Z" },
+            { "status": "On Delivery", "timestamp": "2024-09-29T14:30:00Z" },
+            { "status": "Delivered", "timestamp": "2024-09-29T14:45:00Z" },
+            { "status": "Complete", "timestamp": "2024-09-29T14:50:00Z" },
+            { "status": "Payment Done", "timestamp": "2024-09-29T14:55:00Z" }
+        ],
+        "RestaurantName": "Pasta Paradise",
+        "RestaurantId": "R005",
+        "Items": [
+            {
+                "ItemId": "I009",
+                "ItemName": "Spaghetti Bolognese",
+                "Type": "Non-Veg",
+                "Quantity": 1,
+                "Price": 19.99,
+                "Discount": 0
+            },
+            {
+                "ItemId": "I010",
+                "ItemName": "Garlic Bread",
+                "Type": "Veg",
+                "Quantity": 2,
+                "Price": 5.99,
+                "Discount": 10
+            }
+        ]
+    }
+]

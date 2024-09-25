@@ -1,4 +1,4 @@
-import { doc, setDoc } from "firebase/firestore"; // Import necessary Firestore functions
+import { doc, serverTimestamp, setDoc } from "firebase/firestore"; // Import necessary Firestore functions
 import { db } from './firebaseConfig.js'; // Adjust the import according to your Firebase setup
 
 const pushOrdersToFirestore = async (restaurantId, orders) => {
@@ -8,23 +8,19 @@ const pushOrdersToFirestore = async (restaurantId, orders) => {
 
         // Loop through each order and prepare the dictionary
         for (const order of orders) {
-            // Create a unique ID for the order by replacing '#' with ''
             const orderId = order.OrderID.replace('#', ''); 
-            // Add the order data to the dictionary
-            ordersDictionary[orderId] = {
+            const orderRef = doc(db, `orders`, orderId); 
+            await setDoc(orderRef, {
+                restaurantId: restaurantId,
                 Date: order.Date,
                 CustomerName: order.CustomerName,
                 Location: order.Location,
                 Amount: order.Amount,
                 Status: order.Status,
-                // Optional: Keep original OrderID if needed
-                originalOrderId: order.OrderID,
-            };
+                originalOrderId: order.OrderID, 
+                timestamp: serverTimestamp(), 
+            });
         }
-
-        // Set the entire orders dictionary in Firestore
-        const ordersRef = doc(db, `restaurants/${restaurantId}/orders`, 'orders'); // Using a specific document name for all orders
-        await setDoc(ordersRef, ordersDictionary);
 
         console.log("Orders added to Firestore as a dictionary.");
     } catch (error) {

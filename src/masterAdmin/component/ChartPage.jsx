@@ -10,7 +10,7 @@ import DATA from "./data.json";
 
 ChartJS.register(CategoryScale, ArcElement, Tooltip, Legend);
 
-const MasterChartPage = () => {
+const MasterChartPage = ({delivered, cancelled, totalOrders}) => {
   const extractData = (key) => DATA.map((item) => item[key]);
 
   // const deliveryData = extractData('delivery');
@@ -35,9 +35,8 @@ const MasterChartPage = () => {
     ],
   };
 
-  // const options = {
-  //     maintainAspectRatio: false, // Disable maintainAspectRatio to make chart height responsive
-  // };
+    const deliveredPercentage = totalOrders ? ((delivered / totalOrders) * 100).toFixed(0) : 0;
+    const canceledPercentage = totalOrders ? ((cancelled / totalOrders) * 100).toFixed(0) : 0;
 
   return (
     <>
@@ -45,32 +44,33 @@ const MasterChartPage = () => {
         <div className=' h-[13rem] '>
           <Doughnut data={dataForDoughnut} />
         </div>
-        <div className='  '>
-          <div className='flex items-center justify-between mt-3 '>
+        <div className=' flex flex-col items-start justify-start gap-3  '>
+          <div className='flex items-center justify-star gap-x-1'>
             <div className=' text-sm text-slate-700 dark:text-slate-700 '>
-              Delivered (95)
+              Delivered ({delivered < 10 ? `0${delivered}` : delivered})
             </div>
-            <div className='flex  items-center gap-2'>
-              <div className='w-28 bg-gray-200 rounded-full h-2  dark:bg-gray-700'>
-                <div className='bg-green-600 w-[90%] h-2 rounded-full dark:bg-green-500'></div>
+            <div className='flex items-center justify-end gap-2'>
+              <div className='w-28 bg-gray-200 rounded-full h-2  '>
+                <div className='bg-green-600 h-2 rounded-full dark:bg-green-500'
+                style={{ width: `${deliveredPercentage}%` }} ></div>
               </div>
-              <p className='text-slate-700 '>95%</p>
+              <p className='text-slate-700 '>{deliveredPercentage}%</p>
             </div>
           </div>
 
-          <div className='flex items-center justify-between mt-3'>
+          <div className='flex items-center justify-star gap-x-1 '>
             <div className=' text-sm text-slate-700 dark:text-slate-700'>
-              Cancelled (05)
+              Cancelled ({cancelled < 10 ? `0${cancelled}` : cancelled })
             </div>
-            <div className='flex  items-center gap-2'>
-              <div className='w-28 bg-gray-200 rounded-full h-2  dark:bg-gray-700'>
-                <div className='bg-red-600 w-[10%] h-2 rounded-full dark:bg-red-500'></div>
+            <div className='flex items-center justify-end gap-2'>
+              <div className='w-28 bg-gray-200 rounded-full h-2  '>
+                <div className='bg-red-600 h-2 rounded-full dark:bg-red-500'
+                style={{ width: `${canceledPercentage}%` }}></div></div>
               </div>
-              <p className='text-slate-700 text-sm'>05%</p>
+              <p className='text-slate-700 text-sm'>{canceledPercentage}%</p>
             </div>
           </div>
         </div>
-      </div>
     </>
   );
 };

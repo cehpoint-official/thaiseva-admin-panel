@@ -348,8 +348,8 @@ export const Stat = () => {
           </div>
         </div>
 
-        <div className="lg:flex mt-14 gap-4 w-full">
-          <div className="flex justify-start gap-4 w-full">
+        <div className="flex flex-wrap mt-14 gap-4 w-full">
+          <div className="flex flex-wrap justify-start gap-4 w-full">
             <span className="bg-white rounded-lg flex items-center justify-center gap-x-4 p-4">
               <i className="bi text-3xl p-2 px-3 text-yellow-600 rounded-full bg-yellow-100 bi-file-person"></i>
               <span className="flex flex-col justify-center items-start">
@@ -385,7 +385,7 @@ export const Stat = () => {
             <span className="bg-white rounded-lg flex items-center justify-center gap-x-4 p-4">
               <i className="bi text-3xl p-2 px-3 text-blue-600 rounded-full bg-blue-100 bi-cup"></i>
               <span className="flex flex-col justify-center items-start">
-                <p className="text-4xl font-bold">100</p>
+                <p className="text-4xl font-bold">{completeOrder}</p>
                 <p className="text-slate-500">Item Sold</p>
               </span>
             </span>
