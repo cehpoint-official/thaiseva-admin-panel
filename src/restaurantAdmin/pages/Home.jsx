@@ -10,6 +10,13 @@ const Home = () => {
   const navigate = useNavigate();
   const { currentUser } = useAuth();
 
+  // Redirect to /auth if not logged in
+  useEffect(() => {
+    if (!currentUser) {
+      navigate("/auth");
+    }
+  }, [currentUser, navigate]);
+
   const handleLogOut = async () => {
     try {
       await signOut(auth);
@@ -34,7 +41,7 @@ const Home = () => {
   }, [show]);
 
   return (
-    <div className=" w-screen h-screen flex p-12 bg-gray-900">
+    <div className="w-screen h-screen flex p-12 bg-gray-900">
       {/* Left side: Notes */}
       <div className="relative bg-yellow-100 text-black rounded-md w-[40%] h-full flex flex-col justify-center p-6">
         {/* Ping Circle */}
@@ -117,17 +124,17 @@ const Home = () => {
           <h2>Your details: </h2>
           <span className="border-gray-400 border px-5 py-2 rounded-md">
             <p>
-              <strong>User Email:</strong> {currentUser.email}
+              <strong>User Email:</strong> {currentUser?.email}
             </p>
             <p>
-              <strong>UID :</strong> {currentUser.uid}
+              <strong>UID :</strong> {currentUser?.uid}
             </p>
           </span>
         </span>
 
         {/* Links for testing purposes */}
         <Link
-          to={`restaurantAdmin/${currentUser.uid}`}
+          to={`restaurantAdmin/${currentUser?.uid}`}
           className="border-2 text-white w-48 py-2 flex items-center justify-center rounded-full bg-blue-600"
         >
           Restaurant Admin
