@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { deleteDoc, doc, getDoc, setDoc } from 'firebase/firestore';
 import { db } from '../../../../firebaseConfig';  // Import your configured Firebase database
 
 const RestaurantReqDet = () => {
@@ -33,27 +33,47 @@ const RestaurantReqDet = () => {
 
     const handleAccept = async () => {
         try {
-            // Copy the document to the AcceptedRestaurants collection
-            const acceptedDocRef = doc(db, "acceptedRestaurants", id);
-            await setDoc(acceptedDocRef, restaurantData);
-
-            toast.success("Request Accepted");
+            const requestDocRef = doc(db, "restroRequests", id);
+            const requestDocSnap = await getDoc(requestDocRef);
+    
+            if (requestDocSnap.exists()) {
+                const restaurantData = requestDocSnap.data();
+                restaurantData.status = "Verified";
+                const acceptedDocRef = doc(db, "acceptedRestaurants", id);
+                await setDoc(acceptedDocRef, restaurantData);
+                await deleteDoc(requestDocRef);
+    
+                toast.success("Request Accepted and Verified");
+            } else {
+                toast.error("No such request exists!");
+            }
         } catch (error) {
             console.error("Error accepting request: ", error);
             toast.error("Failed to accept request");
         }
     };
+    
+    
 
     const handleReject = async () => {
         try {
-            // Copy the document to the RejectedRestaurants collection
-            const rejectedDocRef = doc(db, "rejectedRestaurants", id);
-            await setDoc(rejectedDocRef, restaurantData);
-
-            toast.error("Request Rejected");
+            const requestDocRef = doc(db, "restroRequests", id);
+            const requestDocSnap = await getDoc(requestDocRef);
+    
+            if (requestDocSnap.exists()) {
+                const restaurantData = requestDocSnap.data();
+                restaurantData.status = "Rejected";
+                const acceptedDocRef = doc(db, "rejectedRestaurants", id);
+                await setDoc(acceptedDocRef, restaurantData);
+                await deleteDoc(requestDocRef);
+    
+                toast.success("Request Accepted and Verified");
+            } else {
+                toast.error("No such request exists!");
+            }
         } catch (error) {
-            console.error("Error rejecting request: ", error);
-            toast.error("Failed to reject request");
+            console.error("Error accepting request: ", error);
+            toast.error("Failed to accept request");
         }
     };
 
@@ -79,7 +99,7 @@ const RestaurantReqDet = () => {
             <div className='grid grid-cols-12 bg-white p-6 gap-4 mt-10 rounded-lg'>
                 <div className='col-span-12 md:col-span-5 p-2 md:mt-14'>
                     <img 
-                        src={restaurantData.photo || "https://via.placeholder.com/500x300?text=No+Image"} 
+                        src={restaurantData.imageUrl || restaurantData.photo || "https://via.placeholder.com/500x300?text=No+Image"} 
                         alt={restaurantData.name || "Restaurant"} 
                         className="w-full h-auto rounded-lg" 
                     />
@@ -97,23 +117,23 @@ const RestaurantReqDet = () => {
                     </p>
 
                     <p className='mt-6 text-slate-800 text-xl font-semibold'>Location</p>
-                    <p className='text-slate-500 mt-2 text-lg'>{restaurantData.address}</p>
+                    <p className='text-slate-500 mt-2 text-lg'>{restaurantData.location}</p>
                     <div className='grid grid-cols-12 gap-2 mt-6'>
                         <div className='lg:col-span-5 col-span-12'>
                             <p className=' text-slate-800 text-xl font-semibold'>Phone Number</p>
-                            <p className='text-slate-500 mt-1 text-lg'>{restaurantData.phone}</p>
+                            <p className='text-slate-500 mt-1 text-lg'>{restaurantData.phoneNumber}</p>
                         </div>
                         <div className='col-span-2 hidden lg:block border-s border-slate-400'></div>
                         <div className='lg:col-span-5 col-span-12'>
                             <p className=' text-slate-800 text-xl font-semibold'>Email ID</p>
-                            <p className='text-slate-500 mt-1 text-lg'>{restaurantData.email}</p>
+                            <p className='text-slate-500 mt-1 text-lg'>{restaurantData.emailId}</p>
                         </div>
                     </div>
 
-                    <div className='mt-10'>
+                    <div className='mt-10 w-full'>
                         <p className='text-slate-800 text-xl font-semibold'>Menu Items</p>
-                        <div className='grid grid-cols-12 gap-4 mt-4'>
-                            {restaurantData.items && restaurantData.items.map((item, index) => (
+                        <div className='grid grid-cols-12 gap-4 mt-4 w-full'>
+                            {restaurantData.items ? restaurantData.items.map((item, index) => (
                                 <div key={index} className='col-span-12 md:col-span-6 lg:col-span-4'>
                                     <img 
                                         src={item.photo || "https://via.placeholder.com/150?text=No+Image"} 
@@ -124,7 +144,9 @@ const RestaurantReqDet = () => {
                                     <p className='text-slate-500'>{item.description}</p>
                                     <p className='text-slate-800 font-bold'>₹{item.price} <span className='text-slate-500'>({item.type})</span></p>
                                 </div>
-                            ))}
+                            )): (
+                                <span className='w-full col-span-12'>No items yet</span>
+                            )}
                         </div>
                     </div>
 

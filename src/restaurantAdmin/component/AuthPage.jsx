@@ -89,7 +89,7 @@ const AuthPageAdmin = () => {
       // Fetch user data after Google sign-in
       await fetchUserData(user.uid);
 
-      navigate(`/restaurantAdmin/${user.uid}`);
+      navigate(`/`);
     } catch (error) {
       setError(error.message);
     }

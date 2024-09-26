@@ -1,8 +1,10 @@
 import React from 'react'
 import RestaImg from "../../../assets/Restaurant.png"
-import { Link } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 
 const Addrestaurant = () => {
+    const currentUserParam = useParams();
+  const currentUser = currentUserParam['id'];
     return <>
         <div className='bg-slate-100 px-8 pt-10 h-[100vh]'>
             <p className="lg:text-3xl md:text-2xl font-bold text-blue-600">My Restaurant</p>
@@ -13,7 +15,7 @@ const Addrestaurant = () => {
                     </div>
                     <p className='text-slate-500 mb-6 text-lg'>No restaurants have been added yet!</p>
                     <Link
-                        to="/restaurant/addrestaurant/restaInformation"
+                        to={`/${currentUser}/restaurant/addrestaurant/restaInformation`}
                         className='px-4 py-2 rounded-lg
                          bg-blue-700 text-white text-lg'>Add your Restaurant
                     </Link>

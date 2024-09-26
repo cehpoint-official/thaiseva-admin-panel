@@ -1,140 +1,136 @@
-import { useState } from "react";
-import { db, storage } from "../../../../firebaseConfig";
-import { setDoc, doc } from "firebase/firestore";
-import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-import Template from "./Template";
+// <div className="w-screen h-screen flex p-12 bg-gray-900">
+    //   {/* Left side: Notes */}
+    //   <div className="relative bg-yellow-100 text-black rounded-md w-[40%] h-full flex flex-col justify-center p-6">
+    //     {/* Ping Circle */}
+    //     <div className="absolute -top-2 -right-2">
+    //       <div className="relative">
+    //         <span className="flex h-6 w-6">
+    //           <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+    //           <span className="relative inline-flex rounded-full h-6 w-6 bg-red-500"></span>
+    //         </span>
+    //       </div>
+    //     </div>
 
-const AddItem = () => {
-  const [itemName, setItemName] = useState("");
-  const [itemId, setItemId] = useState("");
-  const [price, setPrice] = useState("");
-  const [discount, setDiscount] = useState("");
-  const [category, setCategory] = useState("");
-  const [itemType, setItemType] = useState("");
-  const [description, setDescription] = useState("");
-  const [image, setImage] = useState(null);
-  const [uploading, setUploading] = useState(false);
-  const [dropdownOpen, setDropdownOpen] = useState(false);
+    //     <h3 className="font-bold mb-2">Note for Visitors:</h3>
+    //     <ul className="list-disc ml-6">
+    //       <li>
+    //         <span className="font-bold">
+    //           This page is just for demo purposes
+    //         </span>{" "}
+    //         and is not completed yet.
+    //       </li>
+    //       <li>
+    //         The <span className="font-bold">"Restaurant Admin"</span> and{" "}
+    //         <span className="font-bold">"Food Admin"</span> buttons are
+    //         temporarily placed here for development and testing purposes and
+    //         will not be visible on the final page.
+    //       </li>
+    //       <li>
+    //         Navigation to the{" "}
+    //         <span className="font-bold">"Restaurant Admin"</span> page is
+    //         allowed if your role in the <strong>users</strong> database is
+    //         either:
+    //         <ul className="list-decimal ml-6">
+    //           <li>
+    //             <span className="font-bold">Role = Partner</span>
+    //           </li>
+    //           <li>
+    //             <span className="font-bold">isRestaurantAdmin = true</span>
+    //           </li>
+    //         </ul>
+    //       </li>
+    //       <li>
+    //         Navigation to the <span className="font-bold">"Food Admin"</span>{" "}
+    //         page is allowed if your role in the <strong>users</strong> database
+    //         is either:
+    //         <ul className="list-decimal ml-6">
+    //           <li>
+    //             <span className="font-bold">Role = Admin</span>
+    //           </li>
+    //           <li>
+    //             <span className="font-bold">isMasterAdmin = true</span>
+    //           </li>
+    //         </ul>
+    //       </li>
+    //       <li>
+    //         <span className="font-bold">
+    //           Currently, both the role and admin type are being checked.
+    //         </span>{" "}
+    //         If there are more logic conditions for accessing these sections,
+    //         they have not been implemented yet.
+    //       </li>
+    //       <li>
+    //         <span className="animate-pulse text-red-600 font-bold">
+    //           Important:
+    //         </span>{" "}
+    //         For demo purposes, you can use the following credentials to test
+    //         both Restaurant Admin and Food Admin sections:
+    //         <p>
+    //           <strong>*</strong> Email: <strong>arn@gmail.com</strong>
+    //         </p>
+    //         <p>
+    //           <strong>*</strong> Password: <strong>arn@gmail.com</strong>
+    //         </p>
+    //       </li>
+    //     </ul>
+    //   </div>
 
-  const handleFileChange = (e) => {
-    if (e.target.files[0]) {
-      setImage(e.target.files[0]);
-      setDropdownOpen(false); // Close dropdown after selecting
-    }
-  };
+    //   {/* Right side: User details and buttons */}
+    //   <div className=" text-white p-10 w-[60%] flex flex-col items-center justify-center gap-8">
+    //     <span className="flex items-center justify-center flex-col">
+    //       <h2>Your details: </h2>
+    //       <span className="border-gray-400 border px-5 py-2 rounded-md">
+    //         <p>
+    //           <strong>User Email:</strong> {currentUser?.email}
+    //         </p>
+    //         <p>
+    //           <strong>UID :</strong> {currentUser?.uid}
+    //         </p>
+    //       </span>
+    //     </span>
 
-  const handleDrop = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (e.dataTransfer.files[0]) {
-      setImage(e.dataTransfer.files[0]);
-      setDropdownOpen(false); // Close dropdown after dropping
-    }
-  };
+    //     {/* Links for testing purposes */}
+    //     <Link
+    //       to={`restaurantAdmin/${currentUser?.uid}`}
+    //       className="border-2 text-white w-48 py-2 flex items-center justify-center rounded-full bg-blue-600"
+    //     >
+    //       Restaurant Admin
+    //     </Link>
 
-  const handleDragOver = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-  };
+    //     <Link
+    //       to={`foodAdmin`}
+    //       className="border-2 text-white w-48 py-2 flex items-center justify-center rounded-full bg-blue-600"
+    //     >
+    //       Food Admin
+    //     </Link>
 
-  const handleAddItem = async () => {
-    if (
-      !itemName ||
-      !itemId ||
-      !price ||
-      !category ||
-      !itemType ||
-      !description
-    ) {
-      alert("Please fill all fields.");
-      return;
-    }
+    //     <button onClick={toggle} className="bg-red-500 px-4 py-2 rounded-full">
+    //       Logout
+    //     </button>
 
-    try {
-      let imageUrl = "";
-
-      if (image) {
-        const imageRef = ref(storage, `images/${itemId}`);
-        const uploadTask = uploadBytesResumable(imageRef, image);
-
-        setUploading(true);
-        await new Promise((resolve, reject) => {
-          uploadTask.on(
-            "state_changed",
-            (snapshot) => {
-              const progress =
-                (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-              console.log(`Upload is ${progress}% done`);
-            },
-            (error) => {
-              console.error("Upload failed:", error);
-              reject(error);
-            },
-            async () => {
-              imageUrl = await getDownloadURL(uploadTask.snapshot.ref);
-              resolve();
-            }
-          );
-        });
-      }
-
-      await saveItemData(imageUrl);
-    } catch (error) {
-      console.error("Error adding item:", error);
-      alert("Failed to add item. Please try again.");
-    }
-  };
-
-  const docItemId = itemId.replace('#', '')
-  const saveItemData = async (imageUrl) => {
-    await setDoc(doc(db, "inactive-food-items", docItemId), {
-      itemName,
-      itemId,
-      price,
-      discount,
-      category,
-      itemType,
-      description,
-      imageUrl,
-      active: false,
-    });
-    alert("Item added successfully!");
-    setItemName("");
-    setItemId("");
-    setPrice("");
-    setCategory("");
-    setItemType("");
-    setDescription("");
-    setImage(null);
-    setUploading(false);
-  };
-
-  return (
-    <Template
-      image={image}
-      setDescription={setDescription}
-      setDiscount={setDiscount}
-      setDropdownOpen={setDropdownOpen}
-      setItemId={setItemId}
-      setItemName={setItemName}
-      setCategory={setCategory}
-      setPrice={setPrice}
-      dropdownOpen={dropdownOpen}
-      uploading={uploading}
-      handleAddItem={handleAddItem}
-      handleDragOver={handleDragOver}
-      handleDrop={handleDrop}
-      handleFileChange={handleFileChange}
-      itemId={itemId}
-      itemName={itemName}
-      itemType={itemType}
-      price={price}
-      discount={discount}
-      category={category}
-      description={description}
-      setItemType={setItemType}
-    />
-  );
-};
-
-export default AddItem;
+    //     {show && (
+    //       <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+    //         <div className="bg-white h-[20rem] w-[28rem] rounded-xl text-center p-10 modal">
+    //           <i className="bi bi-box-arrow-right text-5xl text-white mb-4 font-bold bg-[#ff2d2d] p-2 px-4 rounded-full"></i>
+    //           <p className="text-3xl mt-8 mb-12 text-blue-900 font-semibold">
+    //             Are you sure you want to log out?
+    //           </p>
+    //           <div className="flex gap-2 items-center justify-center">
+    //             <button
+    //               onClick={() => setShow(false)} // Close the modal on "Cancel"
+    //               className="p-2 w-24 text-lg text-white font-semibold rounded-lg bg-slate-600"
+    //             >
+    //               Cancel
+    //             </button>
+    //             <button
+    //               onClick={handleLogOut}
+    //               className="p-2 w-24 text-lg text-white font-semibold rounded-lg bg-blue-600"
+    //             >
+    //               Log out
+    //             </button>
+    //           </div>
+    //         </div>
+    //       </div>
+    //     )}
+    //   </div>
+    // </div>

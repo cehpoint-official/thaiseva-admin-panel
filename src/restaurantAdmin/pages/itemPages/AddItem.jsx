@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { db, storage } from "../../../../firebaseConfig";
-import { setDoc, doc } from "firebase/firestore";
+import { setDoc, doc, collection } from "firebase/firestore";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import Template from "./Template";
+import { useAuth } from "../../../AuthContext";
 
 const AddItem = () => {
+  const { currentUser } = useAuth();
   const [itemName, setItemName] = useState("");
   const [itemId, setItemId] = useState("");
   const [price, setPrice] = useState("");
@@ -85,19 +87,25 @@ const AddItem = () => {
     }
   };
 
-  const docItemId = itemId.replace('#', '')
+  // Remove '#' from itemId if present
+  const docItemId = itemId.replace('#', '');
+
   const saveItemData = async (imageUrl) => {
-    await setDoc(doc(db, "inactive-food-items", docItemId), {
-      itemName,
-      itemId,
-      price,
-      discount,
-      category,
-      itemType,
-      description,
-      imageUrl,
-      active: false,
-    });
+    // Saving the document to the current user's restaurant in the database
+    await setDoc(
+      doc(db, `restaurants/${currentUser.uid}/inactive-food-items`, docItemId), 
+      {
+        itemName,
+        itemId,
+        price,
+        discount,
+        category,
+        itemType,
+        description,
+        imageUrl,
+        active: false, // Inactive status by default
+      }
+    );
     alert("Item added successfully!");
     setItemName("");
     setItemId("");

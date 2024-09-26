@@ -43,7 +43,7 @@ const App = () => {
             {/* Protected routes for each restaurant admin */}
             <Route element={<PrivateRoute allowedRoles={['restaurantAdmin']} />}>
               {/* Dynamic restaurant admin routes using `:id` */}
-              <Route path="/restaurantAdmin/:id" element={<ResturantAdminHome />}>
+              <Route path="/:id" element={<ResturantAdminHome />}>
                 <Route index element={<Stat />} />
                 <Route path="manageOrder" element={<ManageOrder />} />
                 <Route path="manageOrder/orderView" element={<OrderView />} />
@@ -57,7 +57,7 @@ const App = () => {
                 <Route path="restaurant/addrestaurant/restaInformation" element={<RestaInformation />} />
                 <Route path="restaurant/edit/:id" element={<ItemInformation />} />
               </Route>
-              <Route path="restaurantAdmin/:id/logOutPage" element={<LogOutPage />} />
+              <Route path="/:id/logOutPage" element={<LogOutPage />} />
             </Route>
             
             {/* Master admin routes */}

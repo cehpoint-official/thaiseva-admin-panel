@@ -303,7 +303,7 @@ export const Stat = () => {
 
           setOrderDetails(ordersList);
         } else {
-          setError("No orders found.");
+          setError("You currently do not have a restaurant. Please add one to view your Dashboard.");
         }
       } catch (error) {
         console.error("Error fetching orders: ", error);
@@ -317,7 +317,11 @@ export const Stat = () => {
   }, [restaurantId]);
 
   if (loading) return <p>Loading...</p>;
-  if (error) return <p>{error}</p>;
+  if (error) return <div className="w-full h-full mt-20 text-3xl flex items-center justify-center">
+    <span className="w-[40vw] text-center">
+    {error}
+    </span>
+  </div>;
 
   return (
     <>

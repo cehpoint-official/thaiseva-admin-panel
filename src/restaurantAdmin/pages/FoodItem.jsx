@@ -1,19 +1,49 @@
 import React, { useEffect, useState } from "react";
 import { db } from "../../../firebaseConfig";
 import { collection, getDocs } from "firebase/firestore";
-import { Link } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom"; // Add useNavigate for redirection
 import ItemList from "./ItemList";
 
 const FoodItem = () => {
   const [items, setItems] = useState([]);
   const [toggle, setToggle] = useState(false);
   const [loading, setLoading] = useState(true); // Loading state
+  const [restaurantExists, setRestaurantExists] = useState(false); // State to track if restaurant exists
+  const currentUserParam = useParams();
+  const currentUser = currentUserParam['id'];
+  const navigate = useNavigate(); // Navigation hook
 
+  // Fetch restaurant data to check if the user has a restaurant
+  const checkRestaurant = async () => {
+    try {
+      const querySnapshot = await getDocs(
+        collection(db, `restaurants/${currentUser}/restaurantDetails`)
+      );
+      if (!querySnapshot.empty) {
+        setRestaurantExists(true);
+      } else {
+        setRestaurantExists(false);
+        navigate(`/${currentUser}/restaurant/addrestaurant/restaInformation`); // Redirect if no restaurant found
+      }
+    } catch (error) {
+      console.error("Error checking restaurant: ", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Fetch food items
   const fetchData = async () => {
     setLoading(true); // Start loading before fetching data
     try {
+      // Adjust Firestore path to be specific to the current user's restaurant
       const querySnapshot = await getDocs(
-        collection(db, toggle ? "inactive-food-items" : "active-food-items")
+        collection(
+          db,
+          `restaurants/${currentUser}/${
+            toggle ? "inactive-food-items" : "active-food-items"
+          }`
+        )
       );
       const fetchedItems = querySnapshot.docs.map((doc) => ({
         id: doc.id,
@@ -28,8 +58,14 @@ const FoodItem = () => {
   };
 
   useEffect(() => {
-    fetchData();
-  }, [toggle]);
+    checkRestaurant(); // Check if the user has a restaurant first
+  }, []);
+
+  useEffect(() => {
+    if (restaurantExists) {
+      fetchData();
+    }
+  }, [toggle, restaurantExists]);
 
   return (
     <div className="bg-slate-100 px-8 pt-10">
@@ -37,14 +73,16 @@ const FoodItem = () => {
         <p className="lg:text-3xl md:text-2xl font-bold text-blue-600">
           Food Item
         </p>
-        <Link to="addItem">
-          <button
-            className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-            type="button"
-          >
-            + Add a new food Item
-          </button>
-        </Link>
+        {restaurantExists && (
+          <Link to="addItem">
+            <button
+              className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              type="button"
+            >
+              + Add a new food Item
+            </button>
+          </Link>
+        )}
       </div>
 
       <div className="bg-white p-10 mt-10 rounded-lg relative">
@@ -72,8 +110,14 @@ const FoodItem = () => {
         {/* Loading message */}
         {loading ? (
           <p>Loading...</p>
+        ) : restaurantExists ? (
+          items.length === 0 ? (
+            <p>No items yet</p>
+          ) : (
+            <ItemList items={items} toggle={toggle} fetchData={fetchData} />
+          )
         ) : (
-          <ItemList items={items} toggle={toggle} fetchData={fetchData} />
+          <p>No restaurant found. Redirecting...</p>
         )}
       </div>
     </div>

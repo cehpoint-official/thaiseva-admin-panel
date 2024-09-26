@@ -66,7 +66,7 @@ const RestaDetailsView = () => {
                 <Link
                     to="/foodAdmin/restaDetails"
                     className="lg:text-3xl md:text-2xl font-bold text-blue-600">
-                    <i class="bi bi-arrow-left me-2"></i>
+                    <i className="bi bi-arrow-left me-2"></i>
                     Back
                 </Link>
                 <div ref={parentRef} className='relative'>
@@ -74,7 +74,7 @@ const RestaDetailsView = () => {
                         e.stopPropagation()
                         setToggle(!toggle)
                     }
-                    } class="bi bi-three-dots-vertical cursor-pointer bg-white px-3 py-2 rounded-full text-2xl"></i>
+                    } className="bi bi-three-dots-vertical cursor-pointer bg-white px-3 py-2 rounded-full text-2xl"></i>
                     <div onMouseLeave={e => setToggle(false)} className={`absolute w-48 right-0 top-12 p-6 bg-white border shadow-lg rounded-lg ${!toggle ? "hidden" : "block"} `}>
                         <p className='py-2 text-slate-800 font-semibold'>View all Menus</p>
                         <p className='py-2 text-slate-800 font-semibold'>View Sales  Record</p>
@@ -95,7 +95,7 @@ const RestaDetailsView = () => {
                     <div className='col-span-12 md:col-span-7 p-2'>
                         <div className='flex justify-between items-center'>
                             <div>
-                                <span class="bg-green-100 text-green-800  font-medium me-2 px-3 py-1 rounded-full dark:bg-green-900 dark:text-green-300">Active</span>
+                                <span className="bg-green-100 text-green-800  font-medium me-2 px-3 py-1 rounded-full dark:bg-green-900 dark:text-green-300">Active</span>
                             </div>
                             <div>
                                 <p className='text-slate-700 font-semibold'>Restaurant ID</p>
@@ -132,11 +132,11 @@ const RestaDetailsView = () => {
                         <span className='ms-4 py-2 px-4 bg-blue-100 border border-blue-400 rounded-lg font-semibold text-blue-600'>View Sales record</span>
                     </div>
                     <div className="flex justify-between text-blue-600 border border-blue-600 rounded-lg items-center p-2 gap-4 bg-blue-100">
-                        <i class="bi bi-calendar4 text-xl"></i>
+                        <i className="bi bi-calendar4 text-xl"></i>
                         <div >
                             <p className="text-xl">Time period</p>
 
-                            <div class="md:flex gap-1 text-sm">
+                            <div className="md:flex gap-1 text-sm">
                                 <input
                                     className='bg-blue-100'
                                     type="date"

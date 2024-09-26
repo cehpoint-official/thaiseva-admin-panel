@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import {
   collection,
   getDocs,
@@ -10,8 +10,12 @@ import {
   where,
 } from "firebase/firestore";
 import { db } from "../../../firebaseConfig";
+import { useAuth } from "../../AuthContext";
 
 const ItemList = ({ items, toggle, fetchData }) => {
+  const currentUserParam = useParams()
+  const currentUser = currentUserParam['id']
+  // console.log(currentUser)
   const [selectedItem, setSelectedItem] = useState(null);
   const [showOptions, setShowOptions] = useState(false);
   const navigate = useNavigate();
@@ -32,10 +36,10 @@ const ItemList = ({ items, toggle, fetchData }) => {
     if (confirmDelete) {
       try {
         // Delete from active-food-items
-        await deleteDoc(doc(db, "active-food-items", id));
+        await deleteDoc(doc(db, "restaurants", currentUser.uid, "active-food-items", id));
 
         // Delete from inactive-food-items
-        await deleteDoc(doc(db, "inactive-food-items", id));
+        await deleteDoc(doc(db, "restaurants", currentUser.uid, "inactive-food-items", id));
 
         alert("Item deleted successfully from both collections");
 
@@ -62,10 +66,10 @@ const ItemList = ({ items, toggle, fetchData }) => {
 
       if (activeItemSnapshot.empty) {
         // Remove the item from inactive-food-items
-        await deleteDoc(doc(db, "inactive-food-items", item.id));
+        await deleteDoc(doc(db, "restaurants", currentUser.uid, "inactive-food-items", item.id));
 
         // Add the item to active-food-items with active: true
-        await setDoc(doc(db, "active-food-items", item.id), {
+        await setDoc(doc(db, "restaurants", currentUser.uid, "active-food-items", item.id), {
           ...item,
           active: true,
         });
@@ -97,10 +101,10 @@ const ItemList = ({ items, toggle, fetchData }) => {
 
       if (!activeItemSnapshot.empty) {
         // Remove the item from active-food-items
-        await deleteDoc(doc(db, "active-food-items", item.id));
+        await deleteDoc(doc(db, "restaurants", currentUser.uid, "active-food-items", item.id));
 
         // Add the item to inactive-food-items with active: false
-        await setDoc(doc(db, "inactive-food-items", item.id), {
+        await setDoc(doc(db, "restaurants", currentUser.uid, "inactive-food-items", item.id), {
           ...item,
           active: false,
         });

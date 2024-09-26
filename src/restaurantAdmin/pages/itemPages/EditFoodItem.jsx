@@ -112,7 +112,7 @@ const EditItem = () => {
 
   const updateItemData = async (imageUrl) => {
     try {
-      const docRef = doc(db, "inactive-food-items", id);
+      const docRef = doc(db, "inactive-food-items", itemId);
       await updateDoc(docRef, {
         itemName,
         price,
