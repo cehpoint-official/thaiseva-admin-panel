@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { db } from "../../../firebaseConfig";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs, query } from "firebase/firestore";
 import { Link, useParams, useNavigate } from "react-router-dom"; // Add useNavigate for redirection
 import ItemList from "./ItemList";
 
@@ -11,9 +11,10 @@ const FoodItem = () => {
   const [restaurantExists, setRestaurantExists] = useState(false); // State to track if restaurant exists
   const currentUserParam = useParams();
   const currentUser = currentUserParam['id'];
-  const navigate = useNavigate(); // Navigation hook
+  console.log(currentUser)
+  const navigate = useNavigate();
+  const [resId, setResId] = useState('');
 
-  // Fetch restaurant data to check if the user has a restaurant
   const checkRestaurant = async () => {
     try {
       const querySnapshot = await getDocs(
@@ -32,33 +33,67 @@ const FoodItem = () => {
     }
   };
 
-  // Fetch food items
-  const fetchData = async () => {
-    setLoading(true); // Start loading before fetching data
+
+  const fetchRestaurantDetails = async () => {
     try {
-      // Adjust Firestore path to be specific to the current user's restaurant
-      const querySnapshot = await getDocs(
-        collection(
-          db,
-          `restaurants/${currentUser}/${
-            toggle ? "inactive-food-items" : "active-food-items"
-          }`
-        )
+      const restaurantDetailsRef = collection(
+        db,
+        `restaurants/${currentUser}/restaurantDetails`
       );
-      const fetchedItems = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      setItems(fetchedItems);
+      const q = query(restaurantDetailsRef);
+      const querySnapshot = await getDocs(q);
+      console.log(querySnapshot.empty)
+
+      if (!querySnapshot.empty) {
+        const restaurantDoc = querySnapshot.docs[0];
+        const restaurantId = restaurantDoc.id;
+        setResId(restaurantId);
+      } else {
+        console.log("No restaurant found for this user.");
+      }
     } catch (error) {
-      console.error("Error fetching items: ", error);
-    } finally {
-      setLoading(false); // Stop loading after fetching data
+      console.error("Error fetching restaurant details:", error);
     }
   };
 
   useEffect(() => {
-    checkRestaurant(); // Check if the user has a restaurant first
+    fetchRestaurantDetails();
+  }, []);
+
+  useEffect(() => {
+      console.log("ResId updated: ", resId);
+  }, [resId]);
+
+
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const foodItemsRef = collection(db, `food_items/${resId}/items`); 
+      const querySnapshot = await getDocs(foodItemsRef); 
+  
+      if (!querySnapshot.empty) {
+        const fetchedItems = querySnapshot.docs
+        .map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }))
+        .filter((item) => item.active === !toggle);
+  
+        setItems(fetchedItems); 
+        console.log(fetchedItems); 
+      } else {
+        console.log("No food items found for this restaurant.");
+      }
+    } catch (error) {
+      console.error("Error fetching food items:", error);
+    } finally {
+      setLoading(false); // Stop loading state
+    }
+  }; 
+  
+
+  useEffect(() => {
+    checkRestaurant();
   }, []);
 
   useEffect(() => {

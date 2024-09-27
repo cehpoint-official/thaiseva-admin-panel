@@ -1,9 +1,4 @@
-import React, { useEffect, useState } from "react";
-import ItemOne from "../../assets/masterAdmin/restaDetails1.png";
-import ItemTwo from "../../assets/masterAdmin/restaDetails2.png";
-import ItemThree from "../../assets/masterAdmin/restaDetails3.png";
-import ItemFour from "../../assets/masterAdmin/restaDetails4.png";
-import PopImg from "../../assets/itemImg/popImg.png";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../../firebaseConfig";
@@ -123,7 +118,7 @@ const RestaDetails = () => {
                       <div className="lg:col-span-2 md:col-span-4 col-span-4 md:col-start-8 ">
                         <div className="md:ps-6 py-4 mt-3">
                           <Link
-                            to="/foodAdmin/restaDetails/restaDetailsView"
+                            to={`/foodAdmin/restaDetails/restaDetailsView/${item.id}`}
                             className="font-medium  text-blue-600 dark:text-blue-500 hover:underline border-blue-400 border p-1 px-2 rounded-lg"
                           >
                             <i className="bi bi-eye-fill"></i> View Details
@@ -181,7 +176,7 @@ const RestaDetails = () => {
                       <div className="lg:col-span-2 md:col-span-4 col-span-4 md:col-start-8 ">
                         <div className="md:ps-6 py-4 mt-3">
                           <Link
-                            to="/foodAdmin/restaDetails/restaDetailsView"
+                            to={`/foodAdmin/restaDetails/restaDetailsView/${item.id}`}
                             className="font-medium  text-blue-600 dark:text-blue-500 hover:underline border-blue-400 border p-1 px-2 rounded-lg"
                           >
                             <i className="bi bi-eye-fill"></i> View Details

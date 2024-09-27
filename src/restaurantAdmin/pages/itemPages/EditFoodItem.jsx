@@ -1,42 +1,76 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  updateDoc,
+} from "firebase/firestore";
 import { db, storage } from "../../../../firebaseConfig";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import Template from "./Template";
+import { useAuth } from "../../../AuthContext";
 
 const EditItem = () => {
-  const itemidParam = useParams(); // Assuming the item's ID is passed in the URL
-  const itemid = decodeURIComponent(itemidParam['itemId'])
-  console.log(itemid)
+  const { currentUser } = useAuth();
+  const itemidParam = useParams();
+  const itemid = decodeURIComponent(itemidParam["itemId"]);
+  console.log(itemid);
   const [itemName, setItemName] = useState("");
-  const [itemId, setItemId] = useState("");
   const [price, setPrice] = useState("");
   const [discount, setDiscount] = useState("");
   const [category, setCategory] = useState("");
   const [itemType, setItemType] = useState("");
   const [description, setDescription] = useState("");
   const [image, setImage] = useState(null);
-  const [existingImageUrl, setExistingImageUrl] = useState(null);
+  const [imageFile, setImageFile] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [resId, setResId] = useState("");
 
-  // Fetch existing item data from Firestore
+  const fetchRestaurantDetails = async () => {
+    try {
+      const restaurantDetailsRef = collection(
+        db,
+        `restaurants/${currentUser.uid}/restaurantDetails`
+      );
+      const q = query(restaurantDetailsRef);
+      const querySnapshot = await getDocs(q);
+
+      if (!querySnapshot.empty) {
+        const restaurantDoc = querySnapshot.docs[0];
+        const restaurantId = restaurantDoc.id;
+        setResId(restaurantId);
+      } else {
+        console.log("No restaurant found for this user.");
+      }
+    } catch (error) {
+      console.error("Error fetching restaurant details:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchRestaurantDetails();
+  }, []);
+
   useEffect(() => {
     const fetchItemData = async () => {
       try {
-        const docRef = doc(db, "inactive-food-items", itemid);
+        const docRef = doc(db, "food_items", resId, "items", itemid);
         const docSnap = await getDoc(docRef);
+
         if (docSnap.exists()) {
           const data = docSnap.data();
           setItemName(data.itemName);
-          setItemId(data.itemId);
           setPrice(data.price);
           setDiscount(data.discount);
           setCategory(data.category);
           setItemType(data.itemType);
           setDescription(data.description);
-          setExistingImageUrl(data.imageUrl); // For displaying existing image
+          console.log(data.imageUrl);
+          setImage(data.imageUrl);
         } else {
           alert("No such item exists.");
         }
@@ -46,12 +80,15 @@ const EditItem = () => {
     };
 
     fetchItemData();
-  }, [itemid]);
+  }, [itemid, resId]);
 
   const handleFileChange = (e) => {
     if (e.target.files[0]) {
-      setImage(e.target.files[0]);
-      setDropdownOpen(false); // Close dropdown after selecting
+      const selectedFile = e.target.files[0];
+      const imageUrl = URL.createObjectURL(selectedFile);
+      setImage(imageUrl); // Set preview URL
+      setImageFile(selectedFile); // Set actual file
+      setDropdownOpen(false);
     }
   };
 
@@ -76,11 +113,12 @@ const EditItem = () => {
     }
 
     try {
-      let imageUrl = existingImageUrl;
+      let imageUrl = image; // Default to preview URL if no file selected
 
-      if (image) {
-        const imageRef = ref(storage, `images/${itemId}`);
-        const uploadTask = uploadBytesResumable(imageRef, image);
+      if (imageFile) {
+        // Check if an actual file is selected
+        const imageRef = ref(storage, `images/${itemid}`);
+        const uploadTask = uploadBytesResumable(imageRef, imageFile);
 
         setUploading(true);
         await new Promise((resolve, reject) => {
@@ -96,7 +134,7 @@ const EditItem = () => {
               reject(error);
             },
             async () => {
-              imageUrl = await getDownloadURL(uploadTask.snapshot.ref);
+              imageUrl = await getDownloadURL(uploadTask.snapshot.ref); // Use uploaded file URL
               resolve();
             }
           );
@@ -112,7 +150,7 @@ const EditItem = () => {
 
   const updateItemData = async (imageUrl) => {
     try {
-      const docRef = doc(db, "inactive-food-items", itemId);
+      const docRef = doc(db, "food_items", resId, "items", itemid);
       await updateDoc(docRef, {
         itemName,
         price,
@@ -133,11 +171,10 @@ const EditItem = () => {
   return (
     <Template
       image={image}
-      // existingImageUrl='https://firebasestorage.googleapis.com/v0/b/thaiseva-85cda.appspot.com/o/images%2F%232222?alt=media&token=95d67c80-bb20-4230-9aa0-26ef7a508565'
       setDescription={setDescription}
       setDiscount={setDiscount}
       setDropdownOpen={setDropdownOpen}
-      setItemId={setItemId}
+      setItemId={itemid}
       setItemName={setItemName}
       setCategory={setCategory}
       setPrice={setPrice}
@@ -147,7 +184,7 @@ const EditItem = () => {
       handleDragOver={handleDragOver}
       handleDrop={handleDrop}
       handleFileChange={handleFileChange}
-      itemId={itemId}
+      itemId={itemid}
       itemName={itemName}
       itemType={itemType}
       price={price}
@@ -156,6 +193,7 @@ const EditItem = () => {
       description={description}
       setItemType={setItemType}
       submitBtn="Update Food Item"
+      IdDisable={true}
     />
   );
 };

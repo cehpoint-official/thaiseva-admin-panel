@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import {
   collection,
@@ -8,25 +8,54 @@ import {
   deleteDoc,
   query,
   where,
+  addDoc,
 } from "firebase/firestore";
 import { db } from "../../../firebaseConfig";
-import { useAuth } from "../../AuthContext";
 
 const ItemList = ({ items, toggle, fetchData }) => {
-  const currentUserParam = useParams()
-  const currentUser = currentUserParam['id']
-  // console.log(currentUser)
+  const currentUserParam = useParams();
+  const currentUser = currentUserParam['id'];
   const [selectedItem, setSelectedItem] = useState(null);
   const [showOptions, setShowOptions] = useState(false);
   const navigate = useNavigate();
+  const [resId, setResId] = useState('');
+
+
+  const fetchRestaurantDetails = async () => {
+    try {
+      const restaurantDetailsRef = collection(
+        db,
+        `restaurants/${currentUser}/restaurantDetails`
+      );
+      const q = query(restaurantDetailsRef);
+      const querySnapshot = await getDocs(q);
+
+      if (!querySnapshot.empty) {
+        const restaurantDoc = querySnapshot.docs[0];
+        const restaurantId = restaurantDoc.id; // Fetch restaurantId
+        setResId(restaurantId); // Set the state
+        console.log("res", restaurantId)
+      } else {
+        console.log("No restaurant found for this user.");
+      }
+    } catch (error) {
+      console.error("Error fetching restaurant details:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchRestaurantDetails();
+  }, []);
+
+  useEffect(() => {
+    if (resId) {
+      console.log("ResId updated: ", resId);
+    }
+  }, [resId]);
 
   const handleOptionsToggle = (item) => {
     setSelectedItem(item);
     setShowOptions(false);
-  };
-
-  const handleEdit = () => {
-    navigate(`edit/${encodeURIComponent(selectedItem.id)}`);
   };
 
   const handleDelete = async (id) => {
@@ -35,15 +64,9 @@ const ItemList = ({ items, toggle, fetchData }) => {
     );
     if (confirmDelete) {
       try {
-        // Delete from active-food-items
-        await deleteDoc(doc(db, "restaurants", currentUser.uid, "active-food-items", id));
-
-        // Delete from inactive-food-items
-        await deleteDoc(doc(db, "restaurants", currentUser.uid, "inactive-food-items", id));
-
-        alert("Item deleted successfully from both collections");
-
-        await fetchData(); // Refresh data after deletion
+        await deleteDoc(doc(db, "food_items", resId, 'items', id));
+        alert("Item deleted successfully");
+        await fetchData();
       } catch (error) {
         console.error("Error deleting document: ", error);
         alert("Error deleting item");
@@ -51,71 +74,42 @@ const ItemList = ({ items, toggle, fetchData }) => {
     }
   };
 
-  // Function to activate an item (move to active-food-items)
+  const handleEdit = () => {
+    console.log(selectedItem.itemId)
+    navigate(`edit/${encodeURIComponent(selectedItem.itemId)}`);
+  };  
+
   const handleActivate = async (item) => {
-    if (!item) return; // Ensure item is not null or undefined
+    if (!item) return; 
     alert("Activating item...");
 
     try {
-      // Check if the item already exists in active-food-items
-      const activeItemQuery = query(
-        collection(db, "active-food-items"),
-        where("itemId", "==", item.itemId)
-      );
-      const activeItemSnapshot = await getDocs(activeItemQuery);
+      // Toggle the active state
+      await setDoc(doc(db, "food_items", resId, 'items',item.id), {
+        ...item,
+        active: true,
+      });
 
-      if (activeItemSnapshot.empty) {
-        // Remove the item from inactive-food-items
-        await deleteDoc(doc(db, "restaurants", currentUser.uid, "inactive-food-items", item.id));
-
-        // Add the item to active-food-items with active: true
-        await setDoc(doc(db, "restaurants", currentUser.uid, "active-food-items", item.id), {
-          ...item,
-          active: true,
-        });
-
-        alert("Item activated successfully!");
-
-        // Refresh the data
-        fetchData();
-      } else {
-        console.log("Item already exists in active-food-items");
-      }
+      alert("Item activated successfully!");
+      fetchData(); // Refresh the data
     } catch (error) {
       console.error("Error activating item:", error);
     }
   };
 
-  // Function to deactivate an item (move to inactive-food-items)
   const handleInactive = async (item) => {
     if (!item) return; // Ensure item is not null or undefined
     alert("Deactivating item...");
 
     try {
-      // Check if the item exists in active-food-items
-      const activeItemQuery = query(
-        collection(db, "active-food-items"),
-        where("itemId", "==", item.itemId)
-      );
-      const activeItemSnapshot = await getDocs(activeItemQuery);
+      // Toggle the active state
+      await setDoc(doc(db, "food_items", resId, 'items', item.id), {
+        ...item,
+        active: false,
+      });
 
-      if (!activeItemSnapshot.empty) {
-        // Remove the item from active-food-items
-        await deleteDoc(doc(db, "restaurants", currentUser.uid, "active-food-items", item.id));
-
-        // Add the item to inactive-food-items with active: false
-        await setDoc(doc(db, "restaurants", currentUser.uid, "inactive-food-items", item.id), {
-          ...item,
-          active: false,
-        });
-
-        alert("Item deactivated successfully!");
-
-        // Refresh the data
-        fetchData();
-      } else {
-        console.log("Item doesn't exist in active-food-items");
-      }
+      alert("Item deactivated successfully!");
+      fetchData(); // Refresh the data
     } catch (error) {
       console.error("Error deactivating item:", error);
     }
@@ -132,9 +126,6 @@ const ItemList = ({ items, toggle, fetchData }) => {
                   src={item.imageUrl}
                   className="w-full object-cover aspect-square rounded-md"
                   alt={item.itemName}
-                  onError={(e) =>
-                    (e.target.src = "/path/to/fallback/image.jpg")
-                  }
                 />
               ) : (
                 <div className="h-20 w-20 bg-gray-200 flex items-center justify-center">
@@ -162,6 +153,7 @@ const ItemList = ({ items, toggle, fetchData }) => {
             <div className="md:ps-6 px-6 py-4">
               <p className="text-black font-bold text-xl">
                 <i className="bi bi-bar-chart-fill text-blue-600"></i>
+                ???
               </p>
               Total
             </div>
@@ -256,13 +248,6 @@ const ItemList = ({ items, toggle, fetchData }) => {
                 </p>
               </span>
             </div>
-
-            {/* <button
-              onClick={() => setSelectedItem(null)}
-              className="mt-4 bg-red-500 text-white py-2 px-4 rounded hover:bg-red-700"
-            >
-              Close
-            </button> */}
           </div>
         </div>
       )}

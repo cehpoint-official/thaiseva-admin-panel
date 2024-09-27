@@ -26,7 +26,8 @@ const Template = ({
   category,
   description,
   setItemType,
-  submitBtn="Add new food Item"
+  submitBtn = "Add new food Item",
+  IdDisable = false,
 }) => {
   return (
     <div className="bg-slate-100 px-8 pt-10">
@@ -47,7 +48,7 @@ const Template = ({
             <div className="mt-4 border w-full h-60 flex items-center justify-center">
               {image ? (
                 <img
-                  src={URL.createObjectURL(image)}
+                  src={image}
                   alt="Selected"
                   className="w-full h-full object-cover border border-gray-300 rounded"
                 />
@@ -130,15 +131,16 @@ const Template = ({
               </div>
 
               <div className="flex items-center space-x-4">
-                <label className="w-[10rem] text-sm font-medium text-gray-700">
+                <label className={`w-[10rem] text-sm font-medium ${IdDisable ? 'text-gray-500' : 'text-gray-700'}`}>
                   Item ID
                 </label>
                 <input
                   type="text"
                   value={itemId}
                   onChange={(e) => setItemId(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none"
+                  className={`w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none ${IdDisable && 'text-gray-500'}`}
                   placeholder="Enter item ID"
+                  readOnly={IdDisable} // Conditionally make it read-only
                 />
               </div>
 

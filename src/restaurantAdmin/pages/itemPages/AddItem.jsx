@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { db, storage } from "../../../../firebaseConfig";
-import { setDoc, doc, collection } from "firebase/firestore";
+import { setDoc, doc, collection, getDocs, query, addDoc } from "firebase/firestore";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import Template from "./Template";
 import { useAuth } from "../../../AuthContext";
@@ -14,16 +14,22 @@ const AddItem = () => {
   const [category, setCategory] = useState("");
   const [itemType, setItemType] = useState("");
   const [description, setDescription] = useState("");
-  const [image, setImage] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [resId, setResId] = useState('')
+  const [image, setImage] = useState(null); 
+const [imageFile, setImageFile] = useState(null);
+  
 
   const handleFileChange = (e) => {
     if (e.target.files[0]) {
-      setImage(e.target.files[0]);
-      setDropdownOpen(false); // Close dropdown after selecting
+      const selectedFile = e.target.files[0];
+      const imageUrl = URL.createObjectURL(selectedFile);
+      setImage(imageUrl);  // Set preview URL
+      setImageFile(selectedFile);  // Set actual file
+      setDropdownOpen(false);
     }
-  };
+  };  
 
   const handleDrop = (e) => {
     e.preventDefault();
@@ -51,14 +57,15 @@ const AddItem = () => {
       alert("Please fill all fields.");
       return;
     }
-
+  
     try {
       let imageUrl = "";
-
-      if (image) {
+  
+      // Use imageFile for upload instead of image
+      if (imageFile) {
         const imageRef = ref(storage, `images/${itemId}`);
-        const uploadTask = uploadBytesResumable(imageRef, image);
-
+        const uploadTask = uploadBytesResumable(imageRef, imageFile);
+  
         setUploading(true);
         await new Promise((resolve, reject) => {
           uploadTask.on(
@@ -79,21 +86,52 @@ const AddItem = () => {
           );
         });
       }
-
+  
       await saveItemData(imageUrl);
     } catch (error) {
       console.error("Error adding item:", error);
       alert("Failed to add item. Please try again.");
     }
   };
+  
 
-  // Remove '#' from itemId if present
+  const fetchRestaurantDetails = async () => {
+    try {
+      const restaurantDetailsRef = collection(
+        db,
+        `restaurants/${currentUser.uid}/restaurantDetails`
+      );
+      const q = query(restaurantDetailsRef);
+      const querySnapshot = await getDocs(q);
+
+      if (!querySnapshot.empty) {
+        const restaurantDoc = querySnapshot.docs[0];
+        const restaurantId = restaurantDoc.id; // Fetch restaurantId
+        setResId(restaurantId); // Set the state
+      } else {
+        console.log("No restaurant found for this user.");
+      }
+    } catch (error) {
+      console.error("Error fetching restaurant details:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchRestaurantDetails();
+  }, []);
+
+  useEffect(() => {
+    if (resId) {
+      console.log("ResId updated: ", resId);
+    }
+  }, [resId]);
+  
+
   const docItemId = itemId.replace('#', '');
 
   const saveItemData = async (imageUrl) => {
-    // Saving the document to the current user's restaurant in the database
     await setDoc(
-      doc(db, `restaurants/${currentUser.uid}/inactive-food-items`, docItemId), 
+      doc(db, `food_items/${resId}/items/${docItemId}`), 
       {
         itemName,
         itemId,
@@ -103,7 +141,7 @@ const AddItem = () => {
         itemType,
         description,
         imageUrl,
-        active: false, // Inactive status by default
+        active: false,
       }
     );
     alert("Item added successfully!");
