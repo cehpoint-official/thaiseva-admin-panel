@@ -10,8 +10,9 @@ import BikeLogo from "../../assets/notification/bike.png";
 import NewLogo from "../../assets/notification/newOrder.png";
 import MasterApexChart from "./ChartTwo";
 import MasterChartPage from "./ChartPage";
-import { collection, doc, getDoc, getDocs } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs, updateDoc } from "firebase/firestore";
 import { db } from "../../../firebaseConfig";
+import { ref } from "firebase/storage";
 
 const MasterDashboard = ({ toggle }) => {
   return (
@@ -23,9 +24,9 @@ const MasterDashboard = ({ toggle }) => {
 };
 
 const TopNav = ({ toggle }) => {
+  const parentRef = useRef();
   const [profileToggle, setProfileToggle] = useState(false);
   const [notification, setNotification] = useState(false);
-  const parentRef = useRef(); // Ref to the parent element
 
   const handleClickOutside = (event) => {
     if (parentRef.current && !parentRef.current.contains(event.target)) {
@@ -42,6 +43,89 @@ const TopNav = ({ toggle }) => {
       document.removeEventListener("click", handleClickOutside);
     };
   }, []);
+
+
+
+// Coupon section
+const [userIds, setUserIds] = useState([]);
+  const [selectedUserId, setSelectedUserId] = useState(null); // This will hold the final userId
+  const [coupon, setCoupon] = useState(null); // This will hold the final generated coupon
+  const [showModal, setShowModal] = useState(false);
+  const [choice, setChoice] = useState(""); // Tracks user choice: 'random' or 'specific'
+  const [specificUserId, setSpecificUserId] = useState(""); // Input value for specific user
+
+  useEffect(() => {
+    const fetchUserIds = async () => {
+      try {
+        const usersRef = collection(db, "users");
+        const snapshot = await getDocs(usersRef);
+        const userIdList = snapshot.docs.map(doc => doc.id);
+        setUserIds(userIdList);
+      } catch (error) {
+        console.error("Error fetching user IDs:", error);
+      }
+    };
+
+    fetchUserIds();
+  }, []);
+
+  const generateCoupon = () => {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+';
+    const length = Math.floor(Math.random() * (12 - 8 + 1)) + 8;
+    return Array.from({ length }, () => characters[Math.floor(Math.random() * characters.length)]).join('');
+  };
+
+  const handleGiveCoupon = () => {
+    setShowModal(true); // Open modal for the choice
+  };
+
+  const handleRandomUser = () => {
+    const randomIndex = Math.floor(Math.random() * userIds.length);
+    const newSelectedUserId = userIds[randomIndex];
+    const newCoupon = generateCoupon();
+
+    setSelectedUserId(newSelectedUserId); // Set the randomly chosen userId
+    setCoupon(newCoupon); // Set the generated coupon
+  };
+
+  const handleGive = async () => {
+    let userIdToUse = selectedUserId;
+
+    if (choice === "specific" && specificUserId) {
+      userIdToUse = specificUserId; // Use specific user ID if choice is 'specific'
+    } else if (!userIdToUse) {
+      alert("Please select a valid option.");
+      return;
+    }
+
+    // Now proceed to upload the coupon
+    try {
+      const userDocRef = doc(db, 'users', userIdToUse);
+      const userDoc = await getDoc(userDocRef);
+
+      if (userDoc.exists()) {
+        const userData = userDoc.data();
+
+        // Check if 'coupons' array exists, and update or create it
+        let updatedCoupons;
+        if (userData.coupons && Array.isArray(userData.coupons)) {
+          updatedCoupons = [...userData.coupons, coupon];
+        } else {
+          updatedCoupons = [coupon];
+        }
+
+        // Update Firestore with the new or updated coupons array
+        await updateDoc(userDocRef, { coupons: updatedCoupons });
+        alert('Coupon successfully added to the user!');
+        setShowModal(false); // Close the modal after successful upload
+      } else {
+        alert('User not found!');
+      }
+    } catch (error) {
+      console.error("Error updating coupon:", error);
+      alert('Failed to add the coupon. Please try again.');
+    }
+  };
 
   return (
     <>
@@ -87,6 +171,85 @@ const TopNav = ({ toggle }) => {
               </div>
             </form>
           </div>
+          <button 
+        onClick={handleGiveCoupon}
+        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+      >
+        Give Coupon
+      </button>
+
+      {showModal && (
+        <>
+          {/* Background overlay */}
+          <div 
+            className="fixed inset-0 bg-black bg-opacity-50 z-40"
+            onClick={() => setShowModal(false)}
+          />
+
+          {/* Modal content */}
+          <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-6 rounded-lg shadow-xl z-50">
+            <p className="text-lg font-semibold mb-4">Choose a method to give the coupon</p>
+
+            {/* Choice Buttons */}
+            <div className="mb-4">
+              <button
+                onClick={() => {
+                  setChoice('random');
+                  handleRandomUser(); // Automatically select a random user and coupon
+                }}
+                className={`mr-2 py-2 px-4 rounded ${choice === 'random' ? 'bg-green-500' : 'bg-gray-500'} text-white`}
+              >
+                Random User
+              </button>
+              <button
+                onClick={() => setChoice('specific')}
+                className={`py-2 px-4 rounded ${choice === 'specific' ? 'bg-green-500' : 'bg-gray-500'} text-white`}
+              >
+                Specific User
+              </button>
+            </div>
+
+            {/* Display Coupon Code */}
+            {coupon && (
+              <div className="mb-4">
+                <p><strong>Generated Coupon:</strong> {coupon}</p>
+              </div>
+            )}
+
+            {/* Input for User ID - Pre-filled for Random, Editable for Specific */}
+            {choice === "specific" && (
+              <div className="mb-4">
+                <input
+                  type="text"
+                  placeholder="Enter User ID"
+                  value={specificUserId}
+                  onChange={(e) => setSpecificUserId(e.target.value)}
+                  className="border px-3 py-2 rounded w-full"
+                />
+              </div>
+            )}
+
+            {choice === "random" && selectedUserId && (
+              <div className="mb-4">
+                <input
+                  type="text"
+                  value={selectedUserId}
+                  readOnly
+                  className="border px-3 py-2 rounded w-full bg-gray-100 cursor-not-allowed"
+                />
+              </div>
+            )}
+
+            {/* Give Coupon Button */}
+            <button
+              onClick={handleGive}
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            >
+              Give
+            </button>
+          </div>
+        </>
+      )}
           <div className="flex gap-6 items-center my-2">
             <div ref={parentRef}>
               <i
@@ -225,7 +388,6 @@ export const MasterStat = () => {
   const [delivered, setDelivered] = useState(0);
   const [canceled, setCanceled] = useState(0);
 
-
   const fetchRestroRequests = async () => {
     try {
       const reqRef = collection(db, "restroRequests");
@@ -278,24 +440,24 @@ export const MasterStat = () => {
     try {
       const ordersRef = collection(db, `orders`);
       const snapshot = await getDocs(ordersRef);
-  
-      let uniqueCustomers = new Set(); 
-      let soldCount = 0; 
-      let countDelivered = 0; 
-      let countCancel = 0; 
+
+      let uniqueCustomers = new Set();
+      let soldCount = 0;
+      let countDelivered = 0;
+      let countCancel = 0;
 
       for (const orderDoc of snapshot.docs) {
         const cusId = orderDoc.id;
         const orderSnapshot = await getDoc(doc(db, `orders/${cusId}`));
         const orderData = orderSnapshot.data();
-        
-        const status = orderData['Status'];
-        
+
+        const status = orderData["Status"];
+
         // Check if the status is complete
         if (Array.isArray(status)) {
-          soldCount += status.filter(s => s === "Completed").length;
-          countDelivered += status.filter(s => s === "Delivered").length;
-          countCancel += status.filter(s => s === "Cancelled").length;
+          soldCount += status.filter((s) => s === "Completed").length;
+          countDelivered += status.filter((s) => s === "Delivered").length;
+          countCancel += status.filter((s) => s === "Cancelled").length;
         } else if (status === "Completed") {
           soldCount++;
         } else if (status === "Delivered") {
@@ -303,7 +465,7 @@ export const MasterStat = () => {
         } else if (status === "Cancelled") {
           countCancel++;
         }
-  
+
         // Check for unique customers
         if (orderData.user) {
           uniqueCustomers.add(orderData.user); // If user exists
@@ -312,17 +474,15 @@ export const MasterStat = () => {
           uniqueCustomers.add(orderData.CustomerName); // If CustomerName exists
         }
       }
-  
-      setSoldCount(soldCount); 
-      setDelivered(countDelivered)
-      setCanceled(countCancel)
-      setTotalCus(uniqueCustomers.size); 
-  
+
+      setSoldCount(soldCount);
+      setDelivered(countDelivered);
+      setCanceled(countCancel);
+      setTotalCus(uniqueCustomers.size);
     } catch (error) {
       console.error("Error fetching total orders count: ", error);
     }
   };
-  
 
   useEffect(() => {
     fetchRestroRequests();
@@ -465,16 +625,24 @@ export const MasterStat = () => {
               </div>
               <div className="col-span-4 border border-gray-400 rounded-lg py-4 ps-4">
                 <p className="text-gray-600 text-lg">Delivered</p>
-                <p className="text-2xl font-semibold">{delivered < 10 ? `0${delivered}` : delivered}</p>
+                <p className="text-2xl font-semibold">
+                  {delivered < 10 ? `0${delivered}` : delivered}
+                </p>
               </div>
               <div className="col-span-4 border bg-slate-50 border-gray-400 rounded-lg py-4 ps-4">
                 <p className="text-gray-600 text-lg">Cancelled</p>
-                <p className="text-2xl font-semibold">{canceled < 10 ? `0${canceled}` : canceled}</p>
+                <p className="text-2xl font-semibold">
+                  {canceled < 10 ? `0${canceled}` : canceled}
+                </p>
               </div>
             </div>
 
             <div className="  w-full">
-              <MasterChartPage delivered={delivered} cancelled={canceled} totalOrders={orderCount} />
+              <MasterChartPage
+                delivered={delivered}
+                cancelled={canceled}
+                totalOrders={orderCount}
+              />
             </div>
           </div>
           <div className="col-span-12 lg:col-span-6 bg-white p-4 rounded-lg pb-8">
