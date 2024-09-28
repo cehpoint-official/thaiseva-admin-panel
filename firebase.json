@@ -1,5 +1,6 @@
 {
   "hosting": {
+    "site": "thaiseva-food-portal",
     "public": "dist",
     "ignore": [
       "firebase.json",

@@ -20,6 +20,7 @@ const EditRestaurant = () => {
   const [uploading, setUploading] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const { currentUser } = useAuth();
+  console.log(restaId)
   const navigate = useNavigate()
 
   const GOOGLE_API_KEY = "AIzaSyDwTBiBiGtJLrlbaiKzVN5BBCj8He1l5Zc"; // Replace with your API key
@@ -92,47 +93,45 @@ const EditRestaurant = () => {
   const handleSubmit = async () => {
     try {
       const restaurantData = {
-        name: restaurantName,
-        phoneNumber,
-        emailId,
-        foodType,
-        location,
-        description,
-        imageUrl: image,
+        name: restaurantName || "N/A",
+        phoneNumber: phoneNumber || "N/A",
+        emailId: emailId || "N/A",
+        foodType: foodType || "N/A",
+        location: location || "N/A",
+        description: description || "N/A",
+        imageUrl: image || "N/A",
       };
-
-      // Update restaurantDetails in 'restaurants' collection
-      const restaurantsDocRef = doc(
-        db,
-        "restaurants",
-        currentUser.uid,
-        "restaurantDetails",
-        restaId
-      );
+  
+      // Always update the restaurantsDocRef
+      const restaurantsDocRef = doc(db, "restaurants", currentUser.uid, "restaurantDetails", restaId);
       await updateDoc(restaurantsDocRef, restaurantData);
-
-      // Update restaurantDetails in 'restrorequest' collection
-      const restroRequestDocRef = doc(
-        db,
-        "restroRequests",
-        restaId
-      );
-      await updateDoc(restroRequestDocRef, restaurantData);
-
+  
+      // Reference docs for acceptedRestaurants and restroRequests
+      const restroRequestDocRef = doc(db, "restroRequests", restaId);
+      const acceptedRestaurantsDocRef = doc(db, "acceptedRestaurants", restaId);
+  
+      // Check if restaId is in acceptedRestaurants
+      const acceptedRestaurantDoc = await getDoc(acceptedRestaurantsDocRef);
+      if (acceptedRestaurantDoc.exists()) {
+        await updateDoc(acceptedRestaurantsDocRef, restaurantData);
+      }
+  
+      // Check if restaId is in restroRequests
+      const restroRequestDoc = await getDoc(restroRequestDocRef);
+      if (restroRequestDoc.exists()) {
+        await updateDoc(restroRequestDocRef, restaurantData);
+      }
+  
       alert("Restaurant information updated successfully");
-      setRestaurantName("");
-      setPhoneNumber("");
-      setEmailId("");
-      setFoodType("");
-      setLocation("");
-      setDescription("");
-      setImage("");
-      setUploading(false);
-      navigate(`/${currentUser.uid}/restaurant`)
+      navigate(`/${currentUser.uid}/restaurant`);
+  
     } catch (error) {
-      console.error("Error updating documents: ", error);
+      console.error("Error updating documents: ", error.message);
+      alert("Failed to update. Please try again.");
     }
   };
+  
+  
 
   const getCurrentLocation = () => {
     if (navigator.geolocation) {

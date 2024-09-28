@@ -7,7 +7,7 @@ const pushOrdersToFirestore = async (restaurantId, orders) => {
         // Loop through each order and push it as a document
         for (const order of orders) {
             const orderId = order.OrderID.replace('#', ''); // Create unique order ID
-            const customerRef = doc(db, `orders`, order.CustomerId); // Reference to the customer's document
+            const customerRef = doc(db, `orders`, restaurantId); // Reference to the customer's document
 
             // Create the order details
             const orderDetails = {
@@ -42,12 +42,13 @@ const pushOrdersToFirestore = async (restaurantId, orders) => {
                     },
                 ],
                 Amount: order.Amount,
+                OrderId: order.orderId,
                 Location: order.Location,
                 timestamp: serverTimestamp(), // Overall order timestamp
             };
 
             // Set the order document in Firestore
-            await setDoc(doc(customerRef, "orders", orderId), orderDetails);
+            await setDoc(doc(customerRef), orderDetails);
         }
 
         console.log("Orders added to Firestore under orders -> customerId -> orderId -> details.");
@@ -57,4 +58,4 @@ const pushOrdersToFirestore = async (restaurantId, orders) => {
 };
 
 // Call the function to push orders
-pushOrdersToFirestore('1YfUwhoqgRRKlSxJO67ucgIf3mm2', orders); // Replace with actual restaurantId
+pushOrdersToFirestore('222432', orders); // Replace with actual restaurantId
