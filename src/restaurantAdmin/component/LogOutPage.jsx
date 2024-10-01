@@ -1,10 +1,14 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { getAuth, signOut } from 'firebase/auth';
 import { auth } from '../../../firebaseConfig'; // Adjust the import based on your firebase configuration
 
 const LogOutPage = () => {
     const navigate = useNavigate();
+
+    useEffect(() => {
+        document.title ='Thaiseva | Log Out'
+      }, [])
 
     const handleLogOut = async () => {
         try {

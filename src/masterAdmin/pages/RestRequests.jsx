@@ -19,6 +19,10 @@ const RestRequests = () => {
     const [rejectedOrders, setRejectedOrders] = useState([]);
 
     useEffect(() => {
+        document.title ='Thaiseva | Food Admin - Requested Restaurants'
+      }, [])
+
+    useEffect(() => {
         const fetchData = async () => {
             try {
                 if (toggle) {

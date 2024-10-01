@@ -1,8 +1,11 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import RestaImg from "../../assets/Restaurant.png"
 import { Link } from 'react-router-dom'
 
 const AddResta = () => {
+    useEffect(() => {
+        document.title ='Thaiseva | Food Admin - Add Restaurant'
+      }, [])
     return <>
         <div className='bg-slate-100 px-6 pt-10 h-[100vh]'>
             <p className="lg:text-3xl md:text-2xl font-bold text-blue-600">My Restaurant</p>

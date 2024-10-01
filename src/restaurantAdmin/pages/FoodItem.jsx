@@ -15,6 +15,10 @@ const FoodItem = () => {
   const navigate = useNavigate();
   const [resId, setResId] = useState('');
 
+  useEffect(() => {
+    document.title ='Thaiseva | Food Item'
+  }, [])
+
   const checkRestaurant = async () => {
     try {
       const querySnapshot = await getDocs(

@@ -3,6 +3,10 @@ import React, { useEffect, useRef } from "react";
 const ViewFoodItem = ({ items, onClose }) => {
   const modalRef = useRef(null);
 
+  useEffect(() => {
+    document.title ='Thaiseva | Food Admin - Items'
+  }, [])
+
   // Handle click outside of the modal
   useEffect(() => {
     const handleClickOutside = (event) => {

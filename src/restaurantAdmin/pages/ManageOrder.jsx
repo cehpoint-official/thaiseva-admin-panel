@@ -12,6 +12,10 @@ const ManageOrder = () => {
     const [error, setError] = useState(null);
 
     useEffect(() => {
+        document.title ='Thaiseva | Order'
+      }, [])
+
+    useEffect(() => {
         const fetchOrders = async () => {
             setLoading(true);
             try {

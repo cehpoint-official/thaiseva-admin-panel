@@ -8,6 +8,10 @@ const RestaDetails = () => {
   const [restaurants, setRestaurants] = useState([]); // To store fetched restaurants
   const [loading, setLoading] = useState(true); // To handle loading state
 
+  useEffect(() => {
+    document.title ='Thaiseva | Food Admin - Restaurant Details'
+  }, [])
+
   // Fetch restaurants from Firestore
   const fetchRestaurants = async () => {
     try {

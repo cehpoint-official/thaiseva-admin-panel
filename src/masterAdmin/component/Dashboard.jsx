@@ -15,6 +15,9 @@ import { db } from "../../../firebaseConfig";
 import { ref } from "firebase/storage";
 
 const MasterDashboard = ({ toggle }) => {
+  useEffect(() => {
+    document.title ='Thaiseva | Food Admin - Dashboard'
+  }, [])
   return (
     <div className="w-full">
       <TopNav toggle={toggle} />
@@ -24,6 +27,9 @@ const MasterDashboard = ({ toggle }) => {
 };
 
 const TopNav = ({ toggle }) => {
+  useEffect(() => {
+    document.title ='Thaiseva | Food Admin - Dashboard'
+  }, [])
   const parentRef = useRef();
   const [profileToggle, setProfileToggle] = useState(false);
   const [notification, setNotification] = useState(false);
@@ -387,6 +393,10 @@ export const MasterStat = () => {
   const [totalCus, setTotalCus] = useState(0);
   const [delivered, setDelivered] = useState(0);
   const [canceled, setCanceled] = useState(0);
+
+  useEffect(() => {
+    document.title ='Thaiseva | Food Admin - Dashboard'
+  }, [])
 
   const fetchRestroRequests = async () => {
     try {

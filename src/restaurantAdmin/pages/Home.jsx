@@ -10,6 +10,10 @@ const Home = () => {
   const navigate = useNavigate();
   const { currentUser } = useAuth();
 
+  useEffect(() => {
+    document.title ='Thaiseva'
+  }, [])
+
   // Redirect to /auth if not logged in or to /{userId} if logged in
   useEffect(() => {
     if (!currentUser) {

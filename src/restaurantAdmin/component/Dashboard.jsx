@@ -16,6 +16,9 @@ import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../../firebaseConfig";
 
 const Dashboard = ({ toggle }) => {
+  useEffect(() => {
+    document.title ='Thaiseva | Dashboard'
+  }, [])
   return (
     <div className="w-full">
       <TopNav toggle={toggle} />
@@ -28,6 +31,10 @@ const TopNav = ({ toggle }) => {
   const [profileToggle, setProfileToggle] = useState(false);
   const [notification, setNotification] = useState(false);
   const parentRef = useRef(); // Ref to the parent element
+
+  useEffect(() => {
+    document.title ='Thaiseva | Dashboard'
+  }, [])
 
   const handleClickOutside = (event) => {
     if (parentRef.current && !parentRef.current.contains(event.target)) {
@@ -239,6 +246,10 @@ export const Stat = () => {
   const [newOrder, setNewOrder] = useState(0);
   const [onDelivery, setOnDelivery] = useState(0);
   const [delivered, setDelivered] = useState(0);
+
+  useEffect(() => {
+    document.title ='Thaiseva | Dashboard'
+  }, [])
 
   useEffect(() => {
     const fetchOrders = async () => {

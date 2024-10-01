@@ -13,6 +13,10 @@ const Restaurant = () => {
   const [loading, setLoading] = useState(true); 
 
   useEffect(() => {
+    document.title ='Thaiseva | My Restaurant'
+  }, [])
+
+  useEffect(() => {
     const fetchRestaurantData = async () => {
       try {
         const querySnapshot = await getDocs(

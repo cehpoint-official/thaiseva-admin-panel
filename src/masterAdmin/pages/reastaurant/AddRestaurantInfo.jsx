@@ -1,4 +1,4 @@
-import  { useState } from 'react';
+import  { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { db, storage } from '../../../../firebaseConfig'; 
 import { collection, addDoc } from 'firebase/firestore';
@@ -18,6 +18,10 @@ const AddRestaInfo = () => {
     const [uploading, setUploading] = useState(false);
 
     const GOOGLE_API_KEY = 'AIzaSyDwTBiBiGtJLrlbaiKzVN5BBCj8He1l5Zc'; 
+
+    useEffect(() => {
+        document.title ='Thaiseva | Food Admin - Add Restaurant'
+      }, [])
 
     const handleImageUpload = async (e) => {
         if (e.target.files[0]) {
