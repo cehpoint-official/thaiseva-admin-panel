@@ -15,3 +15,6 @@
     ]
   }
 }
+
+
+firebase deploy --only hosting:thaiseva-food-portal
