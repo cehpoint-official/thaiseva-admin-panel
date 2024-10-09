@@ -45,6 +45,7 @@ const RestaInformation = () => {
           description,
           imageUrl: image,
           status: "Pending",
+          ownerId: currentUser.uid
         }
       );
 
@@ -58,7 +59,8 @@ const RestaInformation = () => {
         location,
         description,
         imageUrl: image,
-        status: "Pending", // You can include status to track the request status
+        status: "Pending", 
+        ownerId: currentUser.uid,
       });
 
       alert("Restaurant information saved successfully");

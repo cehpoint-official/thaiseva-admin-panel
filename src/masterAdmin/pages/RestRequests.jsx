@@ -79,7 +79,7 @@ const RestRequests = () => {
                         <div key={item.id} className='grid grid-cols-12 mt-6 shadow-xl p-1 py-2 rounded-lg'>
                             <div className='lg:col-span-4 md:col-span-6 col-span-8'>
                                 <div className='flex items-center gap-4'>
-                                    <img src={item.photo || RestaOne} className='h-20 rounded-lg' alt={item.name || "Restaurant"} />
+                                    <img src={item.imageUrl || item.photo || RestaOne} className=' rounded-lg w-24 aspect-[4/3] object-cover' alt={item.name || "Restaurant"} />
                                     <div>
                                         <p className='text-xl mb-1 text-slate-700'>{item.name}</p>
                                         <span className='text-sm'>{item.address}</span>
