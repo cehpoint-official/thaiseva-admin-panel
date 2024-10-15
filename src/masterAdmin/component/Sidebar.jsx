@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import Logo from '../../assets/sidebarLogo.png'
+import Logo from '../../assets/logoo.jpg'
 
 const MasterSidebar = ({ show, toggle }) => {
     const links = [
@@ -31,8 +31,8 @@ const MasterSidebar = ({ show, toggle }) => {
         <div className='w-[300px] sticky top-0  h-screen '>
             {/* header start */}
             <div className='p-6 gap-2 flex '>
-                <img src={Logo} alt="" />
-                <p className='md:text-3xl text-xl text-gray-800 font-bold'>Thaiseva</p>
+            <img src={Logo} className='mix-blend-multiply' alt="" />
+                {/* <p className='md:text-3xl text-xl text-gray-800 font-bold'>Thaiseva</p> */}
             </div>
             {/* header end */}
 
