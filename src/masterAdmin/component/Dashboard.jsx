@@ -10,14 +10,20 @@ import BikeLogo from "../../assets/notification/bike.png";
 import NewLogo from "../../assets/notification/newOrder.png";
 import MasterApexChart from "./ChartTwo";
 import MasterChartPage from "./ChartPage";
-import { collection, doc, getDoc, getDocs, updateDoc } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  updateDoc,
+} from "firebase/firestore";
 import { db } from "../../../firebaseConfig";
 import { ref } from "firebase/storage";
 
 const MasterDashboard = ({ toggle }) => {
   useEffect(() => {
-    document.title ='Thaiseva | Food Admin - Dashboard'
-  }, [])
+    document.title = "Thaiseva | Food Admin - Dashboard";
+  }, []);
   return (
     <div className="w-full">
       <TopNav toggle={toggle} />
@@ -28,8 +34,8 @@ const MasterDashboard = ({ toggle }) => {
 
 const TopNav = ({ toggle }) => {
   useEffect(() => {
-    document.title ='Thaiseva | Food Admin - Dashboard'
-  }, [])
+    document.title = "Thaiseva | Food Admin - Dashboard";
+  }, []);
   const parentRef = useRef();
   const [profileToggle, setProfileToggle] = useState(false);
   const [notification, setNotification] = useState(false);
@@ -50,10 +56,8 @@ const TopNav = ({ toggle }) => {
     };
   }, []);
 
-
-
-// Coupon section
-const [userIds, setUserIds] = useState([]);
+  // Coupon section
+  const [userIds, setUserIds] = useState([]);
   const [selectedUserId, setSelectedUserId] = useState(null); // This will hold the final userId
   const [coupon, setCoupon] = useState(null); // This will hold the final generated coupon
   const [showModal, setShowModal] = useState(false);
@@ -65,7 +69,7 @@ const [userIds, setUserIds] = useState([]);
       try {
         const usersRef = collection(db, "users");
         const snapshot = await getDocs(usersRef);
-        const userIdList = snapshot.docs.map(doc => doc.id);
+        const userIdList = snapshot.docs.map((doc) => doc.id);
         setUserIds(userIdList);
       } catch (error) {
         console.error("Error fetching user IDs:", error);
@@ -76,9 +80,13 @@ const [userIds, setUserIds] = useState([]);
   }, []);
 
   const generateCoupon = () => {
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+';
+    const characters =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+";
     const length = Math.floor(Math.random() * (12 - 8 + 1)) + 8;
-    return Array.from({ length }, () => characters[Math.floor(Math.random() * characters.length)]).join('');
+    return Array.from(
+      { length },
+      () => characters[Math.floor(Math.random() * characters.length)]
+    ).join("");
   };
 
   const handleGiveCoupon = () => {
@@ -106,7 +114,7 @@ const [userIds, setUserIds] = useState([]);
 
     // Now proceed to upload the coupon
     try {
-      const userDocRef = doc(db, 'users', userIdToUse);
+      const userDocRef = doc(db, "users", userIdToUse);
       const userDoc = await getDoc(userDocRef);
 
       if (userDoc.exists()) {
@@ -122,14 +130,14 @@ const [userIds, setUserIds] = useState([]);
 
         // Update Firestore with the new or updated coupons array
         await updateDoc(userDocRef, { coupons: updatedCoupons });
-        alert('Coupon successfully added to the user!');
+        alert("Coupon successfully added to the user!");
         setShowModal(false); // Close the modal after successful upload
       } else {
-        alert('User not found!');
+        alert("User not found!");
       }
     } catch (error) {
       console.error("Error updating coupon:", error);
-      alert('Failed to add the coupon. Please try again.');
+      alert("Failed to add the coupon. Please try again.");
     }
   };
 
@@ -177,85 +185,93 @@ const [userIds, setUserIds] = useState([]);
               </div>
             </form>
           </div>
-          <button 
-        onClick={handleGiveCoupon}
-        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-      >
-        Give Coupon
-      </button>
+          <button
+            onClick={handleGiveCoupon}
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          >
+            Give Coupon
+          </button>
 
-      {showModal && (
-        <>
-          {/* Background overlay */}
-          <div 
-            className="fixed inset-0 bg-black bg-opacity-50 z-40"
-            onClick={() => setShowModal(false)}
-          />
+          {showModal && (
+            <>
+              {/* Background overlay */}
+              <div
+                className="fixed inset-0 bg-black bg-opacity-50 z-40"
+                onClick={() => setShowModal(false)}
+              />
 
-          {/* Modal content */}
-          <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-6 rounded-lg shadow-xl z-50">
-            <p className="text-lg font-semibold mb-4">Choose a method to give the coupon</p>
+              {/* Modal content */}
+              <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-6 rounded-lg shadow-xl z-50">
+                <p className="text-lg font-semibold mb-4">
+                  Choose a method to give the coupon
+                </p>
 
-            {/* Choice Buttons */}
-            <div className="mb-4">
-              <button
-                onClick={() => {
-                  setChoice('random');
-                  handleRandomUser(); // Automatically select a random user and coupon
-                }}
-                className={`mr-2 py-2 px-4 rounded ${choice === 'random' ? 'bg-green-500' : 'bg-gray-500'} text-white`}
-              >
-                Random User
-              </button>
-              <button
-                onClick={() => setChoice('specific')}
-                className={`py-2 px-4 rounded ${choice === 'specific' ? 'bg-green-500' : 'bg-gray-500'} text-white`}
-              >
-                Specific User
-              </button>
-            </div>
+                {/* Choice Buttons */}
+                <div className="mb-4">
+                  <button
+                    onClick={() => {
+                      setChoice("random");
+                      handleRandomUser(); // Automatically select a random user and coupon
+                    }}
+                    className={`mr-2 py-2 px-4 rounded ${
+                      choice === "random" ? "bg-green-500" : "bg-gray-500"
+                    } text-white`}
+                  >
+                    Random User
+                  </button>
+                  <button
+                    onClick={() => setChoice("specific")}
+                    className={`py-2 px-4 rounded ${
+                      choice === "specific" ? "bg-green-500" : "bg-gray-500"
+                    } text-white`}
+                  >
+                    Specific User
+                  </button>
+                </div>
 
-            {/* Display Coupon Code */}
-            {coupon && (
-              <div className="mb-4">
-                <p><strong>Generated Coupon:</strong> {coupon}</p>
+                {/* Display Coupon Code */}
+                {coupon && (
+                  <div className="mb-4">
+                    <p>
+                      <strong>Generated Coupon:</strong> {coupon}
+                    </p>
+                  </div>
+                )}
+
+                {/* Input for User ID - Pre-filled for Random, Editable for Specific */}
+                {choice === "specific" && (
+                  <div className="mb-4">
+                    <input
+                      type="text"
+                      placeholder="Enter User ID"
+                      value={specificUserId}
+                      onChange={(e) => setSpecificUserId(e.target.value)}
+                      className="border px-3 py-2 rounded w-full"
+                    />
+                  </div>
+                )}
+
+                {choice === "random" && selectedUserId && (
+                  <div className="mb-4">
+                    <input
+                      type="text"
+                      value={selectedUserId}
+                      readOnly
+                      className="border px-3 py-2 rounded w-full bg-gray-100 cursor-not-allowed"
+                    />
+                  </div>
+                )}
+
+                {/* Give Coupon Button */}
+                <button
+                  onClick={handleGive}
+                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                >
+                  Give
+                </button>
               </div>
-            )}
-
-            {/* Input for User ID - Pre-filled for Random, Editable for Specific */}
-            {choice === "specific" && (
-              <div className="mb-4">
-                <input
-                  type="text"
-                  placeholder="Enter User ID"
-                  value={specificUserId}
-                  onChange={(e) => setSpecificUserId(e.target.value)}
-                  className="border px-3 py-2 rounded w-full"
-                />
-              </div>
-            )}
-
-            {choice === "random" && selectedUserId && (
-              <div className="mb-4">
-                <input
-                  type="text"
-                  value={selectedUserId}
-                  readOnly
-                  className="border px-3 py-2 rounded w-full bg-gray-100 cursor-not-allowed"
-                />
-              </div>
-            )}
-
-            {/* Give Coupon Button */}
-            <button
-              onClick={handleGive}
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-            >
-              Give
-            </button>
-          </div>
-        </>
-      )}
+            </>
+          )}
           <div className="flex gap-6 items-center my-2">
             <div ref={parentRef}>
               <i
@@ -395,8 +411,8 @@ export const MasterStat = () => {
   const [canceled, setCanceled] = useState(0);
 
   useEffect(() => {
-    document.title ='Thaiseva | Food Admin - Dashboard'
-  }, [])
+    document.title = "Thaiseva | Food Admin - Dashboard";
+  }, []);
 
   const fetchRestroRequests = async () => {
     try {
@@ -460,29 +476,36 @@ export const MasterStat = () => {
         const cusId = orderDoc.id;
         const orderSnapshot = await getDoc(doc(db, `orders/${cusId}`));
         const orderData = orderSnapshot.data();
+        // console.log(orderData)
 
-        const status = orderData["Status"];
+        const statusArray = orderData.Status || [];
+        const lastStatus = statusArray[statusArray.length - 1]; // Get the last status
+        const status = lastStatus ? lastStatus.status : "Unknown"; // Get status or default to 'Unknown'
 
         // Check if the status is complete
-        if (Array.isArray(status)) {
-          soldCount += status.filter((s) => s === "Completed").length;
-          countDelivered += status.filter((s) => s === "Delivered").length;
-          countCancel += status.filter((s) => s === "Cancelled").length;
-        } else if (status === "Completed") {
+        if (status === "Payment Done" || status === "Completed") {
           soldCount++;
-        } else if (status === "Delivered") {
+        }
+        if (status === "Delivered") {
           countDelivered++;
-        } else if (status === "Cancelled") {
+        }
+        if (status === "Cancelled") {
           countCancel++;
         }
 
-        // Check for unique customers
+        // Fetching total customer
+        const customerId = orderData.CustomerId;
+        if (customerId) {
+          uniqueCustomers.add(customerId);
+        }
+
         if (orderData.user) {
-          uniqueCustomers.add(orderData.user); // If user exists
+          uniqueCustomers.add(orderData.user);
         }
         if (orderData.CustomerName) {
-          uniqueCustomers.add(orderData.CustomerName); // If CustomerName exists
+          uniqueCustomers.add(orderData.CustomerName);
         }
+        // Upto this all for fetching total unique 
       }
 
       setSoldCount(soldCount);

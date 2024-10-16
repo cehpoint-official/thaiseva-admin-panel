@@ -1,7 +1,7 @@
 import { Link, Outlet, useParams } from "react-router-dom";
 import "../../../src/index.css";
-import Taco from "../../assets/Taco.png";
-import TacoTwo from "../../assets/Taco2.png";
+// import Taco from "../../assets/Taco.png";
+// import TacoTwo from "../../assets/Taco2.png";
 import Item from "../../assets/item1.png";
 import ItemTwo from "../../assets/item2.png";
 import ItemThree from "../../assets/item3.png";
@@ -12,13 +12,13 @@ import BikeLogo from "../../assets/notification/bike.png";
 import NewLogo from "../../assets/notification/newOrder.png";
 import { useAuth } from "../../AuthContext";
 import FoodStats from "./FoodStats";
-import { doc, getDoc } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs } from "firebase/firestore";
 import { db } from "../../../firebaseConfig";
 
 const Dashboard = ({ toggle }) => {
   useEffect(() => {
-    document.title ='Thaiseva | Dashboard'
-  }, [])
+    document.title = "Thaiseva | Dashboard";
+  }, []);
   return (
     <div className="w-full">
       <TopNav toggle={toggle} />
@@ -33,8 +33,8 @@ const TopNav = ({ toggle }) => {
   const parentRef = useRef(); // Ref to the parent element
 
   useEffect(() => {
-    document.title ='Thaiseva | Dashboard'
-  }, [])
+    document.title = "Thaiseva | Dashboard";
+  }, []);
 
   const handleClickOutside = (event) => {
     if (parentRef.current && !parentRef.current.contains(event.target)) {
@@ -235,7 +235,8 @@ const TopNav = ({ toggle }) => {
 export const Stat = () => {
   const restaurantIdInit = useParams();
   const restaurantId = restaurantIdInit["id"];
-  const [orderDetails, setOrderDetails] = useState([]);
+  // console.log(restaurantId)
+  // const [orderDetails, setOrderDetails] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [totalOrder, setTotalOrder] = useState(0);
@@ -248,76 +249,96 @@ export const Stat = () => {
   const [delivered, setDelivered] = useState(0);
 
   useEffect(() => {
-    document.title ='Thaiseva | Dashboard'
-  }, [])
+    document.title = "Thaiseva | Dashboard";
+  }, []);
 
   useEffect(() => {
     const fetchOrders = async () => {
       setLoading(true);
       try {
-        const ordersRef = doc(db, `restaurants/${restaurantId}/orders/orders`);
-        console.log(ordersRef);
-        const snapshot = await getDoc(ordersRef);
+        const ordersRef = collection(db, `restaurants/${restaurantId}/orders`);
+        const ordersSnapshot = await getDocs(ordersRef);
 
-        console.log("Snapshot data: ", snapshot.data());
+        let orderIds = []; // Array to store order IDs
+        let paymentDoneCount = 0; // Initialize count for Payment Done
+        let deliveredCount = 0; // Initialize count for Delivered
+        let pendingCount = 0; // Initialize count for Pending
+        let cancelCount = 0; // Initialize count for Cancelled
+        let newOrderCount = 0
+        let onDeliveryCount = 0
+        let uniqueCustomers = new Set(); // Set to store unique Customer IDs
 
-        if (snapshot.exists()) {
-          const ordersData = snapshot.data();
-          // console.log("Orders data structure: ", ordersData);
+        if (!ordersSnapshot.empty) {
+          // Collect the IDs of the orders
+          ordersSnapshot.docs.forEach((orderDoc) => {
+            if (!isNaN(orderDoc.id)) {
+              orderIds.push(orderDoc.id);
+            }
+          });
 
-          setTotalOrder(Object.keys(ordersData).length);
-          setCompleteOrder(
-            Object.values(ordersData).filter(
-              (order) => order.Status === "Delivered"
-            ).length
-          );
-          setPending(
-            Object.values(ordersData).filter(
-              (order) =>
-                order.Status === "On delivery" || order.Status === "New Order"
-            ).length
-          );
-          setCanceled(
-            Object.values(ordersData).filter(
-              (order) => order.Status === "Cancelled"
-            ).length
-          );
-          setNewOrder(
-            Object.values(ordersData).filter(
-              (order) => order.Status === "New Order"
-            ).length
-          );
-          setOnDelivery(
-            Object.values(ordersData).filter(
-              (order) => order.Status === "On delivery"
-            ).length
-          );
-          setDelivered(
-            Object.values(ordersData).filter(
-              (order) => order.Status === "Delivered"
-            ).length
-          );
+          console.log("Order IDs: ", orderIds); // Log the order IDs
+          setTotalOrder(orderIds.length);
 
-          const customerNames = Object.values(ordersData).map(
-            (order) => order.CustomerName
-          );
-          const uniqueCustomerSet = new Set(customerNames);
-          setCountCustomer(uniqueCustomerSet.size);
+          for (const orderId of orderIds) {
+            const orderDetailsRef = doc(db, `orders/${orderId}`);
+            const orderDetailsSnapshot = await getDoc(orderDetailsRef);
 
-          // Convert the orders into a list while also including originalOrderId
-          const ordersList = Object.keys(ordersData).map((orderId) => ({
-            OrderID: orderId, // This will be the key (without #)
-            ...ordersData[orderId],
-          }));
+            if (orderDetailsSnapshot.exists()) {
+              const orderData = orderDetailsSnapshot.data();
+              const statusArray = orderData.Status || [];
 
-          // console.log("Orders list: ", ordersList);
+              // Check only the last status
+              const lastStatus = statusArray[statusArray.length - 1]; // Get the last status
+              const status = lastStatus ? lastStatus.status : "Unknown"; // Get status or default to 'Unknown'
 
-          setOrderDetails(ordersList);
+              // Increment counts based on the last status
+              if (status === "Payment Done" || status === "Completed") {
+                paymentDoneCount++;
+              } else if (
+                status === "Pending" ||
+                status === "New Order" ||
+                status === "Preparing" || 
+                status === "On Delivery"
+              ) {
+                pendingCount++;
+              } if (status === "Cancelled") {
+                cancelCount++;
+              } if (status === "New Order") {
+                newOrderCount++;
+              } if (status === "On Delivery") {
+                onDeliveryCount++;
+              } if (status === "Delivered") {
+                deliveredCount++;
+              }
+
+              // Add CustomerId to the set of unique customers
+              const customerId = orderData.CustomerId; // Assuming CustomerId is directly in orderData
+              if (customerId) {
+                uniqueCustomers.add(customerId); // Add the CustomerId to the set
+              }
+            }
+          }
+
+          // Set the total counts for Payment Done, Delivered, Pending, and Cancelled
+          setCompleteOrder(paymentDoneCount);
+          setDelivered(deliveredCount);
+          setNewOrder(newOrderCount)
+          setOnDelivery(onDeliveryCount)
+          setPending(pendingCount); // Set the pending count
+          setCanceled(cancelCount); // Set the canceled count
+          setCountCustomer(uniqueCustomers.size);
+
+          // // Log the count of unique customers
+          // console.log("Number of unique customers: ", uniqueCustomers.size);
+
+          // console.log("Payment Done Count: ", paymentDoneCount);
+          // console.log("Delivered Count: ", deliveredCount);
+          // console.log("Pending Count: ", pendingCount);
         } else {
-          setError("You currently do not have a restaurant. Please add one to view your Dashboard.");
+          setError("No orders found for this restaurant.");
         }
       } catch (error) {
-        console.error("Error fetching orders: ", error);
+        // console.error("Error fetching orders: ", error);
         setError("Failed to fetch orders.");
       } finally {
         setLoading(false);
@@ -328,11 +349,12 @@ export const Stat = () => {
   }, [restaurantId]);
 
   if (loading) return <p>Loading...</p>;
-  if (error) return <div className="w-full h-full mt-20 text-3xl flex items-center justify-center">
-    <span className="w-[40vw] text-center">
-    {error}
-    </span>
-  </div>;
+  if (error)
+    return (
+      <div className="w-full h-full mt-20 text-3xl flex items-center justify-center">
+        <span className="w-[40vw] text-center">{error}</span>
+      </div>
+    );
 
   return (
     <>
@@ -453,15 +475,21 @@ export const Stat = () => {
             <div className="flex w-full items-center justify-start my-6 gap-x-12">
               <div className="flex-1 border flex flex-col w-full items-center justify-center border-gray-400 rounded-lg p-4">
                 <p className="text-gray-600 text-lg">On Delivery</p>
-                <p className="text-3xl font-semibold">{onDelivery<10? `0${onDelivery}` : onDelivery}</p>
+                <p className="text-3xl font-semibold">
+                  {onDelivery < 10 ? `0${onDelivery}` : onDelivery}
+                </p>
               </div>
               <div className="flex-1 border flex flex-col w-full items-center justify-center border-gray-400 rounded-lg p-4 ">
                 <p className="text-gray-600 text-lg">Delivered</p>
-                <p className="text-3xl font-semibold">{delivered<10? `0${delivered}` : delivered}</p>
+                <p className="text-3xl font-semibold">
+                  {delivered < 10 ? `0${delivered}` : delivered}
+                </p>
               </div>
               <div className="flex-1 border flex flex-col w-full items-center justify-center bg-slate-50 border-gray-400 rounded-lg p-4">
                 <p className="text-gray-600 text-lg">Cancelled</p>
-                <p className="text-3xl font-semibold">{canceled<10? `0${canceled}` : canceled}</p>
+                <p className="text-3xl font-semibold">
+                  {canceled < 10 ? `0${canceled}` : canceled}
+                </p>
               </div>
             </div>
 

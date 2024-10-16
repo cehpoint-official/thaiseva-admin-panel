@@ -32,11 +32,11 @@ const OrderView = () => {
             <Link
                 to="/manageOrder"
                 className="lg:text-3xl text-2xl font-bold text-blue-600">
-                <i class="bi bi-arrow-left me-2"></i>
+                <i className="bi bi-arrow-left me-2"></i>
                 Back
             </Link>
             <div>
-                <button class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="button">
+                <button className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="button">
                     Status -On delivery
                 </button>
             </div>
@@ -70,37 +70,37 @@ const OrderView = () => {
                     </div>
                     <div className='mt-5 md:mt-0 lg:mt-5 rounded-lg bg-white w-full p-5'>
                         <p className='text-2xl font-bold mb-5'>Deliver History</p>
-                        <ol class="relative border-s-2 border-green-200 dark:border-gray-700">
+                        <ol className="relative border-s-2 border-green-200 dark:border-gray-700">
 
-                            <li class="mb-6 ms-6">
-                                <span class="absolute flex items-center justify-center w-4 h-4 bg-blue-100 rounded-full -start-2 ring-2 mt-2 ring-white dark:ring-gray-900 dark:bg-blue-900">
+                            <li className="mb-6 ms-6">
+                                <span className="absolute flex items-center justify-center w-4 h-4 bg-blue-100 rounded-full -start-2 ring-2 mt-2 ring-white dark:ring-gray-900 dark:bg-blue-900">
 
                                 </span>
-                                <h3 class="-pt-2 text-lg font-semibold text-gray-900 dark:text-white">Order Delivered</h3>
+                                <h3 className="-pt-2 text-lg font-semibold text-gray-900 dark:text-white">Order Delivered</h3>
                                 <p className='text-blue-600'>Wait...</p>
 
                             </li>
-                            <li class="mb-6 ms-6 ">
-                                <span class="absolute flex items-center justify-center w-4 h-4 bg-green-600 rounded-full -start-2 mt-2 ring-2 ring-green-300 dark:ring-gray-900 dark:bg-blue-900">
+                            <li className="mb-6 ms-6 ">
+                                <span className="absolute flex items-center justify-center w-4 h-4 bg-green-600 rounded-full -start-2 mt-2 ring-2 ring-green-300 dark:ring-gray-900 dark:bg-blue-900">
 
                                 </span>
-                                <h3 class="mb-1 text-lg font-semibold text-gray-900 dark:text-white">On Delivery</h3>
+                                <h3 className="mb-1 text-lg font-semibold text-gray-900 dark:text-white">On Delivery</h3>
                                 <p className='text-blue-600'>Sun 02 Jan, 2024, 01:24Pm</p>
 
                             </li>
-                            <li class="mb-6 ms-6">
-                                <span class="absolute flex items-center justify-center w-4 h-4 bg-green-600 rounded-full -start-2 mt-2 ring-2 ring-white dark:ring-gray-900 dark:bg-blue-900">
+                            <li className="mb-6 ms-6">
+                                <span className="absolute flex items-center justify-center w-4 h-4 bg-green-600 rounded-full -start-2 mt-2 ring-2 ring-white dark:ring-gray-900 dark:bg-blue-900">
 
                                 </span>
-                                <h3 class="mb-1 text-lg font-semibold text-gray-900 dark:text-white">Payment success</h3>
+                                <h3 className="mb-1 text-lg font-semibold text-gray-900 dark:text-white">Payment success</h3>
                                 <p className='text-blue-600'>Sun 02 Jan, 2024, 12:20Pm</p>
 
                             </li>
-                            <li class=" ms-6">
-                                <span class="absolute flex items-center justify-center w-4 h-4 bg-green-600 rounded-full -start-2 mt-2 ring-2 ring-white dark:ring-gray-900 dark:bg-blue-900">
+                            <li className=" ms-6">
+                                <span className="absolute flex items-center justify-center w-4 h-4 bg-green-600 rounded-full -start-2 mt-2 ring-2 ring-white dark:ring-gray-900 dark:bg-blue-900">
 
                                 </span>
-                                <h3 class="mb-1 text-lg font-semibold text-gray-900 dark:text-white">Order Created</h3>
+                                <h3 className="mb-1 text-lg font-semibold text-gray-900 dark:text-white">Order Created</h3>
                                 <p className='text-blue-600'>Sun 02 Jan, 2024, 12:10Pm</p>
 
                             </li>
@@ -116,20 +116,20 @@ const OrderView = () => {
                 <div className='overflow-hidden overflow-x-scroll  mt-10'>
                     <div className='   md:w-full w-[35rem]  rounded-lg  '>
 
-                        <div class=" bg-white shadow-xl ">
-                            <table class=" text-sm text-left rtl:text-right w-full ">
-                                <thead class="text-xl">
+                        <div className=" bg-white shadow-xl ">
+                            <table className=" text-sm text-left rtl:text-right w-full ">
+                                <thead className="text-xl">
                                     <tr>
-                                        <th scope="col" class="px-6 py-3">
+                                        <th scope="col" className="px-6 py-3">
                                             Items
                                         </th>
-                                        <th scope="col" class="px-3  py-3">
+                                        <th scope="col" className="px-3  py-3">
                                             Qty
                                         </th>
-                                        <th scope="col" class="px-6 py-3">
+                                        <th scope="col" className="px-6 py-3">
                                             Price
                                         </th>
-                                        <th scope="col" class="px-6 py-3">
+                                        <th scope="col" className="px-6 py-3">
                                             Total Price
                                         </th>
 
@@ -138,24 +138,24 @@ const OrderView = () => {
                                 <tbody>
 
                                     {
-                                        orderDetails && orderDetails.map((item) => <tr class="  hover:bg-gray-50 ">
-                                            <th scope="row" class="px-6 flex gap-3 py-4 font-medium  whitespace-nowrap e">
+                                        orderDetails && orderDetails.map((item) => <tr className="  hover:bg-gray-50 ">
+                                            <th scope="row" className="px-6 flex gap-3 py-4 font-medium  whitespace-nowrap e">
                                                 <img src={item.ItemsImg} alt="" />
                                                 <div>
                                                     <p className='text-blue-500'>{item.Label}</p>
                                                     <p className='text-lg'>{item.Items}</p>
                                                 </div>
                                             </th>
-                                            <td class="px-3  py-4 text-lg font-semibold">
+                                            <td className="px-3  py-4 text-lg font-semibold">
                                                 {item.Qty}
                                             </td>
-                                            <td class="px-6 py-4 text-lg font-semibold">
+                                            <td className="px-6 py-4 text-lg font-semibold">
                                                 <span>&#3647;</span>{item.Price}
                                             </td>
-                                            <td class="px-6 py-4 text-lg  font-semibold">
+                                            <td className="px-6 py-4 text-lg  font-semibold">
                                                 <div>
                                                     <span>&#3647;</span>{item.TotalPrice}
-                                                    <i class="bi ms-8 text-xl bi-x-circle"></i>
+                                                    <i className="bi ms-8 text-xl bi-x-circle"></i>
                                                 </div>
                                             </td>
 

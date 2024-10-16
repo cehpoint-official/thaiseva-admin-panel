@@ -13,7 +13,7 @@ const OrdersDetails = () => {
         const fetchOrders = async () => {
             setLoading(true);
             try {
-                const ordersRef = collection(db, `orders`);
+                const ordersRef = collection(db, 'orders');
                 const snapshot = await getDocs(ordersRef);
 
                 if (!snapshot.empty) {
@@ -43,7 +43,7 @@ const OrdersDetails = () => {
     const getValueOrNA = (value) => value || 'N/A';
 
     return (
-        <div className='bg-slate-100 px-6 py-10'>
+        <div className='bg-slate-100 px-6 py-10 w-full'>
             <div className="flex justify-between items-center">
                 <p className="lg:text-3xl md:text-2xl font-bold text-blue-600">
                     Order Details
@@ -101,11 +101,11 @@ const OrdersDetails = () => {
                                     </td>
                                     <td className="px-1 py-4">
                                         <div className={`border p-1 text-center rounded-md 
-                                            ${item.Status === "New Order" ? "border-blue-600 text-blue-600" : ""} 
-                                            ${item.Status === "On delivery" ? "border-yellow-500 text-yellow-500" : ""} 
-                                            ${item.Status === "Cancelled" ? "border-red-600 text-red-600" : ""} 
-                                            ${item.Status === "Delivered" ? "border-green-600 text-green-600" : ""}`}>
-                                            {getValueOrNA(item.Status[item.Status.length-1])}
+                                            ${item.Status?.[item.Status.length - 1]?.status === "New Order" ? "border-blue-600 text-blue-600" : ""} 
+                                            ${item.Status?.[item.Status.length - 1]?.status === "On delivery" ? "border-yellow-500 text-yellow-500" : ""} 
+                                            ${item.Status?.[item.Status.length - 1]?.status === "Cancelled" ? "border-red-600 text-red-600" : ""} 
+                                            ${item.Status?.[item.Status.length - 1]?.status === "Delivered" ? "border-green-600 text-green-600" : ""}`}>
+                                            {getValueOrNA(item.Status?.[item.Status.length - 1]?.status)} {/* Render the last status */}
                                         </div>
                                     </td>
                                     <td className="px-1 py-4">

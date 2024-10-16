@@ -11,7 +11,7 @@ const FoodItem = () => {
   const [restaurantExists, setRestaurantExists] = useState(false); // State to track if restaurant exists
   const currentUserParam = useParams();
   const currentUser = currentUserParam['id'];
-  console.log(currentUser)
+  // console.log(currentUser)
   const navigate = useNavigate();
   const [resId, setResId] = useState('');
 
@@ -46,7 +46,7 @@ const FoodItem = () => {
       );
       const q = query(restaurantDetailsRef);
       const querySnapshot = await getDocs(q);
-      console.log(querySnapshot.empty)
+      // console.log(querySnapshot.empty)
 
       if (!querySnapshot.empty) {
         const restaurantDoc = querySnapshot.docs[0];
@@ -64,9 +64,9 @@ const FoodItem = () => {
     fetchRestaurantDetails();
   }, []);
 
-  useEffect(() => {
-      console.log("ResId updated: ", resId);
-  }, [resId]);
+  // useEffect(() => {
+  //     console.log("ResId updated: ", resId);
+  // }, [resId]);
 
 
   const fetchData = async () => {
@@ -84,7 +84,7 @@ const FoodItem = () => {
         .filter((item) => item.active === !toggle);
   
         setItems(fetchedItems); 
-        console.log(fetchedItems); 
+        // console.log(fetchedItems); 
       } else {
         console.log("No food items found for this restaurant.");
       }

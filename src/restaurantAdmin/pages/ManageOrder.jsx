@@ -12,47 +12,67 @@ const ManageOrder = () => {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        document.title ='Thaiseva | Order'
-      }, [])
+        document.title = 'Thaiseva | Order';
+    }, []);
 
     useEffect(() => {
         const fetchOrders = async () => {
             setLoading(true);
             try {
-                const ordersRef = doc(db, `restaurants/${restaurantId}/orders/orders`);
-                console.log(ordersRef)
-                const snapshot = await getDoc(ordersRef);
-        
-                // console.log("Snapshot data: ", snapshot.data());
-        
-                if (snapshot.exists()) {
-                    const ordersData = snapshot.data();
-                    // console.log("Orders data structure: ", ordersData);
-        
-                    // Convert the orders into a list while also including originalOrderId
-                    const ordersList = Object.keys(ordersData).map(orderId => ({
-                        OrderID: orderId, // This will be the key (without #)
-                        ...ordersData[orderId],
-                    }));
-        
-                    // console.log("Orders list: ", ordersList);
-        
-                    setOrderDetails(ordersList);
+                const ordersRef = collection(db, `restaurants/${restaurantId}/orders`);
+                const ordersSnapshot = await getDocs(ordersRef);
+                
+                let orderIds = [];
+                if (!ordersSnapshot.empty) {
+                    ordersSnapshot.docs.forEach(orderDoc => {
+                        const orderId = orderDoc.id;
+                        const numericOrderId = Number(orderId);
+
+                        if (!isNaN(numericOrderId)) {
+                            orderIds.push(orderId);
+                        }
+                    });
+
+                    let orderDetailsList = [];
+                    for (const orderId of orderIds) {
+                        const orderDetailsRef = doc(db, `orders/${orderId}`);
+                        const orderDetailsSnapshot = await getDoc(orderDetailsRef);
+                        
+                        if (orderDetailsSnapshot.exists()) {
+                            const orderData = orderDetailsSnapshot.data();
+
+                            // Fetch the last status and its timestamp
+                            const statusArray = orderData.Status || [];
+                            const lastStatus = statusArray[statusArray.length - 1]; // Get the last status
+                            const status = lastStatus ? lastStatus.status : 'Unknown'; // Default to 'Unknown' if empty
+                            const date = orderData.timestamp.toDate().toLocaleString(); // Convert timestamp to a readable date
+
+                            orderDetailsList.push({
+                                OrderID: orderId,
+                                Date: date,  // Date of the last status
+                                CustomerName: orderData.CustomerName || 'N/A',
+                                Location: orderData.Location || 'N/A',
+                                Amount: orderData.Amount || '0.00',
+                                Status: status,  // Current status from the last entry
+                            });
+                        }
+                    }
+
+                    setOrderDetails(orderDetailsList);
                 } else {
-                    setError("No orders found.");
+                    setError("No orders found for this restaurant.");
                 }
             } catch (error) {
-                console.error("Error fetching orders: ", error);
+                // console.error("Error fetching orders: ", error);
                 setError("Failed to fetch orders.");
             } finally {
                 setLoading(false);
             }
         };
-        
-
+    
         fetchOrders();
     }, [restaurantId]);
-
+    
     if (loading) return <p>Loading...</p>;
     if (error) return <p>{error}</p>;
 
@@ -107,7 +127,7 @@ const ManageOrder = () => {
                                             <div>
                                                 <p className={`border p-1 text-center rounded-md 
                                                     ${item.Status === "New Order" ? "border-blue-600 text-blue-600" : ""} 
-                                                    ${item.Status === "On delivery" ? "border-yellow-500 text-yellow-500" : ""} 
+                                                    ${item.Status === "On Delivery" ? "border-yellow-500 text-yellow-500" : ""} 
                                                     ${item.Status === "Cancelled" ? "border-red-600 text-red-600" : ""} 
                                                     ${item.Status === "Delivered" ? "border-green-600 text-green-600" : ""}`}>
                                                     {item.Status}

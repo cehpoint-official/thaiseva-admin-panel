@@ -34,7 +34,7 @@ const ItemList = ({ items, toggle, fetchData }) => {
         const restaurantDoc = querySnapshot.docs[0];
         const restaurantId = restaurantDoc.id; // Fetch restaurantId
         setResId(restaurantId); // Set the state
-        console.log("res", restaurantId)
+        // console.log("res", restaurantId)
       } else {
         console.log("No restaurant found for this user.");
       }
@@ -47,11 +47,11 @@ const ItemList = ({ items, toggle, fetchData }) => {
     fetchRestaurantDetails();
   }, []);
 
-  useEffect(() => {
-    if (resId) {
-      console.log("ResId updated: ", resId);
-    }
-  }, [resId]);
+  // useEffect(() => {
+  //   if (resId) {
+  //     console.log("ResId updated: ", resId);
+  //   }
+  // }, [resId]);
 
   const handleOptionsToggle = (item) => {
     setSelectedItem(item);
@@ -68,14 +68,14 @@ const ItemList = ({ items, toggle, fetchData }) => {
         alert("Item deleted successfully");
         await fetchData();
       } catch (error) {
-        console.error("Error deleting document: ", error);
+        // console.error("Error deleting document: ", error);
         alert("Error deleting item");
       }
     }
   };
 
   const handleEdit = () => {
-    console.log(selectedItem.itemId)
+    // console.log(selectedItem.itemId)
     navigate(`edit/${encodeURIComponent(selectedItem.itemId)}`);
   };  
 

@@ -1,136 +1,115 @@
-// <div className="w-screen h-screen flex p-12 bg-gray-900">
-    //   {/* Left side: Notes */}
-    //   <div className="relative bg-yellow-100 text-black rounded-md w-[40%] h-full flex flex-col justify-center p-6">
-    //     {/* Ping Circle */}
-    //     <div className="absolute -top-2 -right-2">
-    //       <div className="relative">
-    //         <span className="flex h-6 w-6">
-    //           <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-    //           <span className="relative inline-flex rounded-full h-6 w-6 bg-red-500"></span>
-    //         </span>
-    //       </div>
-    //     </div>
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { db } from '../../../../firebaseConfig';
+import { collection, getDocs, doc, getDoc } from 'firebase/firestore';
+import ImgOrder from "../../../assets/masterAdmin/orderView.png";
+import Customer from "../../../assets/masterAdmin/customer.png";
 
-    //     <h3 className="font-bold mb-2">Note for Visitors:</h3>
-    //     <ul className="list-disc ml-6">
-    //       <li>
-    //         <span className="font-bold">
-    //           This page is just for demo purposes
-    //         </span>{" "}
-    //         and is not completed yet.
-    //       </li>
-    //       <li>
-    //         The <span className="font-bold">"Restaurant Admin"</span> and{" "}
-    //         <span className="font-bold">"Food Admin"</span> buttons are
-    //         temporarily placed here for development and testing purposes and
-    //         will not be visible on the final page.
-    //       </li>
-    //       <li>
-    //         Navigation to the{" "}
-    //         <span className="font-bold">"Restaurant Admin"</span> page is
-    //         allowed if your role in the <strong>users</strong> database is
-    //         either:
-    //         <ul className="list-decimal ml-6">
-    //           <li>
-    //             <span className="font-bold">Role = Partner</span>
-    //           </li>
-    //           <li>
-    //             <span className="font-bold">isRestaurantAdmin = true</span>
-    //           </li>
-    //         </ul>
-    //       </li>
-    //       <li>
-    //         Navigation to the <span className="font-bold">"Food Admin"</span>{" "}
-    //         page is allowed if your role in the <strong>users</strong> database
-    //         is either:
-    //         <ul className="list-decimal ml-6">
-    //           <li>
-    //             <span className="font-bold">Role = Admin</span>
-    //           </li>
-    //           <li>
-    //             <span className="font-bold">isMasterAdmin = true</span>
-    //           </li>
-    //         </ul>
-    //       </li>
-    //       <li>
-    //         <span className="font-bold">
-    //           Currently, both the role and admin type are being checked.
-    //         </span>{" "}
-    //         If there are more logic conditions for accessing these sections,
-    //         they have not been implemented yet.
-    //       </li>
-    //       <li>
-    //         <span className="animate-pulse text-red-600 font-bold">
-    //           Important:
-    //         </span>{" "}
-    //         For demo purposes, you can use the following credentials to test
-    //         both Restaurant Admin and Food Admin sections:
-    //         <p>
-    //           <strong>*</strong> Email: <strong>arn@gmail.com</strong>
-    //         </p>
-    //         <p>
-    //           <strong>*</strong> Password: <strong>arn@gmail.com</strong>
-    //         </p>
-    //       </li>
-    //     </ul>
-    //   </div>
+const OrdersDetView = () => {
+    const [orderDetails, setOrderDetails] = useState(null);
+    const [orderIds, setOrderIds] = useState([]);
 
-    //   {/* Right side: User details and buttons */}
-    //   <div className=" text-white p-10 w-[60%] flex flex-col items-center justify-center gap-8">
-    //     <span className="flex items-center justify-center flex-col">
-    //       <h2>Your details: </h2>
-    //       <span className="border-gray-400 border px-5 py-2 rounded-md">
-    //         <p>
-    //           <strong>User Email:</strong> {currentUser?.email}
-    //         </p>
-    //         <p>
-    //           <strong>UID :</strong> {currentUser?.uid}
-    //         </p>
-    //       </span>
-    //     </span>
+    useEffect(() => {
+        const fetchOrderIds = async () => {
+            try {
+                const ordersCollection = collection(db, 'orders');
+                const orderSnapshots = await getDocs(ordersCollection);
+                
+                // Extracting order IDs from the fetched documents
+                const ids = orderSnapshots.docs.map(orderDoc => orderDoc.id);
+                
+                setOrderIds(ids); // Setting the order IDs to state
+                console.log(ids)
+            } catch (error) {
+                console.error("Error fetching order IDs: ", error);
+            }
+        };
 
-    //     {/* Links for testing purposes */}
-    //     <Link
-    //       to={`restaurantAdmin/${currentUser?.uid}`}
-    //       className="border-2 text-white w-48 py-2 flex items-center justify-center rounded-full bg-blue-600"
-    //     >
-    //       Restaurant Admin
-    //     </Link>
+        fetchOrderIds();
+    }, []);
 
-    //     <Link
-    //       to={`foodAdmin`}
-    //       className="border-2 text-white w-48 py-2 flex items-center justify-center rounded-full bg-blue-600"
-    //     >
-    //       Food Admin
-    //     </Link>
+    if (!orderDetails) return <div>Loading...</div>;
 
-    //     <button onClick={toggle} className="bg-red-500 px-4 py-2 rounded-full">
-    //       Logout
-    //     </button>
+    return (
+        <div className='bg-slate-100 px-6 py-10'>
+            {/* ... (previous code remains the same) ... */}
+            
+            <div className='grid grid-cols-12 gap-5 mt-10'>
+                <div className='lg:col-span-4 col-span-12 '>
+                    <div className='lg:block md:flex block justify-around gap-2'>
+                        <div className='bg-white rounded-lg w-full'>
+                            <div className='flex gap-4 items-center  p-5'>
+                                <img src={ImgOrder} className='md:h-28 md:w-28 h-16 w-16 rounded-lg' alt="" />
+                                <div>
+                                    <p className='text-lg text-slate-600'>From</p>
+                                    <p className='lg:text-3xl md:text-2xl text-xl font-semibold py-1 text-slate-900'>{orderDetails.restaurantName}</p>
+                                    <button className='text-lg bg-blue-100 px-2 mt-2 rounded-lg text-blue-600 underline'>View Details</button>
+                                </div>
+                            </div>
+                            <div className='bg-slate-800 rounded-lg p-5 flex mt-4 gap-3'>
+                                <div>
+                                    <img src={Customer} alt="" />
+                                </div>
+                                <div className='text-white space-y-1'>
+                                    <p className='font-medium text-[1.05rem]'>Ordered by - {orderDetails.name}</p>
+                                    <p className='font-medium text-[1.05rem] text-sky-300'>Delivery Location</p>
+                                    <p className=''>{orderDetails.deliveryAddress}</p>
+                                    <p className='font-medium text-[1.05rem] text-sky-300'>Contact</p>
+                                    <p className=''>Ph no. - {orderDetails.phoneNumber}</p>
+                                    <p className=''>Email ID - {orderDetails.email}</p>
+                                </div>
+                            </div>
+                        </div>
+                        {/* ... (delivery history section remains the same) ... */}
+                    </div>
+                </div>
+                <div className='lg:col-span-8 md:col-span-12 p-5 bg-white rounded-lg col-span-12 '>
+                    <span className='bg-green-100 p-2 px-3 text-2xl rounded-lg text-green-600 font-bold '>Order ID #{OrdersDetView.OrderId}</span>
+                    <div className='overflow-hidden overflow-x-scroll  mt-10'>
+                        <div className='md:w-full w-[35rem] rounded-lg'>
+                            <div className="bg-white shadow-xl">
+                                <table className="text-sm text-left rtl:text-right w-full">
+                                    <thead className="text-xl">
+                                        <tr>
+                                            <th scope="col" className="px-6 py-3">Items</th>
+                                            <th scope="col" className="px-3  py-3">Qty</th>
+                                            <th scope="col" className="px-6 py-3">Price</th>
+                                            <th scope="col" className="px-6 py-3">Total Price</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {orderDetails.items && orderDetails.items.map((item, index) => (
+                                            <tr key={index} className="hover:bg-gray-50">
+                                                <th scope="row" className="px-6 flex gap-3 py-4 font-medium whitespace-nowrap">
+                                                    <img src={item.itemImg} alt="" />
+                                                    <div>
+                                                        <p className='text-blue-500'>{item.label}</p>
+                                                        <p className='text-lg'>{item.name}</p>
+                                                    </div>
+                                                </th>
+                                                <td className="px-3  py-4 text-lg font-semibold">
+                                                    {item.quantity}
+                                                </td>
+                                                <td className="px-6 py-4 text-lg font-semibold">
+                                                    <span>&#3647;</span>{item.price}
+                                                </td>
+                                                <td className="px-6 py-4 text-lg  font-semibold">
+                                                    <div>
+                                                        <span>&#3647;</span>{item.totalPrice}
+                                                        <i className="bi ms-8 text-xl bi-x-circle"></i>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};
 
-    //     {show && (
-    //       <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-    //         <div className="bg-white h-[20rem] w-[28rem] rounded-xl text-center p-10 modal">
-    //           <i className="bi bi-box-arrow-right text-5xl text-white mb-4 font-bold bg-[#ff2d2d] p-2 px-4 rounded-full"></i>
-    //           <p className="text-3xl mt-8 mb-12 text-blue-900 font-semibold">
-    //             Are you sure you want to log out?
-    //           </p>
-    //           <div className="flex gap-2 items-center justify-center">
-    //             <button
-    //               onClick={() => setShow(false)} // Close the modal on "Cancel"
-    //               className="p-2 w-24 text-lg text-white font-semibold rounded-lg bg-slate-600"
-    //             >
-    //               Cancel
-    //             </button>
-    //             <button
-    //               onClick={handleLogOut}
-    //               className="p-2 w-24 text-lg text-white font-semibold rounded-lg bg-blue-600"
-    //             >
-    //               Log out
-    //             </button>
-    //           </div>
-    //         </div>
-    //       </div>
-    //     )}
-    //   </div>
-    // </div>
+export default OrdersDetView;

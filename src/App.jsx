@@ -98,7 +98,7 @@ const App = () => {
                 />
                 <Route path="ordersDetails" element={<OrdersDetails />} />
                 <Route
-                  path="ordersDetails/ordersDetView"
+                  path="ordersDetails/ordersDetView/:orderId"
                   element={<OrdersDetView />}
                 />
               </Route>
