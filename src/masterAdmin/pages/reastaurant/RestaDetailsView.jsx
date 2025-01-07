@@ -1,8 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import RestaImg from "../../../assets/masterAdmin/restaurant.png";
 import { Link, useParams } from "react-router-dom";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import ReactApexChart from "react-apexcharts";
 import { collection, doc, getDoc, getDocs } from "firebase/firestore";
 import { db } from "../../../../firebaseConfig";
@@ -40,21 +38,19 @@ const RestaDetailsView = () => {
     fetchRestaurant();
   }, [resId]);
 
-
   const fetchFoodItem = async () => {
     setLoading(true);
     try {
-      const foodItemsRef = collection(db, `food_items/${resId}/items`); 
-      const querySnapshot = await getDocs(foodItemsRef); 
-  
+      const foodItemsRef = collection(db, `food_items/${resId}/items`);
+      const querySnapshot = await getDocs(foodItemsRef);
+
       if (!querySnapshot.empty) {
-        const fetchedItems = querySnapshot.docs
-        .map((doc) => ({
+        const fetchedItems = querySnapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
-        }))  
-        setItems(fetchedItems); 
-        console.log(fetchedItems); 
+        }));
+        setItems(fetchedItems);
+        console.log(fetchedItems);
       } else {
         console.log("No food items found for this restaurant.");
       }
@@ -63,7 +59,7 @@ const RestaDetailsView = () => {
     } finally {
       setLoading(false); // Stop loading state
     }
-  }; 
+  };
 
   useEffect(() => {
     fetchFoodItem();
@@ -171,12 +167,11 @@ const RestaDetailsView = () => {
               </button>
             </div>
           </div>
-        
 
-        {/* Display food items in a modal when "View all Menus" is clicked */}
-        {showMenu && (
-          <ViewFoodItem items={items} onClose={() => setShowMenu(false)} />
-        )}
+          {/* Display food items in a modal when "View all Menus" is clicked */}
+          {showMenu && (
+            <ViewFoodItem items={items} onClose={() => setShowMenu(false)} />
+          )}
         </div>
 
         <div className="mt-10 rounded-lg bg-white p-6">

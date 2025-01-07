@@ -1,7 +1,15 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { db, storage } from "../../../../firebaseConfig";
-import { collection, addDoc, doc, setDoc } from "firebase/firestore";
+import {
+  collection,
+  addDoc,
+  updateDoc,
+  doc,
+  setDoc,
+  getDoc,
+  getDocs,
+} from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { MdFileUpload, MdLocationOn } from "react-icons/md";
 import axios from "axios";
@@ -9,6 +17,7 @@ import { useAuth } from "../../../AuthContext";
 import { FaImages, FaRegImage } from "react-icons/fa";
 
 const RestaInformation = () => {
+  const { id } = useParams();
   const [restaurantName, setRestaurantName] = useState("");
   const [restaurantId, setRestaurantId] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -20,12 +29,70 @@ const RestaInformation = () => {
   const [uploading, setUploading] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const { currentUser } = useAuth();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const GOOGLE_API_KEY = "AIzaSyDwTBiBiGtJLrlbaiKzVN5BBCj8He1l5Zc";
 
   const handleSubmit = async () => {
+    if (
+      restaurantName.trim() === "" ||
+      phoneNumber.trim() === "" ||
+      emailId.trim() === "" ||
+      foodType.trim() === "" ||
+      location.trim() === "" ||
+      description.trim() === "" ||
+      !image ||
+      image === ""
+    ) {
+      alert("Please provide all details");
+      return;
+    }
+    // return;
+    const querySnapshot = await getDocs(
+      collection(db, "restaurants", id, "restaurantDetails")
+    );
+    if (!querySnapshot.empty) {
+      alert("Restaurant already exists!!");
+      return;
+    }
     try {
+      // // First, generate a new document with an auto-generated ID
+      // const newRestaurantRef = await addDoc(
+      //   collection(db, "restaurants", currentUser.uid, "restaurantDetails"),
+      //   {
+      //     name: restaurantName,
+      //     phoneNumber,
+      //     emailId,
+      //     foodType,
+      //     location,
+      //     description,
+      //     imageUrl: image,
+      //     status: "Pending",
+      //     ownerId: currentUser.uid,
+      //     date: new Date()
+      //   }
+      // );
+
+      // // Now, update the document with the auto-generated ID in the 'id' field
+      // await updateDoc(newRestaurantRef, {
+      //   id: newRestaurantRef.id, // Store the auto-generated ID
+      // });
+
+      // // Add to the 'restroRequests' collection (with a generated restaurantId)
+      // await setDoc(doc(db, "restroRequests",newRestaurantRef.id), {
+      //   name: restaurantName,
+      //   id: newRestaurantRef.id,
+      //   phoneNumber,
+      //   emailId,
+      //   foodType,
+      //   location,
+      //   description,
+      //   imageUrl: image,
+      //   status: "Pending",
+      //   ownerId: currentUser.uid,
+      //   date: new Date()
+      // });
+
       // Add to the 'restaurants' collection (with a specific restaurantId)
       await setDoc(
         doc(
@@ -45,7 +112,7 @@ const RestaInformation = () => {
           description,
           imageUrl: image,
           status: "Pending",
-          ownerId: currentUser.uid
+          ownerId: currentUser.uid,
         }
       );
 
@@ -59,7 +126,7 @@ const RestaInformation = () => {
         location,
         description,
         imageUrl: image,
-        status: "Pending", 
+        status: "Pending",
         ownerId: currentUser.uid,
       });
 
@@ -73,7 +140,7 @@ const RestaInformation = () => {
       setDescription("");
       setImage("");
       setUploading(false);
-      navigate(`/${currentUser.uid}/restaurant`)
+      navigate(`/${currentUser.uid}/restaurant`);
     } catch (error) {
       console.error("Error adding document: ", error);
     }
@@ -93,14 +160,14 @@ const RestaInformation = () => {
       setUploading(false);
     }
   };
-  
+
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
     if (file) {
       await handleImageUpload(file); // Pass the file directly to handleImageUpload
     }
   };
-  
+
   const handleDrop = async (e) => {
     e.preventDefault();
     const file = e.dataTransfer.files[0];
@@ -108,12 +175,10 @@ const RestaInformation = () => {
       await handleImageUpload(file); // Pass the file directly to handleImageUpload
     }
   };
-  
+
   const handleDragOver = (e) => {
     e.preventDefault(); // Prevent default drag over behavior
   };
-  
-  
 
   const getCurrentLocation = () => {
     if (navigator.geolocation) {
@@ -149,12 +214,10 @@ const RestaInformation = () => {
     }
   };
 
-  
-
   return (
     <div className="bg-slate-100 px-8 pt-10">
       <Link
-        to={`/${currentUser.uid}`}
+        to={`/${currentUser.uid}/restaurant`}
         className="lg:text-3xl md:text-2xl font-bold text-blue-600"
       >
         <i className="bi bi-arrow-left me-2"></i>
@@ -249,7 +312,7 @@ const RestaInformation = () => {
                       className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                       id="restaurant-name"
                       type="text"
-                      placeholder="Restaurant Name"
+                      placeholder="your restaurant name..."
                       value={restaurantName}
                       onChange={(e) => setRestaurantName(e.target.value)}
                     />
@@ -283,7 +346,7 @@ const RestaInformation = () => {
                       className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                       id="phone-number"
                       type="tel"
-                      placeholder="Phone Number"
+                      placeholder="+66 XX XXX XXXX..."
                       value={phoneNumber}
                       onChange={(e) => setPhoneNumber(e.target.value)}
                     />
@@ -300,7 +363,7 @@ const RestaInformation = () => {
                       className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                       id="email-id"
                       type="email"
-                      placeholder="Email ID"
+                      placeholder="mymail123@gmail.com..."
                       value={emailId}
                       onChange={(e) => setEmailId(e.target.value)}
                     />
@@ -317,7 +380,7 @@ const RestaInformation = () => {
                       className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                       id="food-type"
                       type="text"
-                      placeholder="Food Type"
+                      placeholder="indian, chinese, south indian, ..."
                       value={foodType}
                       onChange={(e) => setFoodType(e.target.value)}
                     />
@@ -330,19 +393,20 @@ const RestaInformation = () => {
                     >
                       Location
                     </label>
-                    <div className="relative">
+                    <div className="flex items-center">
                       <input
-                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline pr-10"
+                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                         id="location"
                         type="text"
-                        placeholder="Location"
+                        placeholder="your address here"
                         value={location}
                         onChange={(e) => setLocation(e.target.value)}
                       />
                       <button
                         type="button"
                         onClick={getCurrentLocation}
-                        className="absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-500"
+                        className="ml-2 text-white bg-blue-600 hover:bg-blue-700 font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                        title="Click Here to pick your location automatically!"
                       >
                         <MdLocationOn size={20} />
                       </button>
@@ -359,7 +423,9 @@ const RestaInformation = () => {
                     <textarea
                       className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                       id="description"
-                      placeholder="Description"
+                      rows={3}
+                      style={{ resize: "none" }}
+                      placeholder="Tell more about your restaurant.."
                       value={description}
                       onChange={(e) => setDescription(e.target.value)}
                     />

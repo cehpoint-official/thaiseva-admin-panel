@@ -1,7 +1,8 @@
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { MdFileUpload } from "react-icons/md";
 import { FaImages } from "react-icons/fa";
 import { FaRegImage } from "react-icons/fa6";
+import { useEffect } from "react";
 
 const Template = ({
   image,
@@ -29,10 +30,14 @@ const Template = ({
   submitBtn = "Add new food Item",
   IdDisable = false,
 }) => {
+  const { id } = useParams();
+  useEffect(() => {
+    console.log(itemType);
+  }, [itemType, setItemType]);
   return (
     <div className="bg-slate-100 px-8 pt-10">
       <Link
-        to="/foodItem"
+        to={`/${id}/foodItem`}
         className="lg:text-3xl md:text-2xl font-bold text-blue-600"
       >
         <i className="bi bi-arrow-left me-2"></i>
@@ -126,19 +131,25 @@ const Template = ({
                   value={itemName}
                   onChange={(e) => setItemName(e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none"
-                  placeholder="Enter item name"
+                  placeholder="enter item name here like momos..."
                 />
               </div>
 
               <div className="flex items-center space-x-4">
-                <label className={`w-[10rem] text-sm font-medium ${IdDisable ? 'text-gray-500' : 'text-gray-700'}`}>
+                <label
+                  className={`w-[10rem] text-sm font-medium ${
+                    IdDisable ? "text-gray-500" : "text-gray-700"
+                  }`}
+                >
                   Item ID
                 </label>
                 <input
                   type="text"
                   value={itemId}
                   onChange={(e) => setItemId(e.target.value)}
-                  className={`w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none ${IdDisable && 'text-gray-500'}`}
+                  className={`w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none ${
+                    IdDisable && "text-gray-500"
+                  }`}
                   placeholder="Enter item ID"
                   readOnly={IdDisable} // Conditionally make it read-only
                 />
@@ -149,11 +160,11 @@ const Template = ({
                   Price
                 </label>
                 <input
-                  type="tel"
+                  type="number"
                   value={price}
                   onChange={(e) => setPrice(e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none"
-                  placeholder="Enter price"
+                  placeholder="฿ 0XX..."
                 />
               </div>
 
@@ -162,11 +173,21 @@ const Template = ({
                   Discount
                 </label>
                 <input
-                  type="text"
+                  type="number"
+                  min={1}
+                  max={100}
                   value={discount}
-                  onChange={(e) => setDiscount(e.target.value)}
+                  onChange={(e) => {
+                    let inputValue = e.target.value;
+                    if (
+                      inputValue === "" ||
+                      (Number(inputValue) >= 0 && Number(inputValue) <= 100)
+                    ) {
+                      setDiscount(inputValue);
+                    }
+                  }}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none"
-                  placeholder="Enter discount"
+                  placeholder="0 - 100"
                 />
               </div>
 
@@ -179,7 +200,7 @@ const Template = ({
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none"
-                  placeholder="Enter category"
+                  placeholder="Breakfast, Fastfood, ..."
                 />
               </div>
 
@@ -187,7 +208,27 @@ const Template = ({
                 <label className="w-[10rem] text-sm font-medium text-gray-700">
                   Item Type
                 </label>
-                <select
+                <div className="w-full px-3 py-2 flex gap-10">
+                  <label className="flex gap-3 pr-5 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none">
+                    <input
+                      type="radio"
+                      name="foodType"
+                      value="Veg"
+                      onChange={(e) => setItemType(e.target.value)}
+                    />
+                    Veg
+                  </label>
+                  <label className="flex gap-3 pr-5 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none">
+                    <input
+                      type="radio"
+                      name="foodType"
+                      value="Non Veg"
+                      onChange={(e) => setItemType(e.target.value)}
+                    />
+                    Non Veg
+                  </label>
+                </div>
+                {/* <select
                   value={itemType}
                   onChange={(e) => setItemType(e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none"
@@ -197,7 +238,7 @@ const Template = ({
                   </option>
                   <option value="Veg">Veg</option>
                   <option value="Non Veg">Non Veg</option>
-                </select>
+                </select> */}
               </div>
 
               <div className="flex items-center space-x-4">
@@ -208,7 +249,9 @@ const Template = ({
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none"
-                  placeholder="Enter description"
+                  placeholder="Tell more about this item.."
+                  style={{ resize: "none" }}
+                  rows={3}
                 />
               </div>
 

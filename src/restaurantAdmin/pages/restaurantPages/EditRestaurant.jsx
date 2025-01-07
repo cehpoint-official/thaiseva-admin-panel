@@ -340,6 +340,7 @@ const EditRestaurant = () => {
                       <button
                         type="button"
                         onClick={getCurrentLocation}
+                        title="Click Here to pick your location automatically!"
                         className="ml-2 text-white bg-blue-600 hover:bg-blue-700 font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                       >
                         <MdLocationOn size={24} />
@@ -358,6 +359,7 @@ const EditRestaurant = () => {
                       className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                       id="description"
                       rows="3"
+                      style={{ resize: "none" }}
                       placeholder="Description"
                       value={description}
                       onChange={(e) => setDescription(e.target.value)}

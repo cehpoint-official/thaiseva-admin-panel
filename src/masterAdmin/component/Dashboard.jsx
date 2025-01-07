@@ -54,7 +54,7 @@ const TopNav = ({ toggle }) => {
     return () => {
       document.removeEventListener("click", handleClickOutside);
     };
-  }, []);
+  }, [setProfileToggle, setNotification]);
 
   // Coupon section
   const [userIds, setUserIds] = useState([]);
@@ -272,15 +272,15 @@ const TopNav = ({ toggle }) => {
               </div>
             </>
           )}
-          <div className="flex gap-6 items-center my-2">
-            <div ref={parentRef}>
+          <div className="flex gap-6 items-center my-2" ref={parentRef}>
+            <div>
               <i
                 onClick={(e) => {
                   e.stopPropagation();
                   setNotification(!notification);
                   setProfileToggle(false);
                 }}
-                className="bi text-2xl bi-bell-fill text-blue-700 relative lg:me-10"
+                className="bi text-2xl bi-bell-fill text-blue-700 relative lg:me-10 cursor-pointer"
               >
                 <div className="bg-red-500 absolute text-[15px] flex justify-center items-center w-4 h-4 text-white rounded-full top-0 -right-2">
                   2
@@ -321,7 +321,7 @@ const TopNav = ({ toggle }) => {
                       <input
                         type="search"
                         id="default-search"
-                        className="block w-full p-1 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500  dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        className="block w-full p-1 ps-10 text-m text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500  dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:bg-gray-700"
                         placeholder="Search here"
                         required
                       />
@@ -357,7 +357,7 @@ const TopNav = ({ toggle }) => {
               </div>
             </div>
 
-            <div ref={parentRef}>
+            <div>
               <div
                 onClick={(e) => {
                   e.stopPropagation();
@@ -505,7 +505,7 @@ export const MasterStat = () => {
         if (orderData.CustomerName) {
           uniqueCustomers.add(orderData.CustomerName);
         }
-        // Upto this all for fetching total unique 
+        // Upto this all for fetching total unique
       }
 
       setSoldCount(soldCount);
@@ -644,12 +644,12 @@ export const MasterStat = () => {
               </button>
             </div>
 
-            <div className="bg-green-100 text-xl p-2 rounded-lg flex justify-between items-center text-green-600">
-              <Link to="/foodAdmin/ordersDetails">See Orders Details </Link>
-              <Link to="/foodAdmin/ordersDetails">
+            <Link to="/foodAdmin/ordersDetails">
+              <div className="bg-green-100 text-xl p-2 rounded-lg flex justify-between items-center text-green-600">
+                <div>See Orders Details</div>
                 <i className="bi bi-arrow-right-short text-4xl"></i>
-              </Link>
-            </div>
+              </div>
+            </Link>
 
             <div className="grid grid-cols-12 my-6 gap-6">
               <div className="col-span-4 border border-gray-400 rounded-lg py-4 ps-4">

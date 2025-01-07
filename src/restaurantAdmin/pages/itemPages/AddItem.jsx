@@ -1,9 +1,17 @@
 import { useEffect, useState } from "react";
 import { db, storage } from "../../../../firebaseConfig";
-import { setDoc, doc, collection, getDocs, query, addDoc } from "firebase/firestore";
+import {
+  setDoc,
+  doc,
+  collection,
+  getDocs,
+  query,
+  addDoc,
+} from "firebase/firestore";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import Template from "./Template";
 import { useAuth } from "../../../AuthContext";
+import { useNavigate, useParams } from "react-router-dom";
 
 const AddItem = () => {
   const { currentUser } = useAuth();
@@ -16,20 +24,22 @@ const AddItem = () => {
   const [description, setDescription] = useState("");
   const [uploading, setUploading] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [resId, setResId] = useState('')
-  const [image, setImage] = useState(null); 
-const [imageFile, setImageFile] = useState(null);
-  
+  const [resId, setResId] = useState("");
+  const [image, setImage] = useState(null);
+  const [imageFile, setImageFile] = useState(null);
+
+  const navigate = useNavigate();
+  const { id } = useParams();
 
   const handleFileChange = (e) => {
     if (e.target.files[0]) {
       const selectedFile = e.target.files[0];
       const imageUrl = URL.createObjectURL(selectedFile);
-      setImage(imageUrl);  // Set preview URL
-      setImageFile(selectedFile);  // Set actual file
+      setImage(imageUrl); // Set preview URL
+      setImageFile(selectedFile); // Set actual file
       setDropdownOpen(false);
     }
-  };  
+  };
 
   const handleDrop = (e) => {
     e.preventDefault();
@@ -57,15 +67,15 @@ const [imageFile, setImageFile] = useState(null);
       alert("Please fill all fields.");
       return;
     }
-  
+
     try {
       let imageUrl = "";
-  
+
       // Use imageFile for upload instead of image
       if (imageFile) {
         const imageRef = ref(storage, `images/${itemId}`);
         const uploadTask = uploadBytesResumable(imageRef, imageFile);
-  
+
         setUploading(true);
         await new Promise((resolve, reject) => {
           uploadTask.on(
@@ -86,14 +96,12 @@ const [imageFile, setImageFile] = useState(null);
           );
         });
       }
-  
       await saveItemData(imageUrl);
     } catch (error) {
       console.error("Error adding item:", error);
       alert("Failed to add item. Please try again.");
     }
   };
-  
 
   const fetchRestaurantDetails = async () => {
     try {
@@ -125,25 +133,21 @@ const [imageFile, setImageFile] = useState(null);
       console.log("ResId updated: ", resId);
     }
   }, [resId]);
-  
 
-  const docItemId = itemId.replace('#', '');
+  const docItemId = itemId.replace("#", "");
 
   const saveItemData = async (imageUrl) => {
-    await setDoc(
-      doc(db, `food_items/${resId}/items/${docItemId}`), 
-      {
-        itemName,
-        itemId,
-        price,
-        discount,
-        category,
-        itemType,
-        description,
-        imageUrl,
-        active: false,
-      }
-    );
+    await setDoc(doc(db, `food_items/${resId}/items/${docItemId}`), {
+      itemName,
+      itemId,
+      price,
+      discount,
+      category,
+      itemType,
+      description,
+      imageUrl,
+      active: false,
+    });
     alert("Item added successfully!");
     setItemName("");
     setItemId("");
@@ -153,6 +157,7 @@ const [imageFile, setImageFile] = useState(null);
     setDescription("");
     setImage(null);
     setUploading(false);
+    navigate(`/${id}/fooditem`);
   };
 
   return (

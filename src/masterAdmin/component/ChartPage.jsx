@@ -11,20 +11,22 @@ import DATA from "./data.json";
 ChartJS.register(CategoryScale, ArcElement, Tooltip, Legend);
 
 const MasterChartPage = ({delivered, cancelled, totalOrders}) => {
-  const extractData = (key) => DATA.map((item) => item[key]);
+  // const extractData = (key) => DATA.map((item) => item[key]);
 
   // const deliveryData = extractData('delivery');
-  const deliveredData = extractData("Delivered");
-  const cancelledData = extractData("cancelled");
-
+  // const deliveredData = extractData("Delivered");
+  // const cancelledData = extractData("cancelled");
+// console.log(deliveredData,cancelledData,extractData);
   const dataForDoughnut = {
     labels: ["", ""],
     datasets: [
       {
         data: [
+          // deliveredData,
+          // cancelledData
           // deliveryData.reduce((a, b) => a + b, 0),
-          deliveredData.reduce((a, b) => a + b, 0),
-          cancelledData.reduce((a, b) => a + b, 0),
+          delivered,
+          cancelled,
         ],
         backgroundColor: [
           "rgba(43, 193, 86, 1)",

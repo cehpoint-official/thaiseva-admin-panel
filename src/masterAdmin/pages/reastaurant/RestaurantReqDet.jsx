@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import {
   collection,
   deleteDoc,
@@ -53,13 +51,13 @@ const RestaurantReqDet = () => {
         await setDoc(acceptedDocRef, restaurantData);
         await deleteDoc(requestDocRef);
 
-        toast.success("Request Accepted and Verified");
+        alert("Request Accepted and Verified");
       } else {
-        toast.error("No such request exists!");
+        alert("No such request exists!");
       }
     } catch (error) {
       console.error("Error accepting request: ", error);
-      toast.error("Failed to accept request");
+      alert("Failed to accept request");
     }
   };
 
@@ -75,13 +73,13 @@ const RestaurantReqDet = () => {
         await setDoc(acceptedDocRef, restaurantData);
         await deleteDoc(requestDocRef);
 
-        toast.success("Request Accepted and Verified");
+        alert("Request Accepted and Verified");
       } else {
-        toast.error("No such request exists!");
+        alert("No such request exists!");
       }
     } catch (error) {
       console.error("Error accepting request: ", error);
-      toast.error("Failed to accept request");
+      alert("Failed to accept request");
     }
   };
 
@@ -201,7 +199,6 @@ const RestaurantReqDet = () => {
           )}
 
           <div className="flex justify-end mt-10 gap-4">
-            <ToastContainer />
             <button
               onClick={handleReject}
               className="bg-gray-400 px-3 p-2 text-lg text-white font-semibold rounded-lg"

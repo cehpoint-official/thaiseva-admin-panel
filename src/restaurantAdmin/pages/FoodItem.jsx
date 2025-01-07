@@ -10,14 +10,14 @@ const FoodItem = () => {
   const [loading, setLoading] = useState(true); // Loading state
   const [restaurantExists, setRestaurantExists] = useState(false); // State to track if restaurant exists
   const currentUserParam = useParams();
-  const currentUser = currentUserParam['id'];
+  const currentUser = currentUserParam["id"];
   // console.log(currentUser)
   const navigate = useNavigate();
-  const [resId, setResId] = useState('');
+  const [resId, setResId] = useState("");
 
   useEffect(() => {
-    document.title ='Thaiseva | Food Item'
-  }, [])
+    document.title = "Thaiseva | Food Item";
+  }, []);
 
   const checkRestaurant = async () => {
     try {
@@ -28,7 +28,7 @@ const FoodItem = () => {
         setRestaurantExists(true);
       } else {
         setRestaurantExists(false);
-        navigate(`/${currentUser}/restaurant/addrestaurant/restaInformation`); // Redirect if no restaurant found
+        // navigate(`/${currentUser}/restaurant/addrestaurant/restaInformation`); // Redirect if no restaurant found
       }
     } catch (error) {
       console.error("Error checking restaurant: ", error);
@@ -36,7 +36,6 @@ const FoodItem = () => {
       setLoading(false);
     }
   };
-
 
   const fetchRestaurantDetails = async () => {
     try {
@@ -68,23 +67,22 @@ const FoodItem = () => {
   //     console.log("ResId updated: ", resId);
   // }, [resId]);
 
-
   const fetchData = async () => {
     setLoading(true);
     try {
-      const foodItemsRef = collection(db, `food_items/${resId}/items`); 
-      const querySnapshot = await getDocs(foodItemsRef); 
-  
+      const foodItemsRef = collection(db, `food_items/${resId}/items`);
+      const querySnapshot = await getDocs(foodItemsRef);
+
       if (!querySnapshot.empty) {
         const fetchedItems = querySnapshot.docs
-        .map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }))
-        .filter((item) => item.active === !toggle);
-  
-        setItems(fetchedItems); 
-        // console.log(fetchedItems); 
+          .map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }))
+          .filter((item) => item.active === !toggle);
+
+        setItems(fetchedItems);
+        // console.log(fetchedItems);
       } else {
         console.log("No food items found for this restaurant.");
       }
@@ -93,8 +91,7 @@ const FoodItem = () => {
     } finally {
       setLoading(false); // Stop loading state
     }
-  }; 
-  
+  };
 
   useEffect(() => {
     checkRestaurant();
@@ -107,59 +104,79 @@ const FoodItem = () => {
   }, [toggle, restaurantExists]);
 
   return (
-    <div className="bg-slate-100 px-8 pt-10">
-      <div className="flex justify-between">
-        <p className="lg:text-3xl md:text-2xl font-bold text-blue-600">
-          Food Item
-        </p>
-        {restaurantExists && (
-          <Link to="addItem">
-            <button
-              className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-              type="button"
-            >
-              + Add a new food Item
-            </button>
-          </Link>
-        )}
-      </div>
-
-      <div className="bg-white p-10 mt-10 rounded-lg relative">
-        <div className="mb-10">
-          <button
-            type="button"
-            onClick={() => setToggle(false)}
-            className={`focus:text-white hover:text-white ring-1 ring-slate-100 focus:bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2 text-center me-2 mb-2 ${
-              !toggle ? "bg-blue-700 text-white" : "bg-white text-blue-700"
-            }`}
-          >
-            Active
-          </button>
-          <button
-            type="button"
-            onClick={() => setToggle(true)}
-            className={`focus:text-white hover:text-white ring-1 ring-slate-100 focus:bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2 text-center me-2 mb-2 ${
-              toggle ? "bg-blue-700 text-white" : "bg-white text-blue-700"
-            }`}
-          >
-            Inactive
-          </button>
+    <>
+      {!restaurantExists ? (
+        <div className="bg-slate-100 px-8 pt-10 h-[80vh]">
+          <div className="bg-white py-28 mb-20 h-[80%] rounded-lg shadow-blue-900 flex items-center justify-center mt-10">
+            <div className="text-center">
+              <p className="text-slate-500 mb-6 text-lg">
+                Please add a Restaurant before adding Food items!
+              </p>
+              <Link
+                to={`/${currentUser}/restaurant`}
+                className="px-4 py-2 rounded-lg bg-blue-700 text-white text-lg"
+              >
+                Click to Add your Restaurant
+              </Link>
+            </div>
+          </div>
         </div>
+      ) : (
+        <div className="bg-slate-100 px-8 pt-10">
+          <div className="flex justify-between">
+            <p className="lg:text-3xl md:text-2xl font-bold text-blue-600">
+              Food Item
+            </p>
+            {restaurantExists && (
+              <Link to="addItem">
+                <button
+                  className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                  type="button"
+                >
+                  + Add a new food Item
+                </button>
+              </Link>
+            )}
+          </div>
 
-        {/* Loading message */}
-        {loading ? (
-          <p>Loading...</p>
-        ) : restaurantExists ? (
-          items.length === 0 ? (
-            <p>No items yet</p>
-          ) : (
-            <ItemList items={items} toggle={toggle} fetchData={fetchData} />
-          )
-        ) : (
-          <p>No restaurant found. Redirecting...</p>
-        )}
-      </div>
-    </div>
+          <div className="bg-white p-10 mt-10 rounded-lg relative">
+            <div className="mb-10">
+              <button
+                type="button"
+                onClick={() => setToggle(false)}
+                className={`focus:text-white hover:text-white ring-1 ring-slate-100 focus:bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2 text-center me-2 mb-2 ${
+                  !toggle ? "bg-blue-700 text-white" : "bg-white text-blue-700"
+                }`}
+              >
+                Active
+              </button>
+              <button
+                type="button"
+                onClick={() => setToggle(true)}
+                className={`focus:text-white hover:text-white ring-1 ring-slate-100 focus:bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2 text-center me-2 mb-2 ${
+                  toggle ? "bg-blue-700 text-white" : "bg-white text-blue-700"
+                }`}
+              >
+                Inactive
+              </button>
+            </div>
+
+            {/* Loading message */}
+            {loading ? (
+              <p>Loading...</p>
+            ) : restaurantExists ? (
+              items.length === 0 ? (
+                <p>No items yet</p>
+              ) : (
+                <ItemList items={items} toggle={toggle} fetchData={fetchData} />
+              )
+            ) : (
+              <p>No restaurant found. Redirecting...</p>
+            )}
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 

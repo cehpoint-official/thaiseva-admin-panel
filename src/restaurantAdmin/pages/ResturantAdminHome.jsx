@@ -9,10 +9,10 @@ const ResturantAdminHome = () => {
   const { currentUser } = useAuth();
   const userId = currentUser?.uid;
   useEffect(() => {
-    document.title ='Thaiseva | Food Portal'
-  }, [])
+    document.title = "Thaiseva | Food Portal";
+  }, []);
   return (
-    <div className='flex items-start'>
+    <div className="flex items-start bg-slate-100">
       <Sidebar toggle={toggle} show={show} userId={userId} />
       <Dashboard toggle={toggle} show={show} />
     </div>

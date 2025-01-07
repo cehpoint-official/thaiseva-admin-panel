@@ -20,10 +20,12 @@ const Dashboard = ({ toggle }) => {
     document.title = "Thaiseva | Dashboard";
   }, []);
   return (
-    <div className="w-full">
-      <TopNav toggle={toggle} />
-      <Outlet />
-    </div>
+    <>
+      <div className="w-full min-h-screen">
+        <TopNav toggle={toggle} />
+        <Outlet />
+      </div>
+    </>
   );
 };
 
@@ -57,10 +59,14 @@ const TopNav = ({ toggle }) => {
   if (!currentUser) {
     return <p>No user is logged in.</p>;
   }
+
+  useEffect(() => {
+    console.log(currentUser);
+  }, []);
   return (
     <>
-      <div className="w-full   py-2  z-50">
-        <div className="justify-between   items-center flex  p-2 ">
+      <div className="bg-white w-full sticky py-2 z-50">
+        <div className="justify-between items-center flex p-2">
           <div className="flex  md:mx-5  w-[50%] ">
             <button onClick={toggle} className="">
               <i className="bi text-2xl bi-menu-button-wide-fill"></i>
@@ -101,15 +107,18 @@ const TopNav = ({ toggle }) => {
               </div>
             </form>
           </div>
-          <div className="flex gap-6 items-center my-2">
-            <div ref={parentRef}>
+          <div
+            className="flex gap-16 items-center my-2 w-[30%] justify-end"
+            ref={parentRef}
+          >
+            <div>
               <i
                 onClick={(e) => {
                   e.stopPropagation();
                   setNotification(!notification);
                   setProfileToggle(false);
                 }}
-                className="bi text-2xl bi-bell-fill text-blue-700 relative lg:me-10"
+                className="bi text-2xl bi-bell-fill text-blue-700 relative lg:me-10 cursor-pointer"
               >
                 <div className="bg-red-500 absolute text-[15px] flex justify-center items-center w-4 h-4 text-white rounded-full top-0 -right-2">
                   2
@@ -153,6 +162,9 @@ const TopNav = ({ toggle }) => {
                         className="block w-full p-1 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500  dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         placeholder="Search here"
                         required
+                        onChange={(e) => {
+                          console.log(e.target.value);
+                        }}
                       />
                     </div>
                   </form>
@@ -186,7 +198,7 @@ const TopNav = ({ toggle }) => {
               </div>
             </div>
 
-            <div ref={parentRef}>
+            <div>
               <div
                 onClick={(e) => {
                   e.stopPropagation();
@@ -207,11 +219,11 @@ const TopNav = ({ toggle }) => {
               </div>
 
               <div
-                className={`p-4 z-10 py-10 top-24 right-10 bg-slate-50 rounded-xl shadow-2xl w-[18rem]  flex justify-center absolute ${
+                className={`z-10 right-10 w-[18rem]  flex justify-center absolute ${
                   !profileToggle ? "hidden" : "block"
                 }  `}
               >
-                <div className="max-w-md mx-auto bg-white p-8 rounded-lg shadow-lg mt-10">
+                <div className="max-w-md mx-auto bg-white p-6 rounded-lg shadow-lg mt-10">
                   <h2 className="text-2xl font-semibold text-gray-800 mb-4">
                     User Profile
                   </h2>
@@ -264,8 +276,8 @@ export const Stat = () => {
         let deliveredCount = 0; // Initialize count for Delivered
         let pendingCount = 0; // Initialize count for Pending
         let cancelCount = 0; // Initialize count for Cancelled
-        let newOrderCount = 0
-        let onDeliveryCount = 0
+        let newOrderCount = 0;
+        let onDeliveryCount = 0;
         let uniqueCustomers = new Set(); // Set to store unique Customer IDs
 
         if (!ordersSnapshot.empty) {
@@ -297,17 +309,21 @@ export const Stat = () => {
               } else if (
                 status === "Pending" ||
                 status === "New Order" ||
-                status === "Preparing" || 
+                status === "Preparing" ||
                 status === "On Delivery"
               ) {
                 pendingCount++;
-              } if (status === "Cancelled") {
+              }
+              if (status === "Cancelled") {
                 cancelCount++;
-              } if (status === "New Order") {
+              }
+              if (status === "New Order") {
                 newOrderCount++;
-              } if (status === "On Delivery") {
+              }
+              if (status === "On Delivery") {
                 onDeliveryCount++;
-              } if (status === "Delivered") {
+              }
+              if (status === "Delivered") {
                 deliveredCount++;
               }
 
@@ -322,8 +338,8 @@ export const Stat = () => {
           // Set the total counts for Payment Done, Delivered, Pending, and Cancelled
           setCompleteOrder(paymentDoneCount);
           setDelivered(deliveredCount);
-          setNewOrder(newOrderCount)
-          setOnDelivery(onDeliveryCount)
+          setNewOrder(newOrderCount);
+          setOnDelivery(onDeliveryCount);
           setPending(pendingCount); // Set the pending count
           setCanceled(cancelCount); // Set the canceled count
           setCountCustomer(uniqueCustomers.size);
@@ -335,7 +351,7 @@ export const Stat = () => {
           // console.log("Delivered Count: ", deliveredCount);
           // console.log("Pending Count: ", pendingCount);
         } else {
-          setError("No orders found for this restaurant.");
+          setError("No orders found for this Restaurant.");
         }
       } catch (error) {
         // console.error("Error fetching orders: ", error);
@@ -351,14 +367,20 @@ export const Stat = () => {
   if (loading) return <p>Loading...</p>;
   if (error)
     return (
-      <div className="w-full h-full mt-20 text-3xl flex items-center justify-center">
-        <span className="w-[40vw] text-center">{error}</span>
-      </div>
+      <>
+        <div className="bg-slate-100 px-8 pt-10 h-[80vh]">
+          <div className="bg-white py-28 mb-20 h-[80%] rounded-lg shadow-blue-900 flex items-center justify-center mt-10">
+            <div className="text-center">
+              <p className="text-slate-500 mb-6 text-lg">{error}</p>
+            </div>
+          </div>
+        </div>
+      </>
     );
 
   return (
     <>
-      <div className="bg-slate-100 px-8 pt-10">
+      <div className="px-8 pt-10">
         <div className="flex justify-between items-center">
           <p className="lg:text-4xl md:text-2xl font-bold text-blue-600">
             Dashboard
@@ -429,7 +451,7 @@ export const Stat = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-12 mt-10  gap-6">
+        <div className="grid grid-cols-12 max-xl:grid-cols-6 mt-10  gap-6">
           <div className="col-span-12 lg:col-span-6 bg-white p-6 rounded-lg">
             <p className="text-xl font-bold">Orders Summary</p>
 

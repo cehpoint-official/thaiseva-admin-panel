@@ -30,7 +30,7 @@ const Sidebar = ({ show, toggle, userId }) => {
         }
     </>
     return show && <>
-        <div className='w-[300px] sticky top-0  h-screen '>
+        <div className='bg-white w-[300px] sticky top-0  h-screen'>
             {/* header start */}
             <div className='p-6 gap-2 flex '>
                 <img src={Logo} className='mix-blend-multiply' alt="" />

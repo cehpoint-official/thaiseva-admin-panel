@@ -2,19 +2,25 @@ import { useState, useEffect } from "react";
 import RestaImg from "../../assets/myRestaurent.png";
 import { Link, useParams } from "react-router-dom";
 import { db } from "../../../firebaseConfig";
-import { collection, doc, getDoc, getDocs, updateDoc } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  updateDoc,
+} from "firebase/firestore";
 import Addrestaurant from "./restaurantPages/Addrestaurant";
 
 const Restaurant = () => {
   const currentUserParam = useParams();
-  const currentUser = currentUserParam["id"]; 
-  const [toggle, setToggle] = useState(false); 
+  const currentUser = currentUserParam["id"];
+  const [toggle, setToggle] = useState(false);
   const [restaurantData, setRestaurantData] = useState(null);
-  const [loading, setLoading] = useState(true); 
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    document.title ='Thaiseva | My Restaurant'
-  }, [])
+    document.title = "Thaiseva | My Restaurant";
+  }, []);
 
   useEffect(() => {
     const fetchRestaurantData = async () => {
@@ -26,7 +32,7 @@ const Restaurant = () => {
           id: doc.id,
           ...doc.data(),
         }));
-    
+
         if (data.length > 0) {
           const restaurant = data[0];
           const rejectedDocRef = doc(db, "rejectedRestaurants", restaurant.id);
@@ -34,17 +40,17 @@ const Restaurant = () => {
           if (rejectedDocSnap.exists()) {
             restaurant.status = "Rejected";
           }
-    
+
           const acceptedDocRef = doc(db, "acceptedRestaurants", restaurant.id);
           const acceptedDocSnap = await getDoc(acceptedDocRef);
           if (acceptedDocSnap.exists()) {
             restaurant.status = "Verified";
             const acceptedRestaurantData = acceptedDocSnap.data();
-            restaurant.active = acceptedRestaurantData.active; 
+            restaurant.active = acceptedRestaurantData.active;
           }
-    
-          setToggle(restaurant.active); 
-          console.log(restaurant.active); 
+
+          setToggle(restaurant.active);
+          console.log(restaurant.active);
           setRestaurantData(restaurant);
         } else {
           setRestaurantData(null);
@@ -52,13 +58,12 @@ const Restaurant = () => {
       } catch (error) {
         console.error("Error fetching restaurant data:", error);
       } finally {
-        setLoading(false); 
+        setLoading(false);
       }
     };
-    
 
     if (currentUser) {
-      fetchRestaurantData(); 
+      fetchRestaurantData();
     }
   }, [currentUser]);
 
@@ -77,18 +82,20 @@ const Restaurant = () => {
         active: newActiveState,
       });
 
-      console.log(`Restaurant is now ${newActiveState ? "Active" : "Inactive"}`);
+      console.log(
+        `Restaurant is now ${newActiveState ? "Active" : "Inactive"}`
+      );
     } catch (error) {
       console.error("Error updating active state:", error);
     }
   };
 
   if (loading) {
-    return <p>Loading restaurant information...</p>;
+    return <p>Loading...</p>;
   }
 
   return (
-    <div className="bg-slate-100 px-8 pt-10">
+    <div className="px-8 py-10">
       {restaurantData ? (
         <>
           <div className="flex justify-between items-center">
